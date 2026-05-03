@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shubham Bakre — Applied AI Engineer</title>
+  <meta name="description" content="Senior Software Engineer with 7+ years of production experience. Shipped LLM integrations at Walmart scale. Targeting applied AI and LLM engineering roles in the Bay Area." />
+  <meta name="author" content="Shubham Bakre" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://shubhambakre.com/" />
+  <meta property="og:title" content="Shubham Bakre — Applied AI Engineer" />
+  <meta property="og:description" content="7+ years of production backend engineering. LLM integrations, distributed systems, Spark at scale." />
+  <meta property="og:image" content="https://shubhambakre.com/assets/photo.jpg" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Shubham Bakre — Applied AI Engineer" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ============================================================
+       LAYOUT WRAPPER
+  ============================================================ -->
+  <div class="layout">
+
+    <!-- ==================== SIDEBAR ========================== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-inner">
+
+        <!-- Avatar -->
+        <div class="avatar" id="avatarEl">
+          <img src="assets/photo.jpg" alt="Shubham Bakre"
+               onerror="document.getElementById('avatarEl').classList.add('avatar--fallback')" />
+        </div>
+
+        <!-- Identity -->
+        <div class="sidebar-identity">
+          <h1 class="sidebar-name">Shubham<br />Bakre</h1>
+          <p class="sidebar-role">Senior AI · Backend Engineer</p>
+          <p class="sidebar-bio">Building AI on production systems that actually scale.</p>
+          <span class="sidebar-location mono">
+            <span class="dot" aria-hidden="true"></span>
+            Bay Area, CA
+          </span>
+        </div>
+
+        <!-- Nav -->
+        <nav class="sidebar-nav" aria-label="Page sections">
+          <a href="#projects"   class="snav-link" data-section="projects">
+            <span class="snav-line" aria-hidden="true"></span>Projects
+          </a>
+          <a href="#experience" class="snav-link" data-section="experience">
+            <span class="snav-line" aria-hidden="true"></span>Experience
+          </a>
+          <a href="#skills"     class="snav-link" data-section="skills">
+            <span class="snav-line" aria-hidden="true"></span>Skills
+          </a>
+          <a href="#about"      class="snav-link" data-section="about">
+            <span class="snav-line" aria-hidden="true"></span>About
+          </a>
+          <a href="#contact"    class="snav-link" data-section="contact">
+            <span class="snav-line" aria-hidden="true"></span>Contact
+          </a>
+        </nav>
+
+        <!-- Bottom: social + actions -->
+        <div class="sidebar-bottom">
+          <div class="sidebar-social">
+            <a href="https://linkedin.com/in/shubhambakre" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="LinkedIn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+            <a href="https://github.com/shubhambakre" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="GitHub">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            </a>
+            <a href="mailto:shubhambakre@gmail.com" class="social-icon" aria-label="Email">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </a>
+          </div>
+          <div class="sidebar-actions">
+            <a href="assets/resume.pdf" class="btn-resume" download>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Resume
+            </a>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+              <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+              <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+    <!-- ==================== MAIN ============================= -->
+    <main class="main" id="main">
+
+      <!-- Mobile-only top bar -->
+      <div class="mobile-bar" id="mobileBar">
+        <a href="#" class="mobile-brand">Shubham Bakre</a>
+        <div class="mobile-actions">
+          <button class="theme-toggle" id="themeToggleMobile" aria-label="Toggle theme">
+            <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+          <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile nav drawer -->
+      <div class="mobile-nav" id="mobileNav" aria-hidden="true">
+        <a href="#projects"   class="mnav-link">Projects</a>
+        <a href="#experience" class="mnav-link">Experience</a>
+        <a href="#skills"     class="mnav-link">Skills</a>
+        <a href="#about"      class="mnav-link">About</a>
+        <a href="#contact"    class="mnav-link">Contact</a>
+        <a href="assets/resume.pdf" class="mnav-link mnav-link--accent" download>↓ Resume</a>
+      </div>
+
+      <!-- ========== PROJECTS ================================= -->
+      <section class="section" id="projects">
+        <div class="section-head reveal">
+          <p class="section-label mono">01 &mdash; Projects</p>
+        </div>
+
+        <!-- Featured -->
+        <article class="card card--featured reveal" data-card>
+          <div class="card-featured-inner">
+            <div class="card-main">
+              <div class="card-meta">
+                <span class="card-org">Walmart Labs</span>
+                <span class="card-badge">Production · 2024</span>
+              </div>
+              <h2 class="card-title">Inventory Intelligence Chatbot</h2>
+              <p class="card-desc">Built a natural-language interface over Walmart's inventory database using Google Vertex AI. The system converts plain-English business questions into optimized BigQuery SQL — enabling replenishment teams to interrogate a 550M-SKU dataset without writing SQL. Deployed internally, serving business users daily.</p>
+              <div class="card-foot">
+                <span class="card-note">Internal system · not open source</span>
+                <div class="card-tags">
+                  <span class="tag">Google Vertex AI</span>
+                  <span class="tag">NL2SQL</span>
+                  <span class="tag">BigQuery</span>
+                  <span class="tag">Java Spring Boot</span>
+                  <span class="tag">Python</span>
+                </div>
+              </div>
+            </div>
+            <div class="card-stats">
+              <div class="stat">
+                <span class="stat-num" data-count="550" data-suffix="M">550M</span>
+                <span class="stat-label">SKUs accessible via plain English</span>
+              </div>
+              <div class="stat">
+                <span class="stat-num" data-count="100" data-prefix="~">~100</span>
+                <span class="stat-label">business queries per day</span>
+              </div>
+              <div class="stat">
+                <span class="stat-num" data-count="0">0</span>
+                <span class="stat-label">SQL knowledge required from users</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Grid -->
+        <div class="cards-grid">
+
+          <article class="card reveal" data-card>
+            <div class="card-meta">
+              <span class="card-org">Walmart Labs</span>
+              <span class="card-badge">Production · 2023</span>
+            </div>
+            <h3 class="card-title">550M-SKU Replenishment Platform</h3>
+            <p class="card-desc">Designed a data platform processing 550 million SKUs with integrated ML models for inventory forecasting. Built on Apache Spark and GCP, powering Walmart e-commerce replenishment decisions at scale.</p>
+            <div class="card-tags">
+              <span class="tag">Apache Spark</span>
+              <span class="tag">Java</span>
+              <span class="tag">GCP Airflow</span>
+              <span class="tag">BigQuery</span>
+              <span class="tag">ML Models</span>
+            </div>
+          </article>
+
+          <article class="card reveal" data-card>
+            <div class="card-meta">
+              <span class="card-org">Personal Research</span>
+              <span class="card-badge">Prototype · 2024</span>
+            </div>
+            <h3 class="card-title">AI Developer Assistant</h3>
+            <p class="card-desc">A prototype combining LLM prompt engineering, vector database retrieval, and knowledge graphs for context-aware code suggestions and debugging. Explores RAG patterns and agent architectures.</p>
+            <div class="card-tags">
+              <span class="tag">LLM</span>
+              <span class="tag">Vector DB</span>
+              <span class="tag">Knowledge Graph</span>
+              <span class="tag">RAG</span>
+              <span class="tag">Python</span>
+            </div>
+          </article>
+
+          <article class="card reveal" data-card>
+            <div class="card-meta">
+              <span class="card-org">Open Source</span>
+              <span class="card-badge">Architecture POC</span>
+            </div>
+            <h3 class="card-title">OmniMart Ratings &amp; Reviews API</h3>
+            <p class="card-desc">Production-grade ratings and reviews service in Go. Hexagonal architecture, dual-tier API (public + moderation), cursor pagination, idempotent writes, swappable SQLite / in-memory backends. Built to show how I think about systems design.</p>
+            <div class="card-links">
+              <a href="https://github.com/shubhambakre/omnimart-ratings-reviews" class="card-link" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+              <a href="https://shubhambakre.github.io/omnimart-ratings-reviews/" class="card-link" target="_blank" rel="noopener noreferrer">Docs ↗</a>
+            </div>
+            <div class="card-tags">
+              <span class="tag">Go</span>
+              <span class="tag">SQLite</span>
+              <span class="tag">REST API</span>
+              <span class="tag">Hexagonal Arch</span>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- ========== EXPERIENCE =============================== -->
+      <section class="section" id="experience">
+        <div class="section-head reveal">
+          <p class="section-label mono">02 &mdash; Experience</p>
+        </div>
+
+        <div class="timeline">
+
+          <article class="tl-item reveal">
+            <div class="tl-left">
+              <p class="tl-period mono">2023 &mdash; Present</p>
+              <p class="tl-location">Sunnyvale, CA</p>
+            </div>
+            <div class="tl-right">
+              <div class="tl-header">
+                <h3>Software Engineer III</h3>
+                <span class="tl-company">Walmart Labs</span>
+              </div>
+              <ul class="tl-list">
+                <li>Shipped a production LLM chatbot (Google Vertex AI + BigQuery) converting business questions to SQL — serving replenishment teams at ~100 queries/day with zero SQL knowledge required</li>
+                <li>Designed a data platform processing 550M SKUs with integrated ML models for inventory forecasting</li>
+                <li>Built scalable Spring Boot API services; data pipelines with Apache Spark, Airflow, and GCP</li>
+              </ul>
+              <div class="tl-tags">
+                <span class="tag">Java</span><span class="tag">Apache Spark</span><span class="tag">Vertex AI</span><span class="tag">BigQuery</span><span class="tag">Python</span><span class="tag">GCP</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="tl-item reveal">
+            <div class="tl-left">
+              <p class="tl-period mono">2022 &mdash; 2023</p>
+              <p class="tl-location">Scottsdale, AZ</p>
+            </div>
+            <div class="tl-right">
+              <div class="tl-header">
+                <h3>Software Engineer II — Big Data</h3>
+                <span class="tl-company">Choice Hotels</span>
+              </div>
+              <ul class="tl-list">
+                <li>Optimized real-time analytics and live data stream processing on AWS (Airflow, EMR, Athena, EC2)</li>
+                <li>Automated legacy system migration, improving data reliability across the analytics platform</li>
+              </ul>
+              <div class="tl-tags">
+                <span class="tag">AWS</span><span class="tag">EMR</span><span class="tag">Athena</span><span class="tag">Airflow</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="tl-item reveal">
+            <div class="tl-left">
+              <p class="tl-period mono">2020 &mdash; 2022</p>
+              <p class="tl-location">Scottsdale, AZ</p>
+            </div>
+            <div class="tl-right">
+              <div class="tl-header">
+                <h3>Software Engineer</h3>
+                <span class="tl-company">Early Warning (Zelle)</span>
+              </div>
+              <ul class="tl-list">
+                <li>Enhanced the Zelle payment backend processing high-value financial transactions using Java Spring Boot, Docker, and REST APIs</li>
+                <li>Supported AWS cloud infrastructure; implemented notification services enabling AI-driven product features</li>
+              </ul>
+              <div class="tl-tags">
+                <span class="tag">Java</span><span class="tag">Spring Boot</span><span class="tag">Docker</span><span class="tag">AWS</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="tl-item reveal">
+            <div class="tl-left">
+              <p class="tl-period mono">2019</p>
+              <p class="tl-location">Phoenix, AZ</p>
+            </div>
+            <div class="tl-right">
+              <div class="tl-header">
+                <h3>Data Science Intern</h3>
+                <span class="tl-company">American Express</span>
+              </div>
+              <ul class="tl-list">
+                <li>Built an end-to-end ML pipeline for credit card offer prediction — feature engineering, model optimization, and automated performance reporting</li>
+              </ul>
+              <div class="tl-tags">
+                <span class="tag">Python</span><span class="tag">Scikit-learn</span><span class="tag">ML Pipeline</span>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- ========== SKILLS =================================== -->
+      <section class="section" id="skills">
+        <div class="section-head reveal">
+          <p class="section-label mono">03 &mdash; Skills</p>
+        </div>
+        <div class="skills-wrap">
+          <div class="skill-group reveal">
+            <h3 class="sg-title">AI &amp; LLM Engineering</h3>
+            <ul class="sg-list">
+              <li>LLM Integration &amp; Prompt Engineering</li>
+              <li>Agent Architectures &amp; Workflows</li>
+              <li>Vector Databases · RAG</li>
+              <li>Knowledge Graphs</li>
+              <li>Google Vertex AI</li>
+              <li>Model Fine-tuning</li>
+              <li>TensorFlow · PyTorch · Scikit-learn</li>
+            </ul>
+          </div>
+          <div class="skill-group reveal">
+            <h3 class="sg-title">Data &amp; Distributed Systems</h3>
+            <ul class="sg-list">
+              <li>Apache Spark · Hadoop</li>
+              <li>Airflow · BigQuery · SQL</li>
+              <li>Streaming &amp; Batch Pipelines</li>
+              <li>ML Model Integration</li>
+              <li>Data Mining</li>
+            </ul>
+          </div>
+          <div class="skill-group reveal">
+            <h3 class="sg-title">Backend Engineering</h3>
+            <ul class="sg-list">
+              <li>Java · Python · Go · Scala</li>
+              <li>Spring Boot · REST APIs</li>
+              <li>Docker</li>
+              <li>PostgreSQL · MySQL · SQLite</li>
+              <li>System Design &amp; API Architecture</li>
+            </ul>
+          </div>
+          <div class="skill-group reveal">
+            <h3 class="sg-title">Cloud &amp; Infrastructure</h3>
+            <ul class="sg-list">
+              <li>GCP (Vertex AI, BigQuery, Airflow)</li>
+              <li>AWS (EC2, EMR, Athena, S3)</li>
+              <li>Linux · Git</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== ABOUT ==================================== -->
+      <section class="section" id="about">
+        <div class="section-head reveal">
+          <p class="section-label mono">04 &mdash; About</p>
+        </div>
+        <div class="about-wrap">
+          <div class="about-text reveal">
+            <p>I'm a senior software engineer with seven years of experience shipping production systems across fintech, hospitality, and large-scale e-commerce. At Walmart, I own a data platform processing 550 million SKUs and built the team's first production LLM integration — a natural-language query interface that lets business stakeholders ask plain-English questions against BigQuery without writing SQL.</p>
+            <p>My path into AI isn't a pivot. It's a progression. I built ML pipelines at American Express, completed a Udacity Deep Learning Nanodegree covering CNNs, RNNs, and GANs, and hold an MS in Computer Science from Arizona State (GPA 3.7) with coursework in data mining and distributed systems. The last two years at Walmart have been spent integrating LLMs and predictive models directly into production infrastructure.</p>
+            <p>I'm targeting roles where strong systems thinking meets applied AI — teams building LLM platforms, AI-native products, or agent infrastructure where production engineering depth and AI implementation both matter.</p>
+          </div>
+          <div class="about-edu reveal">
+            <div class="edu-row">
+              <div class="edu-icon mono">MS</div>
+              <div>
+                <p class="edu-degree">Computer Science</p>
+                <p class="edu-school">Arizona State University · GPA 3.7</p>
+              </div>
+            </div>
+            <div class="edu-row">
+              <div class="edu-icon mono">BE</div>
+              <div>
+                <p class="edu-degree">Computer Engineering</p>
+                <p class="edu-school">PICT, India · GPA 3.5</p>
+              </div>
+            </div>
+            <div class="edu-row">
+              <div class="edu-icon mono">ND</div>
+              <div>
+                <p class="edu-degree">Deep Learning Nanodegree</p>
+                <p class="edu-school">Udacity · CNNs · RNNs · GANs</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== CONTACT ================================== -->
+      <section class="section" id="contact">
+        <div class="section-head reveal">
+          <p class="section-label mono">05 &mdash; Contact</p>
+        </div>
+        <div class="contact-wrap reveal">
+          <h2 class="contact-heading">Let's talk about building AI that ships.</h2>
+          <p class="contact-sub">If you're working on LLM platforms, agent infrastructure, or AI-native products and need production engineering depth — I'd like to connect.</p>
+          <p class="contact-sub">Open to senior AI/ML engineering roles at cloud platforms and AI-first companies in the Bay Area.</p>
+          <div class="contact-actions">
+            <a href="mailto:shubhambakre@gmail.com" class="btn-contact">
+              shubhambakre@gmail.com
+            </a>
+            <a href="https://linkedin.com/in/shubhambakre" target="_blank" rel="noopener noreferrer" class="btn-outline">LinkedIn ↗</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="footer">
+        <p class="footer-copy">Shubham Bakre · Bay Area, CA</p>
+        <div class="footer-links">
+          <a href="https://linkedin.com/in/shubhambakre" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a href="https://github.com/shubhambakre" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="assets/resume.pdf" download>Resume</a>
+        </div>
+      </footer>
+
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
