@@ -354,7 +354,7 @@ const CARDS = [
 // ══════════════════════════════════════════════════════════
 //  ENGINE CONSTANTS
 // ══════════════════════════════════════════════════════════
-const GV=0.65, JF=-14.5, MXF=18, SPD=5.5, TILE=40, HUD_H=52;
+const GV=0.65, JF=-14.5, MXF=18, SPD=7, TILE=40, HUD_H=52;
 
 // Zone sky colors per card (gradient pairs)
 const ZONE_COLORS=[
@@ -459,11 +459,14 @@ class QBlock{
   }
   checkHit(player){
     if(this.hit) return false;
-    // Check if player hits from below
-    const px=player.x,py=player.y,pw=player.w,ph=player.h;
-    const hitsX = px+pw>this.x+4 && px<this.x+this.w-4;
-    const hitsY = py<=this.y+this.h && py>this.y && player.vy<0;
-    if(hitsX&&hitsY){this.hit=true;this.bump=20;return true;}
+    // Trigger by proximity — just walk near the block
+    const cx=this.x+this.w/2, pcx=player.x+player.w/2;
+    const xNear=Math.abs(pcx-cx)<70;
+    const yNear=player.y+player.h>this.y-40 && player.y<this.y+this.h+80;
+    // Also classic jump-hit from below
+    const hitsX=player.x+player.w>this.x+4&&player.x<this.x+this.w-4;
+    const hitsY=player.y<=this.y+this.h&&player.y>this.y&&player.vy<0;
+    if((xNear&&yNear)||(hitsX&&hitsY)){this.hit=true;this.bump=20;return true;}
     return false;
   }
 }
@@ -608,10 +611,10 @@ function lerpColor(c1,c2,t){
   return `#${r}${g}${b}`;
 }
 
-const STARS=Array.from({length:60},(_,i)=>({x:i*137.5%3200,y:Math.random()*300,s:Math.random()<0.15?2:1}));
+const STARS=Array.from({length:50},(_,i)=>({x:i*137.5%1900,y:Math.random()*300,s:Math.random()<0.15?2:1}));
 const CLOUDS=[
-  {x:200,y:85,w:150,h:52},{x:650,y:65,w:180,h:60},{x:1100,y:80,w:140,h:48},
-  {x:1600,y:70,w:170,h:58},{x:2100,y:85,w:150,h:52},{x:2600,y:60,w:180,h:58},
+  {x:150,y:85,w:140,h:50},{x:500,y:65,w:160,h:56},{x:860,y:78,w:130,h:46},
+  {x:1200,y:68,w:150,h:54},{x:1550,y:82,w:140,h:50},
 ];
 
 function drawCloud(ctx,x,y,w,h,alpha=0.18){
@@ -650,48 +653,44 @@ function drawBG(ctx,cx,W,H,zoneT,zoneIdx){
 function buildLevel(H){
   const gY=H-80-HUD_H;
   const plats=[],qblocks=[],skillCoins=[];
-  const LW=3200;
+  const LW=1900;
 
-  // ── Ground sections (gaps between zones) ──
-  [[0,560],[680,1160],[1280,1760],[1880,2360],[2480,LW]].forEach(([a,b])=>{
+  // ── Ground sections — small 65px gaps between each zone ──
+  [[0,330],[395,730],[795,1130],[1195,1530],[1595,LW]].forEach(([a,b])=>{
     plats.push(new Platform(a,gY,b-a,80,'ground'));
   });
 
-  // ── Zone 0: About (0-560) — auto-card on spawn ──
-  plats.push(new Platform(180,gY-110,100,'brick','brick'));
-  plats.push(new Platform(380,gY-160,100,'brick','brick'));
+  // ── Zone 0: About (0-330) — auto-card on spawn ──
+  plats.push(new Platform(140,gY-100,90,'brick','brick'));
 
-  // ── Zone 1: Projects (680-1160) ──
-  qblocks.push(new QBlock(780,gY-155,1));
-  plats.push(new Platform(720,gY-80,160,'brick','brick'));
-  plats.push(new Platform(960,gY-140,140,'cloud','cloud'));
+  // ── Zone 1: Projects (395-730) — Q block triggers card ──
+  qblocks.push(new QBlock(500,gY-130,1));
+  plats.push(new Platform(440,gY-70,140,'brick','brick'));
+  plats.push(new Platform(630,gY-120,110,'cloud','cloud'));
 
-  // ── Zone 2: Experience (1280-1760) ──
-  qblocks.push(new QBlock(1360,gY-155,2));
+  // ── Zone 2: Experience (795-1130) — Q block triggers card ──
+  qblocks.push(new QBlock(900,gY-130,2));
   const companies=[
-    [1300,gY-105,160,'Walmart'],
-    [1460,gY-75,140,'Choice Hotels'],
-    [1600,gY-130,110,'Zelle'],
-    [1700,gY-90,110,'Amex'],
+    [820,gY-90,130,'Walmart'],[950,gY-65,120,'Choice Hotels'],
+    [1068,gY-110,90,'Zelle'],[1155,gY-75,90,'Amex'],
   ];
-  companies.forEach(([x,y,w,l])=>plats.push(new Platform(x,y,w,18,'company',l)));
+  companies.forEach(([x,y,w,l])=>plats.push(new Platform(x,y,w,16,'company',l)));
 
-  // ── Zone 3: Skills (1880-2360) ──
-  qblocks.push(new QBlock(1960,gY-155,3));
+  // ── Zone 3: Skills (1195-1530) — Q block triggers card ──
+  qblocks.push(new QBlock(1290,gY-130,3));
   SKILL_LABELS.forEach((label,i)=>{
-    const x=1960+i*44;
-    const y=gY-100-Math.abs(Math.sin(i*0.65))*100;
+    const x=1220+i*34;
+    const y=gY-90-Math.abs(Math.sin(i*0.7))*80;
     skillCoins.push(new SkillCoin(x,y,label));
   });
-  plats.push(new Platform(1920,gY-110,160,'brick','brick'));
-  plats.push(new Platform(2130,gY-160,120,'cloud','cloud'));
-  plats.push(new Platform(2260,gY-100,140,'brick','brick'));
+  plats.push(new Platform(1200,gY-90,120,'brick','brick'));
+  plats.push(new Platform(1360,gY-130,100,'cloud','cloud'));
+  plats.push(new Platform(1470,gY-80,110,'brick','brick'));
 
-  // ── Zone 4: Contact (2480+) — reach the flag ──
-  plats.push(new Platform(2520,gY-100,180,'company','Reach the flag!'));
-  plats.push(new Platform(2740,gY-150,160,'company',''));
+  // ── Zone 4: Contact (1595+) — reach the flag ──
+  plats.push(new Platform(1630,gY-85,160,'company','You made it!'));
 
-  const FLAG_X=2950;
+  const FLAG_X=1820;
   return{plats,qblocks,skillCoins,gY,LW,FLAG_X};
 }
 
@@ -812,7 +811,7 @@ function tick(){
   }
 
   // Flag trigger
-  if(!triggeredFlag&&player.x>FLAG_X-80){
+  if(!triggeredFlag&&player.x>FLAG_X-60){
     triggeredFlag=true;showCard(4);
   }
 
@@ -850,11 +849,11 @@ function render(){
 
   // Zone name in world space (ambient)
   const zoneNames=[
-    {x:280,name:'About Me',col:'rgba(226,226,245,0.12)'},
-    {x:880,name:'Projects',col:'rgba(226,226,245,0.12)'},
-    {x:1480,name:'Experience',col:'rgba(226,226,245,0.12)'},
-    {x:2080,name:'Skills',col:'rgba(226,226,245,0.12)'},
-    {x:2700,name:"Let's Connect",col:'rgba(129,140,248,0.2)'},
+    {x:165,name:'About Me',col:'rgba(226,226,245,0.12)'},
+    {x:560,name:'Projects',col:'rgba(226,226,245,0.12)'},
+    {x:960,name:'Experience',col:'rgba(226,226,245,0.12)'},
+    {x:1360,name:'Skills',col:'rgba(226,226,245,0.12)'},
+    {x:1700,name:"Let's Connect",col:'rgba(129,140,248,0.2)'},
   ];
   ctx.textAlign='center';
   for(const z of zoneNames){
