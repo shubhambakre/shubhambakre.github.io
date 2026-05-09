@@ -354,7 +354,7 @@ const CARDS = [
 // ══════════════════════════════════════════════════════════
 //  ENGINE CONSTANTS
 // ══════════════════════════════════════════════════════════
-const GV=0.52, JF=-13, MXF=16, SPD=4.5, TILE=40, HUD_H=52;
+const GV=0.65, JF=-14.5, MXF=18, SPD=5.5, TILE=40, HUD_H=52;
 
 // Zone sky colors per card (gradient pairs)
 const ZONE_COLORS=[
@@ -518,13 +518,13 @@ class Player{
     this.moved=false; // track first move for hint
   }
   update(plats,qblocks,skillCoins,parts,onBlockHit){
-    if(IN.left){this.vx=-SPD;this.facing=-1;this.moved=true;}
-    else if(IN.right){this.vx=SPD;this.facing=1;this.moved=true;}
-    else this.vx*=0.78;
-    if(IN.jump)this.jumpBuf=9; else if(this.jumpBuf>0)this.jumpBuf--;
-    if(this.onGround)this.coyote=9; else if(this.coyote>0)this.coyote--;
+    if(IN.left){this.vx=lerp(this.vx,-SPD,0.28);this.facing=-1;this.moved=true;}
+    else if(IN.right){this.vx=lerp(this.vx,SPD,0.28);this.facing=1;this.moved=true;}
+    else this.vx*=0.70;
+    if(IN.jump)this.jumpBuf=10; else if(this.jumpBuf>0)this.jumpBuf--;
+    if(this.onGround)this.coyote=10; else if(this.coyote>0)this.coyote--;
     if(this.jumpBuf>0&&this.coyote>0){this.vy=JF;this.jumpBuf=0;this.coyote=0;SFX.jump();this.moved=true;}
-    if(!IN.jump&&this.vy<-5)this.vy+=1.4;
+    if(!IN.jump&&this.vy<-4)this.vy+=2.2;
     this.vy=Math.min(this.vy+GV,MXF);
     this.x+=this.vx; this.onGround=false;
     for(const p of plats){
@@ -608,11 +608,10 @@ function lerpColor(c1,c2,t){
   return `#${r}${g}${b}`;
 }
 
-const STARS=Array.from({length:80},(_,i)=>({x:i*137.5%6000,y:Math.random()*300,s:Math.random()<0.15?2:1}));
+const STARS=Array.from({length:60},(_,i)=>({x:i*137.5%3200,y:Math.random()*300,s:Math.random()<0.15?2:1}));
 const CLOUDS=[
-  {x:300,y:90,w:160,h:55},{x:900,y:65,w:200,h:65},{x:1500,y:80,w:140,h:50},
-  {x:2300,y:70,w:180,h:60},{x:3100,y:85,w:150,h:55},{x:3900,y:60,w:200,h:65},
-  {x:4700,y:75,w:160,h:50},{x:5400,y:90,w:140,h:55},
+  {x:200,y:85,w:150,h:52},{x:650,y:65,w:180,h:60},{x:1100,y:80,w:140,h:48},
+  {x:1600,y:70,w:170,h:58},{x:2100,y:85,w:150,h:52},{x:2600,y:60,w:180,h:58},
 ];
 
 function drawCloud(ctx,x,y,w,h,alpha=0.18){
@@ -651,59 +650,48 @@ function drawBG(ctx,cx,W,H,zoneT,zoneIdx){
 function buildLevel(H){
   const gY=H-80-HUD_H;
   const plats=[],qblocks=[],skillCoins=[];
-  const LW=6000;
+  const LW=3200;
 
-  // ── Ground sections ──
-  [[0,1400],[1540,2600],[2740,3800],[3940,5200],[5340,LW]].forEach(([a,b])=>{
+  // ── Ground sections (gaps between zones) ──
+  [[0,560],[680,1160],[1280,1760],[1880,2360],[2480,LW]].forEach(([a,b])=>{
     plats.push(new Platform(a,gY,b-a,80,'ground'));
   });
 
-  // ── Zone 0: About (0-1200) ──
-  // Some gentle intro platforms
-  plats.push(new Platform(200,gY-120,120,'brick','brick'));
-  plats.push(new Platform(500,gY-180,120,'brick','brick'));
-  plats.push(new Platform(800,gY-120,120,'brick','brick'));
+  // ── Zone 0: About (0-560) — auto-card on spawn ──
+  plats.push(new Platform(180,gY-110,100,'brick','brick'));
+  plats.push(new Platform(380,gY-160,100,'brick','brick'));
 
-  // ── Zone 1: Projects (1400-2600) ──
-  // Q blocks for projects card
-  qblocks.push(new QBlock(1620,gY-180,1));
-  plats.push(new Platform(1560,gY-80,200,'brick','brick'));
-  plats.push(new Platform(1900,gY-160,160,'cloud','cloud'));
-  plats.push(new Platform(2200,gY-100,200,'brick','brick'));
+  // ── Zone 1: Projects (680-1160) ──
+  qblocks.push(new QBlock(780,gY-155,1));
+  plats.push(new Platform(720,gY-80,160,'brick','brick'));
+  plats.push(new Platform(960,gY-140,140,'cloud','cloud'));
 
-  // ── Zone 2: Experience (2600-3800) ──
-  // Q block for experience card
-  qblocks.push(new QBlock(2900,gY-200,2));
-  // Company platforms with labels
+  // ── Zone 2: Experience (1280-1760) ──
+  qblocks.push(new QBlock(1360,gY-155,2));
   const companies=[
-    [2800,gY-120,220,'Walmart'],
-    [3100,gY-80,180,'Choice Hotels'],
-    [3340,gY-150,160,'Zelle'],
-    [3560,gY-100,160,'Amex'],
+    [1300,gY-105,160,'Walmart'],
+    [1460,gY-75,140,'Choice Hotels'],
+    [1600,gY-130,110,'Zelle'],
+    [1700,gY-90,110,'Amex'],
   ];
-  companies.forEach(([x,y,w,l])=>plats.push(new Platform(x,y,w,20,'company',l)));
+  companies.forEach(([x,y,w,l])=>plats.push(new Platform(x,y,w,18,'company',l)));
 
-  // ── Zone 3: Skills (3800-5200) ──
-  // Q block for skills card
-  qblocks.push(new QBlock(4100,gY-200,3));
-  // Skill coins in arc
+  // ── Zone 3: Skills (1880-2360) ──
+  qblocks.push(new QBlock(1960,gY-155,3));
   SKILL_LABELS.forEach((label,i)=>{
-    const angle=-Math.PI+i*(Math.PI/SKILL_LABELS.length*1.5);
-    const x=4300+i*110;
-    const y=gY-120-Math.abs(Math.sin(i*0.6))*120;
+    const x=1960+i*44;
+    const y=gY-100-Math.abs(Math.sin(i*0.65))*100;
     skillCoins.push(new SkillCoin(x,y,label));
   });
-  plats.push(new Platform(4000,gY-120,200,'brick','brick'));
-  plats.push(new Platform(4300,gY-180,120,'cloud','cloud'));
-  plats.push(new Platform(4500,gY-100,200,'brick','brick'));
-  plats.push(new Platform(4800,gY-160,160,'brick','brick'));
+  plats.push(new Platform(1920,gY-110,160,'brick','brick'));
+  plats.push(new Platform(2130,gY-160,120,'cloud','cloud'));
+  plats.push(new Platform(2260,gY-100,140,'brick','brick'));
 
-  // ── Zone 4: Contact (5200+) ──
-  // Final approach
-  plats.push(new Platform(5400,gY-100,240,'company','Reach the flag!'));
-  plats.push(new Platform(5700,gY-160,200,'company',''));
+  // ── Zone 4: Contact (2480+) — reach the flag ──
+  plats.push(new Platform(2520,gY-100,180,'company','Reach the flag!'));
+  plats.push(new Platform(2740,gY-150,160,'company',''));
 
-  const FLAG_X=5850;
+  const FLAG_X=2950;
   return{plats,qblocks,skillCoins,gY,LW,FLAG_X};
 }
 
@@ -824,13 +812,13 @@ function tick(){
   }
 
   // Flag trigger
-  if(!triggeredFlag&&player.x>FLAG_X-100){
+  if(!triggeredFlag&&player.x>FLAG_X-80){
     triggeredFlag=true;showCard(4);
   }
 
   // Camera
-  const targetCam=player.x-W*0.3;
-  camX+=(targetCam-camX)*0.12;
+  const targetCam=player.x-W*0.35;
+  camX+=(targetCam-camX)*0.10;
   camX=Math.max(0,Math.min(camX,LW-W));
 
   // Zone color tracking based on camera position
@@ -862,11 +850,11 @@ function render(){
 
   // Zone name in world space (ambient)
   const zoneNames=[
-    {x:400,name:'About Me',col:'rgba(226,226,245,0.12)'},
-    {x:1800,name:'Projects',col:'rgba(226,226,245,0.12)'},
-    {x:3000,name:'Experience',col:'rgba(226,226,245,0.12)'},
-    {x:4200,name:'Skills',col:'rgba(226,226,245,0.12)'},
-    {x:5500,name:"Let's Connect",col:'rgba(129,140,248,0.2)'},
+    {x:280,name:'About Me',col:'rgba(226,226,245,0.12)'},
+    {x:880,name:'Projects',col:'rgba(226,226,245,0.12)'},
+    {x:1480,name:'Experience',col:'rgba(226,226,245,0.12)'},
+    {x:2080,name:'Skills',col:'rgba(226,226,245,0.12)'},
+    {x:2700,name:"Let's Connect",col:'rgba(129,140,248,0.2)'},
   ];
   ctx.textAlign='center';
   for(const z of zoneNames){
