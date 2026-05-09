@@ -2,18 +2,18 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shubham Bakre — Applied AI Engineer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Shubham Bakre — Senior Software Engineer · AI</title>
   <meta name="description" content="Senior Software Engineer with 7+ years of production experience. Shipped LLM integrations at Walmart scale. Targeting applied AI and LLM engineering roles in the Bay Area." />
   <meta name="author" content="Shubham Bakre" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://shubhambakre.com/" />
-  <meta property="og:title" content="Shubham Bakre — Applied AI Engineer" />
+  <meta property="og:title" content="Shubham Bakre — Senior Software Engineer · AI" />
   <meta property="og:description" content="7+ years of production backend engineering. LLM integrations, distributed systems, Spark at scale." />
   <meta property="og:image" content="https://shubhambakre.com/assets/photo.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Shubham Bakre — Applied AI Engineer" />
-  <meta name="twitter:description" content="Senior Software Engineer with 7+ years of production experience. Shipped LLM integrations at Walmart scale. Targeting applied AI roles in the Bay Area." />
+  <meta name="twitter:title" content="Shubham Bakre — Senior Software Engineer · AI" />
+  <meta name="twitter:description" content="Senior Software Engineer with 7+ years of production experience. Shipped LLM integrations at Walmart scale." />
   <meta name="twitter:image" content="https://shubhambakre.com/assets/photo.jpg" />
   <link rel="canonical" href="https://shubhambakre.com/" />
   <meta name="robots" content="index, follow" />
@@ -25,495 +25,860 @@
     "url": "https://shubhambakre.com",
     "image": "https://shubhambakre.com/assets/photo.jpg",
     "jobTitle": "Senior Software Engineer",
-    "description": "Senior Software Engineer with 7+ years building production AI and distributed systems. Shipped LLM integrations at Walmart scale.",
-    "worksFor": { "@type": "Organization", "name": "Walmart Labs" },
-    "alumniOf": [
-      { "@type": "CollegeOrUniversity", "name": "Arizona State University" }
-    ],
-    "address": { "@type": "PostalAddress", "addressLocality": "Bay Area", "addressRegion": "CA", "addressCountry": "US" },
+    "worksFor": { "@type": "Organization", "name": "Walmart" },
+    "alumniOf": [{ "@type": "CollegeOrUniversity", "name": "Arizona State University" }],
     "email": "shubhambakre@gmail.com",
-    "sameAs": [
-      "https://linkedin.com/in/shubhambakre",
-      "https://github.com/shubhambakre"
-    ]
+    "sameAs": ["https://linkedin.com/in/shubhambakre","https://github.com/shubhambakre"]
   }
   </script>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html,body{width:100%;height:100%;overflow:hidden;background:#0a0a1a;font-family:'Segoe UI',system-ui,sans-serif;}
+    canvas{display:block;image-rendering:pixelated;}
+
+    /* ── HUD ─────────────────────────────────────── */
+    #hud{
+      position:fixed;top:0;left:0;right:0;height:52px;
+      background:rgba(10,10,26,0.92);backdrop-filter:blur(8px);
+      border-bottom:1px solid rgba(129,140,248,0.2);
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 18px;z-index:100;gap:12px;
+    }
+    #hud-left{display:flex;align-items:center;gap:14px;}
+    #hud-avatar{
+      width:34px;height:34px;border-radius:50%;
+      background:linear-gradient(135deg,#818cf8,#6366f1);
+      display:flex;align-items:center;justify-content:center;
+      font-size:13px;font-weight:700;color:#fff;flex-shrink:0;
+      overflow:hidden;border:2px solid rgba(129,140,248,0.5);
+    }
+    #hud-avatar img{width:100%;height:100%;object-fit:cover;}
+    #hud-name{color:#e2e2f5;font-size:15px;font-weight:600;white-space:nowrap;}
+    #hud-title{color:#818cf8;font-size:12px;white-space:nowrap;display:none;}
+    #hud-right{display:flex;align-items:center;gap:10px;}
+    .hud-link{
+      color:rgba(226,226,245,0.6);font-size:12px;text-decoration:none;
+      padding:4px 8px;border-radius:6px;transition:color .2s;white-space:nowrap;
+    }
+    .hud-link:hover{color:#818cf8;}
+    #resume-btn{
+      background:linear-gradient(135deg,#818cf8,#6366f1);
+      color:#fff;border:none;padding:7px 16px;border-radius:8px;
+      font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;
+      display:flex;align-items:center;gap:6px;white-space:nowrap;
+      box-shadow:0 2px 12px rgba(99,102,241,0.4);transition:opacity .2s;
+    }
+    #resume-btn:hover{opacity:0.88;}
+    #skip-btn{
+      color:rgba(226,226,245,0.4);font-size:11px;text-decoration:none;
+      border:1px solid rgba(226,226,245,0.15);padding:4px 10px;border-radius:6px;
+      white-space:nowrap;transition:color .2s,border-color .2s;
+    }
+    #skip-btn:hover{color:#e2e2f5;border-color:rgba(226,226,245,0.35);}
+
+    /* ── INFO CARD ───────────────────────────────── */
+    #card{
+      position:fixed;z-index:200;
+      top:50%;right:28px;transform:translateY(-50%) translateX(120%);
+      width:min(380px,calc(100vw - 40px));
+      background:rgba(13,13,26,0.97);border:1px solid rgba(129,140,248,0.3);
+      border-radius:16px;padding:24px;
+      box-shadow:0 8px 40px rgba(0,0,0,0.6),0 0 0 1px rgba(129,140,248,0.1);
+      transition:transform .45s cubic-bezier(.22,1,.36,1);
+      max-height:calc(100vh - 80px);overflow-y:auto;
+    }
+    #card.show{transform:translateY(-50%) translateX(0);}
+    #card-tag{
+      font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+      color:#818cf8;margin-bottom:10px;
+    }
+    #card-title{font-size:20px;font-weight:700;color:#e2e2f5;margin-bottom:14px;line-height:1.3;}
+    #card-body{font-size:13.5px;color:#a0a0c0;line-height:1.65;}
+    #card-body h4{color:#818cf8;font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin:14px 0 6px;}
+    #card-body p{margin-bottom:8px;}
+    #card-body ul{padding-left:16px;margin-bottom:8px;}
+    #card-body ul li{margin-bottom:4px;}
+    #card-body a{color:#818cf8;text-decoration:none;}
+    #card-body a:hover{text-decoration:underline;}
+    #card-body .tag{
+      display:inline-block;background:rgba(99,102,241,0.15);color:#818cf8;
+      border:1px solid rgba(99,102,241,0.25);border-radius:4px;
+      font-size:11px;padding:2px 8px;margin:2px;
+    }
+    .close-btn{
+      position:absolute;top:14px;right:14px;background:none;border:none;
+      color:rgba(226,226,245,0.4);font-size:20px;cursor:pointer;
+      width:28px;height:28px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      transition:color .2s,background .2s;
+    }
+    .close-btn:hover{color:#e2e2f5;background:rgba(255,255,255,0.08);}
+    .card-progress{
+      display:flex;gap:6px;margin-top:18px;padding-top:14px;
+      border-top:1px solid rgba(255,255,255,0.06);align-items:center;
+    }
+    .card-progress span{font-size:11px;color:rgba(226,226,245,0.35);margin-right:auto;}
+    .prog-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.15);}
+    .prog-dot.active{background:#818cf8;}
+
+    /* ── ZONE LABEL ──────────────────────────────── */
+    #zone-label{
+      position:fixed;bottom:76px;left:50%;transform:translateX(-50%);
+      background:rgba(129,140,248,0.15);border:1px solid rgba(129,140,248,0.3);
+      color:#818cf8;font-size:12px;font-weight:600;letter-spacing:.12em;
+      text-transform:uppercase;padding:6px 16px;border-radius:20px;
+      opacity:0;transition:opacity .5s;pointer-events:none;
+      backdrop-filter:blur(6px);
+    }
+    #zone-label.show{opacity:1;}
+
+    /* ── MOBILE CONTROLS ─────────────────────────── */
+    #mctrl{
+      position:fixed;bottom:0;left:0;right:0;
+      display:flex;justify-content:space-between;align-items:flex-end;
+      padding:12px 16px 14px;pointer-events:none;z-index:150;
+    }
+    .dpad{display:flex;gap:8px;pointer-events:all;}
+    .cbtn{
+      width:58px;height:58px;border-radius:12px;
+      background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.22);
+      color:rgba(255,255,255,0.8);font-size:20px;
+      display:flex;align-items:center;justify-content:center;
+      user-select:none;-webkit-user-select:none;touch-action:none;cursor:pointer;
+    }
+    #jbtn{
+      width:66px;height:66px;border-radius:50%;pointer-events:all;
+      background:rgba(99,102,241,0.3);border:2px solid rgba(129,140,248,0.5);
+    }
+    @media(min-width:768px){#mctrl{display:none;}}
+
+    /* ── HINT ────────────────────────────────────── */
+    #hint{
+      position:fixed;bottom:76px;left:50%;transform:translateX(-50%);
+      color:rgba(226,226,245,0.45);font-size:12px;text-align:center;
+      pointer-events:none;transition:opacity .5s;white-space:nowrap;
+    }
+  </style>
 </head>
 <body>
 
-  <!-- ============================================================
-       LAYOUT WRAPPER
-  ============================================================ -->
-  <div class="layout">
-
-    <!-- ==================== SIDEBAR ========================== -->
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-inner">
-
-        <!-- Avatar -->
-        <div class="avatar" id="avatarEl">
-          <img src="assets/photo.jpg" alt="Shubham Bakre"
-               onerror="document.getElementById('avatarEl').classList.add('avatar--fallback')" />
-        </div>
-
-        <!-- Identity -->
-        <div class="sidebar-identity">
-          <h1 class="sidebar-name">Shubham<br />Bakre</h1>
-          <p class="sidebar-role">Senior Software Engineer · AI</p>
-          <p class="sidebar-bio">Building AI on production systems that actually scale.</p>
-          <span class="sidebar-location mono">
-            <span class="dot" aria-hidden="true"></span>
-            Bay Area, CA
-          </span>
-        </div>
-
-        <!-- Nav -->
-        <nav class="sidebar-nav" aria-label="Page sections">
-          <a href="#projects"   class="snav-link" data-section="projects">
-            <span class="snav-line" aria-hidden="true"></span>Projects
-          </a>
-          <a href="#experience" class="snav-link" data-section="experience">
-            <span class="snav-line" aria-hidden="true"></span>Experience
-          </a>
-          <a href="#skills"     class="snav-link" data-section="skills">
-            <span class="snav-line" aria-hidden="true"></span>Skills
-          </a>
-          <a href="#about"      class="snav-link" data-section="about">
-            <span class="snav-line" aria-hidden="true"></span>About
-          </a>
-          <a href="#contact"    class="snav-link" data-section="contact">
-            <span class="snav-line" aria-hidden="true"></span>Contact
-          </a>
-        </nav>
-
-        <!-- Bottom: social + actions -->
-        <div class="sidebar-bottom">
-          <div class="sidebar-social">
-            <a href="https://linkedin.com/in/shubhambakre" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="LinkedIn">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-            </a>
-            <a href="https://github.com/shubhambakre" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="GitHub">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-            </a>
-            <a href="mailto:shubhambakre@gmail.com" class="social-icon" aria-label="Email">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            </a>
-          </div>
-          <div class="sidebar-actions">
-            <a href="assets/resume.pdf" class="btn-resume" download>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Resume
-            </a>
-            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-              <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-              <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </aside>
-
-    <!-- ==================== MAIN ============================= -->
-    <main class="main" id="main">
-
-      <!-- Mobile-only top bar -->
-      <div class="mobile-bar" id="mobileBar">
-        <a href="#" class="mobile-brand">Shubham Bakre</a>
-        <div class="mobile-actions">
-          <button class="theme-toggle" id="themeToggleMobile" aria-label="Toggle theme">
-            <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-            <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-          </button>
-          <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
-            <span></span><span></span><span></span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Mobile nav drawer -->
-      <div class="mobile-nav" id="mobileNav" aria-hidden="true">
-        <a href="#projects"   class="mnav-link">Projects</a>
-        <a href="#experience" class="mnav-link">Experience</a>
-        <a href="#skills"     class="mnav-link">Skills</a>
-        <a href="#about"      class="mnav-link">About</a>
-        <a href="#contact"    class="mnav-link">Contact</a>
-        <a href="assets/resume.pdf" class="mnav-link mnav-link--accent" download>↓ Resume</a>
-      </div>
-
-      <!-- ========== PROJECTS ================================= -->
-      <section class="section" id="projects">
-        <div class="section-head reveal">
-          <p class="section-label mono">01 &mdash; Projects</p>
-        </div>
-
-        <!-- Featured -->
-        <article class="card card--featured reveal" data-card>
-          <div class="card-featured-inner">
-            <div class="card-main">
-              <div class="card-meta">
-                <span class="card-org">Walmart Labs</span>
-                <span class="card-badge">Production · 2024</span>
-              </div>
-              <h2 class="card-title">Inventory Intelligence Chatbot</h2>
-              <p class="card-desc">Built a natural-language interface over Walmart's inventory database using Google Vertex AI. The system converts plain-English business questions into optimized BigQuery SQL — enabling replenishment teams to interrogate a 550M-SKU dataset without writing SQL. Deployed internally, serving business users daily.</p>
-              <div class="card-foot">
-                <span class="card-note">Internal system &nbsp;·&nbsp; <a href="https://github.com/shubhambakre/bq-genai-poc" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">Public POC on GitHub ↗</a></span>
-                <div class="card-tags">
-                  <span class="tag">Google Vertex AI</span>
-                  <span class="tag">NL2SQL</span>
-                  <span class="tag">BigQuery</span>
-                  <span class="tag">Java Spring Boot</span>
-                  <span class="tag">Python</span>
-                </div>
-              </div>
-            </div>
-            <div class="card-stats">
-              <div class="stat">
-                <span class="stat-num" data-count="550" data-suffix="M">550M</span>
-                <span class="stat-label">SKUs accessible via plain English</span>
-              </div>
-              <div class="stat">
-                <span class="stat-num" data-count="100" data-prefix="~">~100</span>
-                <span class="stat-label">business queries per day</span>
-              </div>
-              <div class="stat">
-                <span class="stat-num" data-count="0">0</span>
-                <span class="stat-label">SQL knowledge required from users</span>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <!-- Grid -->
-        <div class="cards-grid">
-
-          <article class="card reveal" data-card>
-            <div class="card-meta">
-              <span class="card-org">Walmart Labs</span>
-              <span class="card-badge">Production · 2023</span>
-            </div>
-            <h3 class="card-title">550M-SKU Replenishment Platform</h3>
-            <p class="card-desc">Designed a data platform processing 550 million SKUs with integrated ML models for inventory forecasting. Built on Apache Spark and GCP, powering Walmart e-commerce replenishment decisions at scale.</p>
-            <div class="card-tags">
-              <span class="tag">Apache Spark</span>
-              <span class="tag">Java</span>
-              <span class="tag">GCP Airflow</span>
-              <span class="tag">BigQuery</span>
-              <span class="tag">ML Models</span>
-            </div>
-          </article>
-
-          <article class="card reveal" data-card>
-            <div class="card-meta">
-              <span class="card-org">Open Source</span>
-              <span class="card-badge">RAG Pipeline</span>
-            </div>
-            <h3 class="card-title">Vertex AI RAG Pipeline</h3>
-            <p class="card-desc">End-to-end Retrieval-Augmented Generation on GCP. Documents are chunked and embedded via Vertex AI text-embedding-004, stored in BigQuery Vector Search with an IVF index, retrieved by cosine similarity, and answered by Gemini 1.5 Pro — all without a separate vector database.</p>
-            <div class="card-links">
-              <a href="https://github.com/shubhambakre/vertex-ai-rag-pipeline" class="card-link" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
-            </div>
-            <div class="card-tags">
-              <span class="tag">Vertex AI</span>
-              <span class="tag">BigQuery Vector Search</span>
-              <span class="tag">Gemini 1.5 Pro</span>
-              <span class="tag">RAG</span>
-              <span class="tag">Python</span>
-            </div>
-          </article>
-
-          <article class="card reveal" data-card>
-            <div class="card-meta">
-              <span class="card-org">Open Source</span>
-              <span class="card-badge">LLM Infrastructure</span>
-            </div>
-            <h3 class="card-title">Go LLM Gateway</h3>
-            <p class="card-desc">Production API gateway for LLM requests written in Go. Token-bucket rate limiting, per-model cost tracking, structured JSON request/response logging, and automatic model failover. OpenAI-compatible — drop-in proxy for any LLM provider.</p>
-            <div class="card-links">
-              <a href="https://github.com/shubhambakre/go-llm-gateway" class="card-link" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
-            </div>
-            <div class="card-tags">
-              <span class="tag">Go</span>
-              <span class="tag">LLM Infrastructure</span>
-              <span class="tag">Rate Limiting</span>
-              <span class="tag">Cost Tracking</span>
-            </div>
-          </article>
-
-          <article class="card reveal" data-card>
-            <div class="card-meta">
-              <span class="card-org">Open Source</span>
-              <span class="card-badge">LLM Evaluation</span>
-            </div>
-            <h3 class="card-title">LLM Eval Harness</h3>
-            <p class="card-desc">Python evaluation framework for LLM outputs. Measures faithfulness (is the answer grounded in context?), correctness, and hallucination rate using the LLM-as-judge pattern. Batch evaluation over datasets with JSON/CSV export and summary scoring.</p>
-            <div class="card-links">
-              <a href="https://github.com/shubhambakre/llm-eval-harness" class="card-link" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
-            </div>
-            <div class="card-tags">
-              <span class="tag">Python</span>
-              <span class="tag">LLM Evaluation</span>
-              <span class="tag">LLM-as-Judge</span>
-              <span class="tag">Faithfulness</span>
-              <span class="tag">Gemini Pro</span>
-            </div>
-          </article>
-
-          <article class="card reveal" data-card>
-            <div class="card-meta">
-              <span class="card-org">Open Source</span>
-              <span class="card-badge">Architecture POC</span>
-            </div>
-            <h3 class="card-title">OmniMart Ratings &amp; Reviews API</h3>
-            <p class="card-desc">Production-grade ratings and reviews service in Go. Hexagonal architecture, dual-tier API (public + moderation), cursor pagination, idempotent writes, swappable SQLite / in-memory backends. Built to show how I think about systems design.</p>
-            <div class="card-links">
-              <a href="https://github.com/shubhambakre/omnimart-ratings-reviews" class="card-link" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
-              <a href="https://shubhambakre.github.io/omnimart-ratings-reviews/" class="card-link" target="_blank" rel="noopener noreferrer">Docs ↗</a>
-            </div>
-            <div class="card-tags">
-              <span class="tag">Go</span>
-              <span class="tag">SQLite</span>
-              <span class="tag">REST API</span>
-              <span class="tag">Hexagonal Arch</span>
-            </div>
-          </article>
-
-        </div>
-      </section>
-
-      <!-- ========== EXPERIENCE =============================== -->
-      <section class="section" id="experience">
-        <div class="section-head reveal">
-          <p class="section-label mono">02 &mdash; Experience</p>
-        </div>
-
-        <div class="timeline">
-
-          <article class="tl-item reveal">
-            <div class="tl-left">
-              <p class="tl-period mono">Feb 2026 &mdash; Present</p>
-              <p class="tl-location">Sunnyvale, CA</p>
-            </div>
-            <div class="tl-right">
-              <div class="tl-header">
-                <h3>Senior Software Engineer</h3>
-                <span class="tl-company">Walmart</span>
-              </div>
-              <ul class="tl-list">
-                <li>Leading reviews and ratings pipeline management handling ~50M daily reviews across Walmart's e-commerce platform</li>
-                <li>Building Go API integration layer for high-throughput ingestion, deduplication, and routing of ratings data at scale</li>
-              </ul>
-              <div class="tl-tags">
-                <span class="tag">Go</span><span class="tag">Golang</span><span class="tag">Pipelines</span><span class="tag">APIs</span><span class="tag">Java</span>
-              </div>
-            </div>
-          </article>
-
-          <article class="tl-item reveal">
-            <div class="tl-left">
-              <p class="tl-period mono">Feb 2023 &mdash; Feb 2026</p>
-              <p class="tl-location">Sunnyvale, CA</p>
-            </div>
-            <div class="tl-right">
-              <div class="tl-header">
-                <h3>Software Engineer III · Data</h3>
-                <span class="tl-company">Walmart Global Tech</span>
-              </div>
-              <ul class="tl-list">
-                <li>Shipped a production LLM chatbot (Google Vertex AI + BigQuery) converting business questions to SQL — serving replenishment teams at ~100 queries/day with zero SQL knowledge required</li>
-                <li>Designed a data platform processing 550M SKUs with integrated ML models for inventory forecasting across item-destination supply chains, enabling billions in weekly orders</li>
-                <li>Built scalable Spring Boot API services and data pipelines with Apache Spark, Airflow, and GCP; contributed to AIMS third-party seller fulfillment platform</li>
-              </ul>
-              <div class="tl-tags">
-                <span class="tag">Java</span><span class="tag">Apache Spark</span><span class="tag">Vertex AI</span><span class="tag">BigQuery</span><span class="tag">Python</span><span class="tag">GCP</span>
-              </div>
-            </div>
-          </article>
-
-          <article class="tl-item reveal">
-            <div class="tl-left">
-              <p class="tl-period mono">2022 &mdash; 2023</p>
-              <p class="tl-location">Scottsdale, AZ</p>
-            </div>
-            <div class="tl-right">
-              <div class="tl-header">
-                <h3>Software Engineer II — Big Data</h3>
-                <span class="tl-company">Choice Hotels</span>
-              </div>
-              <ul class="tl-list">
-                <li>Optimized real-time analytics and live data stream processing on AWS (Airflow, EMR, Athena, EC2)</li>
-                <li>Automated legacy system migration, improving data reliability across the analytics platform</li>
-              </ul>
-              <div class="tl-tags">
-                <span class="tag">AWS</span><span class="tag">EMR</span><span class="tag">Athena</span><span class="tag">Airflow</span>
-              </div>
-            </div>
-          </article>
-
-          <article class="tl-item reveal">
-            <div class="tl-left">
-              <p class="tl-period mono">2020 &mdash; 2022</p>
-              <p class="tl-location">Scottsdale, AZ</p>
-            </div>
-            <div class="tl-right">
-              <div class="tl-header">
-                <h3>Software Engineer</h3>
-                <span class="tl-company">Early Warning (Zelle)</span>
-              </div>
-              <ul class="tl-list">
-                <li>Enhanced the Zelle payment backend processing high-value financial transactions using Java Spring Boot, Docker, and REST APIs</li>
-                <li>Supported AWS cloud infrastructure; implemented notification services enabling AI-driven product features</li>
-              </ul>
-              <div class="tl-tags">
-                <span class="tag">Java</span><span class="tag">Spring Boot</span><span class="tag">Docker</span><span class="tag">AWS</span>
-              </div>
-            </div>
-          </article>
-
-          <article class="tl-item reveal">
-            <div class="tl-left">
-              <p class="tl-period mono">2019</p>
-              <p class="tl-location">Phoenix, AZ</p>
-            </div>
-            <div class="tl-right">
-              <div class="tl-header">
-                <h3>Data Science Intern</h3>
-                <span class="tl-company">American Express</span>
-              </div>
-              <ul class="tl-list">
-                <li>Built an end-to-end ML pipeline for credit card offer prediction — feature engineering, model optimization, and automated performance reporting</li>
-              </ul>
-              <div class="tl-tags">
-                <span class="tag">Python</span><span class="tag">Scikit-learn</span><span class="tag">ML Pipeline</span>
-              </div>
-            </div>
-          </article>
-
-        </div>
-      </section>
-
-      <!-- ========== SKILLS =================================== -->
-      <section class="section" id="skills">
-        <div class="section-head reveal">
-          <p class="section-label mono">03 &mdash; Skills</p>
-        </div>
-        <div class="skills-wrap">
-          <div class="skill-group reveal">
-            <h3 class="sg-title">AI &amp; LLM Engineering</h3>
-            <ul class="sg-list">
-              <li>LLM Integration &amp; Prompt Engineering</li>
-              <li>Agent Architectures &amp; Workflows</li>
-              <li>Vector Databases · RAG</li>
-              <li>Knowledge Graphs</li>
-              <li>Google Vertex AI</li>
-              <li>Model Fine-tuning</li>
-              <li>TensorFlow · PyTorch · Scikit-learn</li>
-            </ul>
-          </div>
-          <div class="skill-group reveal">
-            <h3 class="sg-title">Data &amp; Distributed Systems</h3>
-            <ul class="sg-list">
-              <li>Apache Spark · Hadoop</li>
-              <li>Airflow · BigQuery · SQL</li>
-              <li>Streaming &amp; Batch Pipelines</li>
-              <li>ML Model Integration</li>
-              <li>Data Mining</li>
-            </ul>
-          </div>
-          <div class="skill-group reveal">
-            <h3 class="sg-title">Backend Engineering</h3>
-            <ul class="sg-list">
-              <li>Java · Python · Go · Scala</li>
-              <li>Spring Boot · REST APIs</li>
-              <li>Docker</li>
-              <li>PostgreSQL · MySQL · SQLite</li>
-              <li>System Design &amp; API Architecture</li>
-            </ul>
-          </div>
-          <div class="skill-group reveal">
-            <h3 class="sg-title">Cloud &amp; Infrastructure</h3>
-            <ul class="sg-list">
-              <li>GCP (Vertex AI, BigQuery, Airflow)</li>
-              <li>AWS (EC2, EMR, Athena, S3)</li>
-              <li>Linux · Git</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========== ABOUT ==================================== -->
-      <section class="section" id="about">
-        <div class="section-head reveal">
-          <p class="section-label mono">04 &mdash; About</p>
-        </div>
-        <div class="about-wrap">
-          <div class="about-text reveal">
-            <p>I'm a senior software engineer with seven years of experience shipping production systems across fintech, hospitality, and large-scale e-commerce. At Walmart, I own a data platform processing 550 million SKUs and built the team's first production LLM integration — a natural-language query interface that lets business stakeholders ask plain-English questions against BigQuery without writing SQL.</p>
-            <p>My path into AI isn't a pivot. It's a progression. I built ML pipelines at American Express, completed a Udacity Deep Learning Nanodegree covering CNNs, RNNs, and GANs, and hold an MS in Computer Science from Arizona State (GPA 3.7) with coursework in data mining and distributed systems. The last two years at Walmart have been spent integrating LLMs and predictive models directly into production infrastructure.</p>
-            <p>I'm targeting roles where strong systems thinking meets applied AI — teams building LLM platforms, AI-native products, or agent infrastructure where production engineering depth and AI implementation both matter.</p>
-          </div>
-          <div class="about-edu reveal">
-            <div class="edu-row">
-              <div class="edu-icon mono">MS</div>
-              <div>
-                <p class="edu-degree">Computer Science</p>
-                <p class="edu-school">Arizona State University · GPA 3.7</p>
-              </div>
-            </div>
-            <div class="edu-row">
-              <div class="edu-icon mono">BE</div>
-              <div>
-                <p class="edu-degree">Computer Engineering</p>
-                <p class="edu-school">PICT, India · GPA 3.5</p>
-              </div>
-            </div>
-            <div class="edu-row">
-              <div class="edu-icon mono">ND</div>
-              <div>
-                <p class="edu-degree">Deep Learning Nanodegree</p>
-                <p class="edu-school">Udacity · CNNs · RNNs · GANs</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========== CONTACT ================================== -->
-      <section class="section" id="contact">
-        <div class="section-head reveal">
-          <p class="section-label mono">05 &mdash; Contact</p>
-        </div>
-        <div class="contact-wrap reveal">
-          <h2 class="contact-heading">Let's talk about building AI that ships.</h2>
-          <p class="contact-sub">If you're working on LLM platforms, agent infrastructure, or AI-native products and need production engineering depth — I'd like to connect.</p>
-          <p class="contact-sub">Open to senior AI/ML engineering roles at cloud platforms and AI-first companies in the Bay Area.</p>
-          <div class="contact-actions">
-            <a href="mailto:shubhambakre@gmail.com" class="btn-contact">
-              shubhambakre@gmail.com
-            </a>
-            <a href="https://linkedin.com/in/shubhambakre" target="_blank" rel="noopener noreferrer" class="btn-outline">LinkedIn ↗</a>
-          </div>
-        </div>
-      </section>
-
-      <!-- FOOTER -->
-      <footer class="footer">
-        <p class="footer-copy">Shubham Bakre · Bay Area, CA</p>
-        <div class="footer-links">
-          <a href="https://linkedin.com/in/shubhambakre" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-          <a href="https://github.com/shubhambakre" target="_blank" rel="noopener noreferrer">GitHub</a>
-          <a href="assets/resume.pdf" download>Resume</a>
-        </div>
-      </footer>
-
-    </main>
+<!-- HUD -->
+<div id="hud">
+  <div id="hud-left">
+    <div id="hud-avatar">
+      <img src="assets/photo.jpg" alt="SB" onerror="this.style.display='none';this.parentNode.textContent='SB'" />
+    </div>
+    <div>
+      <div id="hud-name">Shubham Bakre</div>
+      <div id="hud-title">Senior Software Engineer · AI</div>
+    </div>
   </div>
+  <div id="hud-right">
+    <a href="https://linkedin.com/in/shubhambakre" target="_blank" rel="noopener" class="hud-link">LinkedIn ↗</a>
+    <a href="https://github.com/shubhambakre" target="_blank" rel="noopener" class="hud-link">GitHub ↗</a>
+    <a href="assets/resume.pdf" download id="resume-btn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Resume
+    </a>
+    <a href="mailto:shubhambakre@gmail.com" id="skip-btn">Classic View</a>
+  </div>
+</div>
 
-  <script src="script.js"></script>
+<!-- Info Card -->
+<div id="card">
+  <button class="close-btn" id="card-close">×</button>
+  <div id="card-tag"></div>
+  <div id="card-title"></div>
+  <div id="card-body"></div>
+  <div class="card-progress">
+    <span id="card-hint">Walk right to continue →</span>
+    <div class="prog-dot" id="d1"></div>
+    <div class="prog-dot" id="d2"></div>
+    <div class="prog-dot" id="d3"></div>
+    <div class="prog-dot" id="d4"></div>
+    <div class="prog-dot" id="d5"></div>
+  </div>
+</div>
+
+<!-- Zone label -->
+<div id="zone-label"></div>
+<div id="hint">← → Move &nbsp;|&nbsp; ↑ Space Jump</div>
+
+<!-- Canvas -->
+<canvas id="c"></canvas>
+
+<!-- Mobile controls -->
+<div id="mctrl">
+  <div class="dpad">
+    <div class="cbtn" data-act="left">◀</div>
+    <div class="cbtn" data-act="right">▶</div>
+  </div>
+  <div class="cbtn" id="jbtn" data-act="jump">▲</div>
+</div>
+
+<script>
+'use strict';
+
+// ══════════════════════════════════════════════════════════
+//  PORTFOLIO DATA
+// ══════════════════════════════════════════════════════════
+const CARDS = [
+  {
+    tag:'01 / 05 · About',
+    title:'Shubham Bakre',
+    body:`
+      <p><strong style="color:#e2e2f5">Senior Software Engineer · AI</strong><br>
+      Walmart · Sunnyvale, CA</p>
+      <p>7+ years shipping production systems across fintech, hospitality, and large-scale e-commerce.
+      Currently building Go APIs handling <strong style="color:#818cf8">50M daily reviews & ratings</strong> at Walmart,
+      and previously shipped a production LLM chatbot over a <strong style="color:#818cf8">550M-SKU inventory dataset</strong>.</p>
+      <p>MS Computer Science, Arizona State University (GPA 3.7).<br>
+      Targeting Senior AI/ML Engineering roles at Google Cloud, Anthropic, OpenAI.</p>
+      <h4>Contact</h4>
+      <p><a href="mailto:shubhambakre@gmail.com">shubhambakre@gmail.com</a> &nbsp;·&nbsp;
+      <a href="https://linkedin.com/in/shubhambakre" target="_blank">LinkedIn</a> &nbsp;·&nbsp;
+      <a href="https://github.com/shubhambakre" target="_blank">GitHub</a></p>
+    `,
+    hint:'Walk right to see projects →',
+    zone:'About Me',
+  },
+  {
+    tag:'02 / 05 · Projects',
+    title:'Selected Work',
+    body:`
+      <h4>Inventory Intelligence Chatbot · Walmart Labs</h4>
+      <p>Production LLM system (Google Vertex AI + BigQuery NL2SQL). Business users query
+      a <strong style="color:#818cf8">550M-SKU</strong> dataset in plain English — zero SQL required.
+      Serving ~100 queries/day in production.</p>
+      <p><span class="tag">Vertex AI</span><span class="tag">NL2SQL</span><span class="tag">BigQuery</span><span class="tag">Java</span><span class="tag">Python</span></p>
+
+      <h4>Ratings & Reviews Pipeline · Walmart</h4>
+      <p>Go API layer handling <strong style="color:#818cf8">50M daily reviews</strong> across Walmart e-commerce.
+      High-throughput ingestion, deduplication, and routing at scale.</p>
+      <p><span class="tag">Go</span><span class="tag">Golang</span><span class="tag">Pipelines</span></p>
+
+      <h4>OmniMart Ratings & Reviews API · Open Source</h4>
+      <p>Production-grade Go service: hexagonal architecture, dual REST APIs, cursor pagination,
+      idempotent writes. <a href="https://github.com/shubhambakre/omnimart-ratings-reviews" target="_blank">GitHub ↗</a></p>
+      <p><span class="tag">Go</span><span class="tag">SQLite</span><span class="tag">REST API</span></p>
+    `,
+    hint:'Walk right to see experience →',
+    zone:'Projects',
+  },
+  {
+    tag:'03 / 05 · Experience',
+    title:'Career Timeline',
+    body:`
+      <h4>Walmart · Feb 2026 – Present</h4>
+      <p><strong style="color:#e2e2f5">Senior Software Engineer</strong><br>
+      Reviews & ratings pipelines · Go API · 50M daily events</p>
+
+      <h4>Walmart Global Tech · Feb 2023 – Feb 2026</h4>
+      <p><strong style="color:#e2e2f5">Software Engineer III · Data</strong><br>
+      LLM chatbot · 550M-SKU replenishment platform · Spark · Airflow · GCP</p>
+
+      <h4>Choice Hotels · Jun 2022 – Feb 2023</h4>
+      <p><strong style="color:#e2e2f5">Software Engineer II · Big Data</strong><br>
+      Live data streams · AWS EMR · Athena · Airflow</p>
+
+      <h4>Early Warning (Zelle) · Feb 2020 – Jun 2022</h4>
+      <p><strong style="color:#e2e2f5">Software Engineer</strong><br>
+      Payment backend · $690B+ in transactions · Java Spring Boot · AWS</p>
+
+      <h4>American Express · Aug–Dec 2019</h4>
+      <p><strong style="color:#e2e2f5">Data Science Intern</strong><br>
+      End-to-end ML pipeline for credit card offer prediction</p>
+    `,
+    hint:'Walk right to see skills →',
+    zone:'Experience',
+  },
+  {
+    tag:'04 / 05 · Skills',
+    title:'Tech Stack',
+    body:`
+      <h4>AI / LLM Engineering</h4>
+      <p><span class="tag">Google Vertex AI</span><span class="tag">Gemini Pro</span><span class="tag">LangChain</span><span class="tag">NL2SQL</span><span class="tag">RAG</span><span class="tag">Vector DBs</span><span class="tag">Prompt Engineering</span></p>
+
+      <h4>Languages</h4>
+      <p><span class="tag">Go</span><span class="tag">Java</span><span class="tag">Python</span><span class="tag">Scala</span></p>
+
+      <h4>Data & Distributed Systems</h4>
+      <p><span class="tag">Apache Spark</span><span class="tag">BigQuery</span><span class="tag">Airflow</span><span class="tag">Hadoop</span><span class="tag">SQL</span></p>
+
+      <h4>Cloud & Infrastructure</h4>
+      <p><span class="tag">GCP</span><span class="tag">AWS</span><span class="tag">Docker</span><span class="tag">Spring Boot</span></p>
+
+      <h4>Education</h4>
+      <p>MS Computer Science · Arizona State University (GPA 3.7)<br>
+      Udacity Deep Learning Nanodegree · CNNs · RNNs · GANs</p>
+    `,
+    hint:'Almost there — walk right →',
+    zone:'Skills',
+  },
+  {
+    tag:"05 / 05 · Let's Connect",
+    title:"Let's Build Something.",
+    body:`
+      <p>If you're working on LLM platforms, agent infrastructure, or AI-native products
+      and need production engineering depth — I'd like to connect.</p>
+      <p>Open to <strong style="color:#818cf8">Senior AI/ML Engineering roles</strong> at cloud platforms
+      and AI-first companies in the Bay Area.</p>
+      <br>
+      <p style="text-align:center">
+        <a href="assets/resume.pdf" download style="
+          display:inline-flex;align-items:center;gap:8px;
+          background:linear-gradient(135deg,#818cf8,#6366f1);
+          color:#fff;padding:11px 24px;border-radius:10px;
+          font-weight:700;font-size:14px;text-decoration:none;
+          box-shadow:0 4px 20px rgba(99,102,241,0.45);
+        ">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Resume
+        </a>
+      </p>
+      <br>
+      <p style="text-align:center">
+        <a href="mailto:shubhambakre@gmail.com" style="color:#818cf8">shubhambakre@gmail.com</a>
+        &nbsp;·&nbsp;
+        <a href="https://linkedin.com/in/shubhambakre" target="_blank" style="color:#818cf8">LinkedIn ↗</a>
+        &nbsp;·&nbsp;
+        <a href="https://github.com/shubhambakre" target="_blank" style="color:#818cf8">GitHub ↗</a>
+      </p>
+    `,
+    hint:'You made it! 🎉',
+    zone:'Contact',
+  },
+];
+
+// ══════════════════════════════════════════════════════════
+//  ENGINE CONSTANTS
+// ══════════════════════════════════════════════════════════
+const GV=0.52, JF=-13, MXF=16, SPD=4.5, TILE=40, HUD_H=52;
+
+// Zone sky colors per card (gradient pairs)
+const ZONE_COLORS=[
+  ['#0a0a2e','#1a1a4e'],   // about — deep night
+  ['#0d1a3e','#1a2d5e'],   // projects — dark blue
+  ['#1a0d2e','#2d1a4e'],   // experience — deep purple
+  ['#0d2e2e','#0d3d3d'],   // skills — dark teal
+  ['#1a1200','#2e1f00'],   // contact — dark gold
+];
+
+// ══════════════════════════════════════════════════════════
+//  INPUT
+// ══════════════════════════════════════════════════════════
+const K={}, TC={left:false,right:false,jump:false};
+window.addEventListener('keydown',e=>{K[e.code]=true;['Space','ArrowUp','ArrowLeft','ArrowRight'].includes(e.code)&&e.preventDefault();});
+window.addEventListener('keyup',e=>{K[e.code]=false;});
+document.querySelectorAll('.cbtn').forEach(b=>{
+  const a=b.dataset.act;
+  b.addEventListener('touchstart',e=>{e.preventDefault();TC[a]=true;},{passive:false});
+  b.addEventListener('touchend',e=>{e.preventDefault();TC[a]=false;},{passive:false});
+});
+const IN={get left(){return K.ArrowLeft||K.KeyA||TC.left;},get right(){return K.ArrowRight||K.KeyD||TC.right;},get jump(){return K.ArrowUp||K.KeyW||K.Space||TC.jump;}};
+
+// ══════════════════════════════════════════════════════════
+//  AUDIO
+// ══════════════════════════════════════════════════════════
+let AC=null;
+function getAC(){if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();return AC;}
+function beep(f,t,d,v=0.2,slide=0){
+  const ac=getAC(),o=ac.createOscillator(),g=ac.createGain();
+  o.connect(g);g.connect(ac.destination);
+  o.type=t;o.frequency.value=f;
+  if(slide)o.frequency.linearRampToValueAtTime(slide,ac.currentTime+d);
+  g.gain.setValueAtTime(v,ac.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+d);
+  o.start();o.stop(ac.currentTime+d);
+}
+const SFX={jump(){beep(350,'square',0.1,0.25,600);},collect(){beep(700,'sine',0.08,0.2);setTimeout(()=>beep(1050,'sine',0.1,0.15),70);},reveal(){beep(440,'sine',0.15,0.3);beep(660,'sine',0.15,0.25);beep(880,'sine',0.2,0.2);}};
+
+// ══════════════════════════════════════════════════════════
+//  PLATFORM
+// ══════════════════════════════════════════════════════════
+class Platform{
+  constructor(x,y,w,h,type='ground',label=''){this.x=x;this.y=y;this.w=w;this.h=h;this.type=type;this.label=label;}
+  draw(ctx,cx,W){
+    const sx=this.x-cx; if(sx+this.w<0||sx>W) return;
+    if(this.type==='ground'){
+      ctx.fillStyle='#3a7a28';ctx.fillRect(sx,this.y,this.w,9);
+      ctx.fillStyle='#7a5020';ctx.fillRect(sx,this.y+9,this.w,this.h-9);
+      ctx.fillStyle='rgba(0,0,0,0.15)';ctx.fillRect(sx,this.y+9,this.w,2);
+    } else if(this.type==='brick'){
+      ctx.fillStyle='#8B4513';ctx.fillRect(sx,this.y,this.w,this.h);
+      ctx.fillStyle='#6B3410';
+      ctx.fillRect(sx,this.y,this.w,3);ctx.fillRect(sx,this.y+this.h-3,this.w,3);
+      for(let i=0;i<Math.ceil(this.w/TILE);i++){
+        ctx.fillRect(sx+i*TILE,this.y,2,this.h);
+      }
+    } else if(this.type==='cloud'){
+      ctx.fillStyle='rgba(180,200,255,0.15)';ctx.fillRect(sx,this.y,this.w,this.h);
+      ctx.fillStyle='rgba(200,220,255,0.3)';ctx.fillRect(sx+2,this.y+2,this.w-4,this.h-6);
+      ctx.strokeStyle='rgba(140,170,255,0.4)';ctx.lineWidth=1;ctx.strokeRect(sx,this.y,this.w,this.h);
+    } else if(this.type==='company'){
+      // Glowing platform
+      const grd=ctx.createLinearGradient(sx,this.y,sx,this.y+this.h);
+      grd.addColorStop(0,'rgba(129,140,248,0.5)');grd.addColorStop(1,'rgba(99,102,241,0.2)');
+      ctx.fillStyle=grd;ctx.fillRect(sx,this.y,this.w,this.h);
+      ctx.fillStyle='rgba(129,140,248,0.6)';ctx.fillRect(sx,this.y,this.w,2);
+      if(this.label){
+        ctx.fillStyle='rgba(129,140,248,0.9)';
+        ctx.font=`bold 11px monospace`;ctx.textAlign='center';
+        ctx.fillText(this.label,sx+this.w/2,this.y-8);
+      }
+    }
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+//  QUESTION BLOCK
+// ══════════════════════════════════════════════════════════
+class QBlock{
+  constructor(x,y,cardIdx){this.x=x;this.y=y;this.w=TILE;this.h=TILE;this.cardIdx=cardIdx;this.hit=false;this.bump=0;this.t=0;}
+  draw(ctx,cx){
+    this.t++;
+    const sx=this.x-cx;
+    const by=this.y-Math.abs(Math.sin(this.bump*0.3))*8;this.bump=Math.max(0,this.bump-1);
+    if(this.hit){
+      ctx.fillStyle='#555'; ctx.fillRect(sx,by,this.w,this.h);
+      ctx.fillStyle='#444'; ctx.fillRect(sx+2,by+2,this.w-4,this.h-4);
+      return;
+    }
+    // Glow
+    ctx.shadowColor='rgba(255,200,0,0.6)';ctx.shadowBlur=14+Math.sin(this.t*0.08)*6;
+    ctx.fillStyle='#C87800';ctx.fillRect(sx,by,this.w,this.h);
+    ctx.fillStyle='#FFAA00';ctx.fillRect(sx+2,by+2,this.w-4,this.h-4);
+    ctx.fillStyle='#FFD000';ctx.fillRect(sx+4,by+4,this.w-8,this.h-8);
+    ctx.shadowBlur=0;
+    // ?
+    ctx.fillStyle='#fff';ctx.font=`bold 20px monospace`;ctx.textAlign='center';
+    ctx.fillText('?',sx+this.w/2,by+this.h-10);
+    // Shine
+    ctx.fillStyle='rgba(255,255,255,0.35)';ctx.fillRect(sx+4,by+4,8,8);
+  }
+  checkHit(player){
+    if(this.hit) return false;
+    // Check if player hits from below
+    const px=player.x,py=player.y,pw=player.w,ph=player.h;
+    const hitsX = px+pw>this.x+4 && px<this.x+this.w-4;
+    const hitsY = py<=this.y+this.h && py>this.y && player.vy<0;
+    if(hitsX&&hitsY){this.hit=true;this.bump=20;return true;}
+    return false;
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+//  SKILL COIN
+// ══════════════════════════════════════════════════════════
+const SKILL_LABELS=['Go','Java','Python','GCP','Spark','BigQuery','Vertex AI','RAG','LangChain','Airflow'];
+class SkillCoin{
+  constructor(x,y,label){this.x=x;this.y=y;this.w=22;this.h=22;this.label=label;this.collected=false;this.t=Math.random()*Math.PI*2;this.flyT=0;}
+  update(){this.t+=0.06;if(this.flyT>0)this.flyT--;}
+  draw(ctx,cx){
+    if(this.collected&&this.flyT<=0) return;
+    const sx=this.x-cx;
+    if(this.collected){
+      ctx.globalAlpha=this.flyT/25;
+      ctx.fillStyle='#FFCC00';
+      ctx.beginPath();ctx.arc(sx+11,this.y-5+(25-this.flyT)*2,9,0,Math.PI*2);ctx.fill();
+      ctx.globalAlpha=1;return;
+    }
+    const bob=Math.sin(this.t)*4;
+    ctx.shadowColor='rgba(255,200,0,0.5)';ctx.shadowBlur=8;
+    ctx.fillStyle='#AA8800';ctx.beginPath();ctx.arc(sx+11,this.y+bob+13,10,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#FFCC00';ctx.beginPath();ctx.arc(sx+11,this.y+bob+11,10,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#FFE844';ctx.beginPath();ctx.arc(sx+9,this.y+bob+9,4,0,Math.PI*2);ctx.fill();
+    ctx.shadowBlur=0;
+    if(this.label){
+      ctx.fillStyle='rgba(255,200,0,0.9)';ctx.font='bold 9px monospace';ctx.textAlign='center';
+      ctx.fillText(this.label,sx+11,this.y+bob-2);
+    }
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+//  PARTICLE
+// ══════════════════════════════════════════════════════════
+class Particle{
+  constructor(x,y,c){this.x=x;this.y=y;this.c=c;this.vx=(Math.random()-0.5)*6;this.vy=Math.random()*-5-2;this.life=40;this.max=40;this.s=3+Math.random()*5;}
+  update(){this.vy+=0.3;this.x+=this.vx;this.y+=this.vy;this.life--;}
+  draw(ctx,cx){ctx.globalAlpha=this.life/this.max;ctx.fillStyle=this.c;ctx.fillRect(this.x-cx,this.y,this.s,this.s);ctx.globalAlpha=1;}
+}
+
+// ══════════════════════════════════════════════════════════
+//  PLAYER
+// ══════════════════════════════════════════════════════════
+class Player{
+  constructor(x,y){
+    this.x=x;this.y=y;this.w=28;this.h=40;
+    this.vx=0;this.vy=0;this.onGround=false;
+    this.facing=1;this.walkF=0;this.stepT=0;
+    this.jumpBuf=0;this.coyote=0;
+    this.moved=false; // track first move for hint
+  }
+  update(plats,qblocks,skillCoins,parts,onBlockHit){
+    if(IN.left){this.vx=-SPD;this.facing=-1;this.moved=true;}
+    else if(IN.right){this.vx=SPD;this.facing=1;this.moved=true;}
+    else this.vx*=0.78;
+    if(IN.jump)this.jumpBuf=9; else if(this.jumpBuf>0)this.jumpBuf--;
+    if(this.onGround)this.coyote=9; else if(this.coyote>0)this.coyote--;
+    if(this.jumpBuf>0&&this.coyote>0){this.vy=JF;this.jumpBuf=0;this.coyote=0;SFX.jump();this.moved=true;}
+    if(!IN.jump&&this.vy<-5)this.vy+=1.4;
+    this.vy=Math.min(this.vy+GV,MXF);
+    this.x+=this.vx; this.onGround=false;
+    for(const p of plats){
+      if(!ov(this,p))continue;
+      if(this.vx>0)this.x=p.x-this.w; else if(this.vx<0)this.x=p.x+p.w; this.vx=0;
+    }
+    this.y+=this.vy;
+    for(const p of plats){
+      if(!ov(this,p))continue;
+      if(this.vy>0){this.y=p.y-this.h;this.vy=0;this.onGround=true;}
+      else{this.y=p.y+p.h;this.vy=0.5;}
+    }
+    // Q blocks
+    for(const b of qblocks){if(b.checkHit(this)){onBlockHit(b.cardIdx);for(let i=0;i<12;i++)parts.push(new Particle(b.x+20,b.y,'#FFCC00'));}}
+    // Skill coins
+    for(const c of skillCoins){if(!c.collected&&ov(this,{x:c.x,y:c.y,w:c.w,h:c.h})){c.collected=true;c.flyT=25;SFX.collect();for(let i=0;i<6;i++)parts.push(new Particle(c.x+11,c.y,'#FFCC00'));}}
+    // Walk anim
+    if(this.onGround&&Math.abs(this.vx)>0.3){this.stepT++;if(this.stepT%7===0)this.walkF=(this.walkF+1)%4;}
+    else if(this.onGround)this.walkF=0;
+  }
+  draw(ctx,cx){
+    const sx=Math.round(this.x-cx),sy=Math.round(this.y);
+    ctx.save();
+    if(this.facing===-1){ctx.translate(sx+this.w/2,0);ctx.scale(-1,1);ctx.translate(-(sx+this.w/2),0);}
+    // Shadow
+    ctx.fillStyle='rgba(0,0,0,0.25)';ctx.beginPath();ctx.ellipse(sx+14,sy+41,11,4,0,0,Math.PI*2);ctx.fill();
+    // Shoes
+    ctx.fillStyle='#1a0a00';
+    const lf=this.onGround?(this.walkF<2?-3:3):0,rf=this.onGround?(this.walkF<2?3:-3):0;
+    ctx.fillRect(sx+lf,sy+34,11,7);ctx.fillRect(sx+17+rf,sy+34,11,7);
+    // Overalls
+    ctx.fillStyle='#1a3a99';ctx.fillRect(sx+2,sy+22,24,14);ctx.fillRect(sx+5,sy+14,18,10);
+    ctx.fillStyle='rgba(255,255,255,0.1)';ctx.fillRect(sx+8,sy+16,12,4);
+    // Shirt
+    ctx.fillStyle='#cc1a1a';ctx.fillRect(sx+1,sy+12,26,12);
+    // Arms
+    ctx.fillStyle='#cc1a1a';ctx.fillRect(sx-4,sy+13,7,10);ctx.fillRect(sx+25,sy+13,7,10);
+    ctx.fillStyle='#fad6ac';ctx.fillRect(sx-4,sy+21,7,5);ctx.fillRect(sx+25,sy+21,7,5);
+    // Head
+    ctx.fillStyle='#fad6ac';ctx.fillRect(sx+4,sy+2,20,13);
+    // Hair
+    ctx.fillStyle='#3a1800';ctx.fillRect(sx+4,sy+2,20,4);ctx.fillRect(sx+4,sy+2,4,8);
+    // Hat
+    ctx.fillStyle='#cc1a1a';ctx.fillRect(sx+2,sy-2,24,7);ctx.fillRect(sx+6,sy-8,16,8);
+    // Eye
+    ctx.fillStyle='#000';ctx.fillRect(sx+17,sy+6,5,5);ctx.fillStyle='#fff';ctx.fillRect(sx+19,sy+7,2,2);
+    // Mustache
+    ctx.fillStyle='#3a1800';ctx.fillRect(sx+8,sy+12,5,3);ctx.fillRect(sx+15,sy+12,7,3);ctx.fillRect(sx+11,sy+13,5,4);
+    ctx.restore();
+  }
+}
+
+function ov(a,b){return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;}
+
+// ══════════════════════════════════════════════════════════
+//  FLAG
+// ══════════════════════════════════════════════════════════
+function drawFlag(ctx,cx,x,gY,t){
+  const sx=x-cx;
+  ctx.fillStyle='rgba(129,140,248,0.6)';ctx.fillRect(sx-3,gY-280,4,280);
+  ctx.fillStyle='rgba(129,140,248,0.9)';
+  ctx.beginPath();ctx.moveTo(sx+1,gY-280);ctx.lineTo(sx+1,gY-220);ctx.lineTo(sx+56,gY-250);ctx.closePath();ctx.fill();
+  // Glow
+  ctx.shadowColor='rgba(129,140,248,0.8)';ctx.shadowBlur=20+Math.sin(t*0.05)*8;
+  ctx.fillStyle='#818cf8';ctx.font='bold 22px monospace';ctx.textAlign='left';
+  ctx.fillText("Let's Connect",sx+10,gY-244);
+  ctx.shadowBlur=0;
+  ctx.fillStyle='rgba(255,255,255,0.2)';ctx.fillRect(sx-14,gY-6,28,8);
+}
+
+// ══════════════════════════════════════════════════════════
+//  BACKGROUND
+// ══════════════════════════════════════════════════════════
+function lerp(a,b,t){return a+(b-a)*t;}
+function lerpColor(c1,c2,t){
+  const r1=parseInt(c1.slice(1,3),16),g1=parseInt(c1.slice(3,5),16),b1=parseInt(c1.slice(5,7),16);
+  const r2=parseInt(c2.slice(1,3),16),g2=parseInt(c2.slice(3,5),16),b2=parseInt(c2.slice(5,7),16);
+  const r=Math.round(lerp(r1,r2,t)).toString(16).padStart(2,'0');
+  const g=Math.round(lerp(g1,g2,t)).toString(16).padStart(2,'0');
+  const b=Math.round(lerp(b1,b2,t)).toString(16).padStart(2,'0');
+  return `#${r}${g}${b}`;
+}
+
+const STARS=Array.from({length:80},(_,i)=>({x:i*137.5%6000,y:Math.random()*300,s:Math.random()<0.15?2:1}));
+const CLOUDS=[
+  {x:300,y:90,w:160,h:55},{x:900,y:65,w:200,h:65},{x:1500,y:80,w:140,h:50},
+  {x:2300,y:70,w:180,h:60},{x:3100,y:85,w:150,h:55},{x:3900,y:60,w:200,h:65},
+  {x:4700,y:75,w:160,h:50},{x:5400,y:90,w:140,h:55},
+];
+
+function drawCloud(ctx,x,y,w,h,alpha=0.18){
+  ctx.fillStyle=`rgba(255,255,255,${alpha})`;
+  ctx.beginPath();ctx.arc(x+w*.3,y+h*.55,h*.42,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(x+w*.5,y+h*.38,h*.5,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(x+w*.7,y+h*.55,h*.36,0,Math.PI*2);ctx.fill();
+  ctx.fillRect(x+w*.18,y+h*.5,w*.64,h*.5);
+}
+
+function drawBG(ctx,cx,W,H,zoneT,zoneIdx){
+  const zi=Math.floor(zoneIdx),zt=zoneT-zi;
+  const ci=Math.min(zi,ZONE_COLORS.length-1),cn=Math.min(zi+1,ZONE_COLORS.length-1);
+  const c1=lerpColor(ZONE_COLORS[ci][0],ZONE_COLORS[cn][0],zt);
+  const c2=lerpColor(ZONE_COLORS[ci][1],ZONE_COLORS[cn][1],zt);
+  const grad=ctx.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0,c1);grad.addColorStop(1,c2);
+  ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+  // Stars (more visible in dark zones)
+  for(const s of STARS){
+    const sx=((s.x-cx*0.1)%W+W)%W;
+    ctx.fillStyle=`rgba(255,255,255,${0.4+0.4*Math.sin(Date.now()*0.001+s.x)})`;
+    ctx.fillRect(sx,s.y,s.s,s.s);
+  }
+  // Clouds
+  for(const c of CLOUDS){
+    const ccx=c.x-cx*0.2;
+    const wrapped=((ccx%(W+300))+(W+300))%(W+300)-150;
+    drawCloud(ctx,wrapped,c.y,c.w,c.h,0.12);
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+//  LEVEL BUILDER
+// ══════════════════════════════════════════════════════════
+function buildLevel(H){
+  const gY=H-80-HUD_H;
+  const plats=[],qblocks=[],skillCoins=[];
+  const LW=6000;
+
+  // ── Ground sections ──
+  [[0,1400],[1540,2600],[2740,3800],[3940,5200],[5340,LW]].forEach(([a,b])=>{
+    plats.push(new Platform(a,gY,b-a,80,'ground'));
+  });
+
+  // ── Zone 0: About (0-1200) ──
+  // Some gentle intro platforms
+  plats.push(new Platform(200,gY-120,120,'brick','brick'));
+  plats.push(new Platform(500,gY-180,120,'brick','brick'));
+  plats.push(new Platform(800,gY-120,120,'brick','brick'));
+
+  // ── Zone 1: Projects (1400-2600) ──
+  // Q blocks for projects card
+  qblocks.push(new QBlock(1620,gY-180,1));
+  plats.push(new Platform(1560,gY-80,200,'brick','brick'));
+  plats.push(new Platform(1900,gY-160,160,'cloud','cloud'));
+  plats.push(new Platform(2200,gY-100,200,'brick','brick'));
+
+  // ── Zone 2: Experience (2600-3800) ──
+  // Q block for experience card
+  qblocks.push(new QBlock(2900,gY-200,2));
+  // Company platforms with labels
+  const companies=[
+    [2800,gY-120,220,'Walmart'],
+    [3100,gY-80,180,'Choice Hotels'],
+    [3340,gY-150,160,'Zelle'],
+    [3560,gY-100,160,'Amex'],
+  ];
+  companies.forEach(([x,y,w,l])=>plats.push(new Platform(x,y,w,20,'company',l)));
+
+  // ── Zone 3: Skills (3800-5200) ──
+  // Q block for skills card
+  qblocks.push(new QBlock(4100,gY-200,3));
+  // Skill coins in arc
+  SKILL_LABELS.forEach((label,i)=>{
+    const angle=-Math.PI+i*(Math.PI/SKILL_LABELS.length*1.5);
+    const x=4300+i*110;
+    const y=gY-120-Math.abs(Math.sin(i*0.6))*120;
+    skillCoins.push(new SkillCoin(x,y,label));
+  });
+  plats.push(new Platform(4000,gY-120,200,'brick','brick'));
+  plats.push(new Platform(4300,gY-180,120,'cloud','cloud'));
+  plats.push(new Platform(4500,gY-100,200,'brick','brick'));
+  plats.push(new Platform(4800,gY-160,160,'brick','brick'));
+
+  // ── Zone 4: Contact (5200+) ──
+  // Final approach
+  plats.push(new Platform(5400,gY-100,240,'company','Reach the flag!'));
+  plats.push(new Platform(5700,gY-160,200,'company',''));
+
+  const FLAG_X=5850;
+  return{plats,qblocks,skillCoins,gY,LW,FLAG_X};
+}
+
+// ══════════════════════════════════════════════════════════
+//  CARD SYSTEM
+// ══════════════════════════════════════════════════════════
+const cardEl=document.getElementById('card');
+const cardTag=document.getElementById('card-tag');
+const cardTitle=document.getElementById('card-title');
+const cardBody=document.getElementById('card-body');
+const cardHint=document.getElementById('card-hint');
+const dots=[1,2,3,4,5].map(i=>document.getElementById('d'+i));
+let cardOpen=false,currentCard=-1;
+
+function showCard(idx){
+  if(idx>=CARDS.length||idx<0) return;
+  SFX.reveal();
+  const c=CARDS[idx];
+  cardTag.textContent=c.tag;
+  cardTitle.textContent=c.title;
+  cardBody.innerHTML=c.body;
+  cardHint.textContent=c.hint;
+  dots.forEach((d,i)=>d.className='prog-dot'+(i<=idx?' active':''));
+  document.getElementById('card-title').style.display = idx===0?'none':'block';
+  if(idx===0)cardTag.style.fontSize='15px';else cardTag.style.fontSize='';
+  cardEl.classList.add('show');
+  cardOpen=true; currentCard=idx;
+  showZone(CARDS[idx].zone);
+  // Show hud title after about card
+  if(idx>=0) document.getElementById('hud-title').style.display='block';
+}
+function hideCard(){cardEl.classList.remove('show');cardOpen=false;}
+document.getElementById('card-close').addEventListener('click',hideCard);
+window.addEventListener('keydown',e=>{if(e.code==='Escape'||e.code==='KeyE')hideCard();});
+
+const zoneLabel=document.getElementById('zone-label');
+let zLT=null;
+function showZone(name){
+  zoneLabel.textContent=name;
+  zoneLabel.classList.add('show');
+  if(zLT)clearTimeout(zLT);
+  zLT=setTimeout(()=>zoneLabel.classList.remove('show'),2500);
+}
+
+// Dismiss hint after first move
+const hintEl=document.getElementById('hint');
+let hintGone=false;
+function dismissHint(){if(!hintGone){hintGone=true;hintEl.style.opacity='0';}}
+
+// ══════════════════════════════════════════════════════════
+//  TITLE SCREEN
+// ══════════════════════════════════════════════════════════
+function drawTitleScreen(ctx,W,H,t){
+  ctx.fillStyle='#0a0a1a';ctx.fillRect(0,HUD_H,W,H-HUD_H);
+  for(const s of STARS){ctx.fillStyle=`rgba(255,255,255,${0.3+0.3*Math.sin(t*0.02+s.x)})`;ctx.fillRect(s.x%W,s.y+HUD_H,s.s,s.s);}
+  // Title
+  ctx.textAlign='center';
+  ctx.shadowColor='rgba(129,140,248,0.8)';ctx.shadowBlur=30;
+  ctx.fillStyle='#818cf8';ctx.font=`bold ${Math.min(60,W/10)}px monospace`;
+  ctx.fillText('SHUBHAM BAKRE',W/2,H*.38);
+  ctx.shadowBlur=0;
+  ctx.fillStyle='rgba(226,226,245,0.7)';ctx.font=`${Math.min(18,W/34)}px monospace`;
+  ctx.fillText('Senior Software Engineer · AI · Walmart',W/2,H*.38+50);
+  // Blinking start
+  if(Math.floor(t/28)%2===0){
+    ctx.fillStyle='#FFCC00';ctx.font=`bold ${Math.min(18,W/38)}px monospace`;
+    ctx.fillText(W<768?'TAP ▲ TO START':'PRESS  SPACE  TO  START',W/2,H*.62);
+  }
+  ctx.fillStyle='rgba(226,226,245,0.25)';ctx.font=`12px monospace`;
+  ctx.fillText('Walk right through 5 zones to explore my full profile',W/2,H*.62+32);
+}
+
+// ══════════════════════════════════════════════════════════
+//  MAIN
+// ══════════════════════════════════════════════════════════
+const canvas=document.getElementById('c');
+const ctx=canvas.getContext('2d');
+let W,H;
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;canvas.style.marginTop=HUD_H+'px';canvas.height=H-HUD_H;H=canvas.height;}
+resize();
+window.addEventListener('resize',resize);
+
+let state='title',t=0;
+let player,plats,qblocks,skillCoins,parts,camX,gY,LW,FLAG_X;
+let zoneIdx=0,zoneFrac=0; // for sky color lerp
+let triggeredFlag=false;
+
+// Zone trigger X positions (where card auto-shows for zone 0)
+const ZONE_TRIGGERS=[
+  {x:80,cardIdx:0,done:false},   // About — at spawn
+];
+
+function init(){
+  const lv=buildLevel(H);
+  plats=lv.plats;qblocks=lv.qblocks;skillCoins=lv.skillCoins;
+  gY=lv.gY;LW=lv.LW;FLAG_X=lv.FLAG_X;
+  player=new Player(80,gY-80);
+  parts=[];camX=0;triggeredFlag=false;
+  ZONE_TRIGGERS.forEach(z=>z.done=false);
+  // Auto-show about card after short delay
+  setTimeout(()=>showCard(0),600);
+}
+
+function tick(){
+  t++;
+  if(state==='title'){if(IN.jump||IN.right){state='play';init();}return;}
+  if(state!=='play') return;
+
+  player.update(plats,qblocks,skillCoins,parts,(cardIdx)=>{showCard(cardIdx);});
+  skillCoins.forEach(c=>c.update());
+  parts=parts.filter(p=>{p.update();return p.life>0;});
+
+  if(player.moved) dismissHint();
+
+  // Zone triggers
+  for(const z of ZONE_TRIGGERS){
+    if(!z.done&&player.x>z.x){z.done=true;showCard(z.cardIdx);}
+  }
+
+  // Flag trigger
+  if(!triggeredFlag&&player.x>FLAG_X-100){
+    triggeredFlag=true;showCard(4);
+  }
+
+  // Camera
+  const targetCam=player.x-W*0.3;
+  camX+=(targetCam-camX)*0.12;
+  camX=Math.max(0,Math.min(camX,LW-W));
+
+  // Zone color tracking based on camera position
+  const zoneWidth=LW/ZONE_COLORS.length;
+  zoneIdx=camX/zoneWidth;
+
+  // Death (fell off)
+  if(player.y>H+100){
+    player=new Player(Math.max(80,player.x-200),gY-80);
+    camX=Math.max(0,player.x-W*0.3);
+  }
+}
+
+function render(){
+  ctx.clearRect(0,0,W,H);
+  if(state==='title'){drawTitleScreen(ctx,W,H,t);return;}
+
+  drawBG(ctx,camX,W,H,zoneIdx,zoneIdx);
+
+  // Ground line
+  ctx.fillStyle='rgba(0,0,0,0.3)';ctx.fillRect(0,gY+80,W,H-gY-80);
+
+  plats.forEach(p=>p.draw(ctx,camX,W));
+  qblocks.forEach(b=>b.draw(ctx,camX));
+  skillCoins.forEach(c=>c.draw(ctx,camX));
+  parts.forEach(p=>p.draw(ctx,camX));
+  drawFlag(ctx,camX,FLAG_X,gY,t);
+  player.draw(ctx,camX);
+
+  // Zone name in world space (ambient)
+  const zoneNames=[
+    {x:400,name:'About Me',col:'rgba(226,226,245,0.12)'},
+    {x:1800,name:'Projects',col:'rgba(226,226,245,0.12)'},
+    {x:3000,name:'Experience',col:'rgba(226,226,245,0.12)'},
+    {x:4200,name:'Skills',col:'rgba(226,226,245,0.12)'},
+    {x:5500,name:"Let's Connect",col:'rgba(129,140,248,0.2)'},
+  ];
+  ctx.textAlign='center';
+  for(const z of zoneNames){
+    const sx=z.x-camX;
+    if(sx<-200||sx>W+200) continue;
+    ctx.fillStyle=z.col;ctx.font=`bold ${Math.min(64,W/8)}px monospace`;
+    ctx.fillText(z.name,sx,gY-10);
+  }
+}
+
+function loop(){tick();render();requestAnimationFrame(loop);}
+loop();
+</script>
 </body>
 </html>
