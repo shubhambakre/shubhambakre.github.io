@@ -162,7 +162,7 @@
               <h2 class="card-title">Inventory Intelligence Chatbot</h2>
               <p class="card-desc">Built a natural-language interface over Walmart's inventory database using Google Vertex AI. The system converts plain-English business questions into optimized BigQuery SQL — enabling replenishment teams to interrogate a 550M-SKU dataset without writing SQL. Deployed internally, serving business users daily.</p>
               <div class="card-foot">
-                <span class="card-note">Internal system · not open source</span>
+                <span class="card-note">Internal system &nbsp;·&nbsp; <a href="https://github.com/shubhambakre/bq-genai-poc" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">Public POC on GitHub ↗</a></span>
                 <div class="card-tags">
                   <span class="tag">Google Vertex AI</span>
                   <span class="tag">NL2SQL</span>
@@ -210,17 +210,57 @@
 
           <article class="card reveal" data-card>
             <div class="card-meta">
-              <span class="card-org">Personal Research</span>
-              <span class="card-badge">Prototype · 2024</span>
+              <span class="card-org">Open Source</span>
+              <span class="card-badge">RAG Pipeline</span>
             </div>
-            <h3 class="card-title">AI Developer Assistant</h3>
-            <p class="card-desc">A prototype combining LLM prompt engineering, vector database retrieval, and knowledge graphs for context-aware code suggestions and debugging. Explores RAG patterns and agent architectures.</p>
+            <h3 class="card-title">Vertex AI RAG Pipeline</h3>
+            <p class="card-desc">End-to-end Retrieval-Augmented Generation on GCP. Documents are chunked and embedded via Vertex AI text-embedding-004, stored in BigQuery Vector Search with an IVF index, retrieved by cosine similarity, and answered by Gemini 1.5 Pro — all without a separate vector database.</p>
+            <div class="card-links">
+              <a href="https://github.com/shubhambakre/vertex-ai-rag-pipeline" class="card-link" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+            </div>
             <div class="card-tags">
-              <span class="tag">LLM</span>
-              <span class="tag">Vector DB</span>
-              <span class="tag">Knowledge Graph</span>
+              <span class="tag">Vertex AI</span>
+              <span class="tag">BigQuery Vector Search</span>
+              <span class="tag">Gemini 1.5 Pro</span>
               <span class="tag">RAG</span>
               <span class="tag">Python</span>
+            </div>
+          </article>
+
+          <article class="card reveal" data-card>
+            <div class="card-meta">
+              <span class="card-org">Open Source</span>
+              <span class="card-badge">LLM Infrastructure</span>
+            </div>
+            <h3 class="card-title">Go LLM Gateway</h3>
+            <p class="card-desc">Production API gateway for LLM requests written in Go. Token-bucket rate limiting, per-model cost tracking, structured JSON request/response logging, and automatic model failover. OpenAI-compatible — drop-in proxy for any LLM provider.</p>
+            <div class="card-links">
+              <a href="https://github.com/shubhambakre/go-llm-gateway" class="card-link" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+            </div>
+            <div class="card-tags">
+              <span class="tag">Go</span>
+              <span class="tag">LLM Infrastructure</span>
+              <span class="tag">Rate Limiting</span>
+              <span class="tag">Cost Tracking</span>
+            </div>
+          </article>
+
+          <article class="card reveal" data-card>
+            <div class="card-meta">
+              <span class="card-org">Open Source</span>
+              <span class="card-badge">LLM Evaluation</span>
+            </div>
+            <h3 class="card-title">LLM Eval Harness</h3>
+            <p class="card-desc">Python evaluation framework for LLM outputs. Measures faithfulness (is the answer grounded in context?), correctness, and hallucination rate using the LLM-as-judge pattern. Batch evaluation over datasets with JSON/CSV export and summary scoring.</p>
+            <div class="card-links">
+              <a href="https://github.com/shubhambakre/llm-eval-harness" class="card-link" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+            </div>
+            <div class="card-tags">
+              <span class="tag">Python</span>
+              <span class="tag">LLM Evaluation</span>
+              <span class="tag">LLM-as-Judge</span>
+              <span class="tag">Faithfulness</span>
+              <span class="tag">Gemini Pro</span>
             </div>
           </article>
 
