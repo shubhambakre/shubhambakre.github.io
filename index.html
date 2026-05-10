@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
@@ -33,132 +33,143 @@
   </script>
 
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    html,body{width:100%;height:100%;overflow:hidden;background:#0a0a1a;font-family:'Segoe UI',system-ui,sans-serif;}
-    canvas{display:block;image-rendering:pixelated;}
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html, body { width:100%; height:100%; overflow:hidden; background:#07080f; font-family:'Segoe UI',system-ui,-apple-system,sans-serif; -webkit-font-smoothing:antialiased; }
+    canvas { display:block; position:fixed; top:0; left:0; width:100%; height:100%; }
 
-    /* ── HUD ─────────────────────────────────────── */
-    #hud{
-      position:fixed;top:0;left:0;right:0;height:52px;
-      background:rgba(10,10,26,0.92);backdrop-filter:blur(8px);
-      border-bottom:1px solid rgba(129,140,248,0.2);
-      display:flex;align-items:center;justify-content:space-between;
-      padding:0 18px;z-index:100;gap:12px;
+    /* ── HUD: floating, no border, gradient fade ── */
+    #hud {
+      position:fixed; top:0; left:0; right:0; height:60px;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 28px; z-index:300;
+      background:linear-gradient(180deg,rgba(7,8,15,0.88) 0%,rgba(7,8,15,0) 100%);
+      pointer-events:none;
     }
-    #hud-left{display:flex;align-items:center;gap:14px;}
-    #hud-avatar{
-      width:34px;height:34px;border-radius:50%;
-      background:linear-gradient(135deg,#818cf8,#6366f1);
-      display:flex;align-items:center;justify-content:center;
-      font-size:13px;font-weight:700;color:#fff;flex-shrink:0;
-      overflow:hidden;border:2px solid rgba(129,140,248,0.5);
+    #hud > * { pointer-events:auto; }
+    #hud-left { display:flex; align-items:center; gap:12px; }
+    #hud-avatar {
+      width:34px; height:34px; border-radius:50%; flex-shrink:0;
+      overflow:hidden; border:1.5px solid rgba(255,255,255,0.15);
+      background:linear-gradient(135deg,#e8657a,#c084fc);
+      display:flex; align-items:center; justify-content:center;
+      font-size:12px; font-weight:700; color:#fff; letter-spacing:0;
     }
-    #hud-avatar img{width:100%;height:100%;object-fit:cover;}
-    #hud-name{color:#e2e2f5;font-size:15px;font-weight:600;white-space:nowrap;}
-    #hud-title{color:#818cf8;font-size:12px;white-space:nowrap;display:none;}
-    #hud-right{display:flex;align-items:center;gap:10px;}
-    .hud-link{
-      color:rgba(226,226,245,0.6);font-size:12px;text-decoration:none;
-      padding:4px 8px;border-radius:6px;transition:color .2s;white-space:nowrap;
+    #hud-avatar img { width:100%; height:100%; object-fit:cover; display:block; }
+    #hud-meta { display:flex; flex-direction:column; gap:2px; }
+    #hud-name { color:rgba(255,255,255,0.90); font-size:13.5px; font-weight:600; line-height:1; }
+    #hud-role { color:rgba(255,255,255,0.30); font-size:10px; letter-spacing:.1em; text-transform:uppercase; line-height:1; }
+    #hud-right { display:flex; align-items:center; gap:20px; }
+    .hud-link {
+      color:rgba(255,255,255,0.35); font-size:11.5px; text-decoration:none;
+      letter-spacing:.04em; transition:color .25s;
     }
-    .hud-link:hover{color:#818cf8;}
-    #resume-btn{
-      background:linear-gradient(135deg,#818cf8,#6366f1);
-      color:#fff;border:none;padding:7px 16px;border-radius:8px;
-      font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;
-      display:flex;align-items:center;gap:6px;white-space:nowrap;
-      box-shadow:0 2px 12px rgba(99,102,241,0.4);transition:opacity .2s;
+    .hud-link:hover { color:rgba(255,255,255,0.80); }
+    #resume-btn {
+      font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+      color:rgba(255,255,255,0.75); text-decoration:none;
+      padding:7px 18px; border-radius:20px;
+      border:1px solid rgba(255,255,255,0.18);
+      background:rgba(255,255,255,0.06);
+      transition:background .22s, border-color .22s, color .22s;
+      display:flex; align-items:center; gap:7px;
     }
-    #resume-btn:hover{opacity:0.88;}
-    #skip-btn{
-      color:rgba(226,226,245,0.4);font-size:11px;text-decoration:none;
-      border:1px solid rgba(226,226,245,0.15);padding:4px 10px;border-radius:6px;
-      white-space:nowrap;transition:color .2s,border-color .2s;
-    }
-    #skip-btn:hover{color:#e2e2f5;border-color:rgba(226,226,245,0.35);}
+    #resume-btn:hover { background:rgba(255,255,255,0.13); border-color:rgba(255,255,255,0.35); color:#fff; }
 
-    /* ── INFO CARD ───────────────────────────────── */
-    #card{
-      position:fixed;z-index:200;
-      top:50%;right:28px;transform:translateY(-50%) translateX(120%);
-      width:min(380px,calc(100vw - 40px));
-      background:rgba(13,13,26,0.97);border:1px solid rgba(129,140,248,0.3);
-      border-radius:16px;padding:24px;
-      box-shadow:0 8px 40px rgba(0,0,0,0.6),0 0 0 1px rgba(129,140,248,0.1);
-      transition:transform .45s cubic-bezier(.22,1,.36,1);
-      max-height:calc(100vh - 80px);overflow-y:auto;
+    /* ── OVERLAY: centered reveal, no card feel ── */
+    #overlay {
+      position:fixed; inset:0; z-index:200;
+      display:flex; align-items:center; justify-content:center;
+      background:rgba(7,8,15,0);
+      transition:background .55s cubic-bezier(.4,0,.2,1);
+      pointer-events:none;
     }
-    #card.show{transform:translateY(-50%) translateX(0);}
-    #card-tag{
-      font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
-      color:#818cf8;margin-bottom:10px;
+    #overlay.visible {
+      background:rgba(7,8,15,0.78);
+      pointer-events:auto;
+      backdrop-filter:blur(2px);
+      -webkit-backdrop-filter:blur(2px);
     }
-    #card-title{font-size:20px;font-weight:700;color:#e2e2f5;margin-bottom:14px;line-height:1.3;}
-    #card-body{font-size:13.5px;color:#a0a0c0;line-height:1.65;}
-    #card-body h4{color:#818cf8;font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin:14px 0 6px;}
-    #card-body p{margin-bottom:8px;}
-    #card-body ul{padding-left:16px;margin-bottom:8px;}
-    #card-body ul li{margin-bottom:4px;}
-    #card-body a{color:#818cf8;text-decoration:none;}
-    #card-body a:hover{text-decoration:underline;}
-    #card-body .tag{
-      display:inline-block;background:rgba(99,102,241,0.15);color:#818cf8;
-      border:1px solid rgba(99,102,241,0.25);border-radius:4px;
-      font-size:11px;padding:2px 8px;margin:2px;
+    #ov-inner {
+      max-width:500px; width:calc(100% - 48px);
+      text-align:center;
+      opacity:0; transform:translateY(20px);
+      transition:opacity .5s cubic-bezier(.4,0,.2,1) .08s, transform .5s cubic-bezier(.4,0,.2,1) .08s;
     }
-    .close-btn{
-      position:absolute;top:14px;right:14px;background:none;border:none;
-      color:rgba(226,226,245,0.4);font-size:20px;cursor:pointer;
-      width:28px;height:28px;border-radius:50%;
-      display:flex;align-items:center;justify-content:center;
-      transition:color .2s,background .2s;
+    #overlay.visible #ov-inner { opacity:1; transform:translateY(0); }
+    #ov-label {
+      font-size:9.5px; font-weight:700; letter-spacing:.22em; text-transform:uppercase;
+      color:var(--ac); margin-bottom:20px; opacity:.8;
     }
-    .close-btn:hover{color:#e2e2f5;background:rgba(255,255,255,0.08);}
-    .card-progress{
-      display:flex;gap:6px;margin-top:18px;padding-top:14px;
-      border-top:1px solid rgba(255,255,255,0.06);align-items:center;
+    #ov-title {
+      font-size:clamp(28px,5vw,42px); font-weight:300;
+      color:#fff; line-height:1.1; margin-bottom:22px;
+      letter-spacing:-.025em;
     }
-    .card-progress span{font-size:11px;color:rgba(226,226,245,0.35);margin-right:auto;}
-    .prog-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.15);}
-    .prog-dot.active{background:#818cf8;}
+    #ov-body {
+      font-size:13.5px; color:rgba(255,255,255,0.52);
+      line-height:1.78; margin-bottom:32px;
+    }
+    #ov-body h4 {
+      font-size:9px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+      color:var(--ac); margin:20px 0 7px; opacity:.75;
+    }
+    #ov-body p { margin-bottom:6px; }
+    #ov-body strong { color:rgba(255,255,255,0.80); font-weight:500; }
+    #ov-body a { color:var(--ac); text-decoration:none; opacity:.9; }
+    #ov-body a:hover { opacity:1; }
+    #ov-body ul { list-style:none; padding:0; }
+    #ov-body li { padding:2px 0; }
+    #ov-body li::before { content:'— '; color:var(--ac); opacity:.5; }
+    #ov-continue {
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+      color:rgba(255,255,255,0.28); cursor:pointer;
+      background:none; border:none; padding:10px 20px;
+      transition:color .22s;
+    }
+    #ov-continue:hover { color:rgba(255,255,255,0.65); }
+    #ov-continue span { display:inline-block; transition:transform .2s; }
+    #ov-continue:hover span { transform:translateX(4px); }
 
-    /* ── ZONE LABEL ──────────────────────────────── */
-    #zone-label{
-      position:fixed;bottom:76px;left:50%;transform:translateX(-50%);
-      background:rgba(129,140,248,0.15);border:1px solid rgba(129,140,248,0.3);
-      color:#818cf8;font-size:12px;font-weight:600;letter-spacing:.12em;
-      text-transform:uppercase;padding:6px 16px;border-radius:20px;
-      opacity:0;transition:opacity .5s;pointer-events:none;
-      backdrop-filter:blur(6px);
+    /* ── PROGRESS DOTS ── */
+    #progress {
+      position:fixed; bottom:32px; left:50%; transform:translateX(-50%);
+      display:flex; gap:10px; z-index:300; align-items:center;
     }
-    #zone-label.show{opacity:1;}
+    .pdot {
+      width:5px; height:5px; border-radius:50%;
+      background:rgba(255,255,255,0.15);
+      transition:background .4s, transform .3s, width .3s;
+    }
+    .pdot.done { background:rgba(255,255,255,0.35); }
+    .pdot.active { background:var(--ac); transform:scale(1.6); }
 
-    /* ── MOBILE CONTROLS ─────────────────────────── */
-    #mctrl{
-      position:fixed;bottom:0;left:0;right:0;
-      display:flex;justify-content:space-between;align-items:flex-end;
-      padding:12px 16px 14px;pointer-events:none;z-index:150;
+    /* ── ARROW HINT ── */
+    #arrow-hint {
+      position:fixed; bottom:60px; left:50%; transform:translateX(-50%);
+      font-size:10px; letter-spacing:.16em; text-transform:uppercase;
+      color:rgba(255,255,255,0.18); z-index:300;
+      transition:opacity 1.2s; pointer-events:none; white-space:nowrap;
     }
-    .dpad{display:flex;gap:8px;pointer-events:all;}
-    .cbtn{
-      width:58px;height:58px;border-radius:12px;
-      background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.22);
-      color:rgba(255,255,255,0.8);font-size:20px;
-      display:flex;align-items:center;justify-content:center;
-      user-select:none;-webkit-user-select:none;touch-action:none;cursor:pointer;
-    }
-    #jbtn{
-      width:66px;height:66px;border-radius:50%;pointer-events:all;
-      background:rgba(99,102,241,0.3);border:2px solid rgba(129,140,248,0.5);
-    }
-    @media(min-width:768px){#mctrl{display:none;}}
 
-    /* ── HINT ────────────────────────────────────── */
-    #hint{
-      position:fixed;bottom:76px;left:50%;transform:translateX(-50%);
-      color:rgba(226,226,245,0.45);font-size:12px;text-align:center;
-      pointer-events:none;transition:opacity .5s;white-space:nowrap;
+    /* ── MOBILE CONTROLS ── */
+    #mctrl {
+      position:fixed; bottom:20px; left:16px; right:16px;
+      display:flex; justify-content:space-between; align-items:flex-end;
+      z-index:300; pointer-events:none;
     }
+    .cbtn {
+      width:54px; height:54px; border-radius:50%;
+      background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.10);
+      color:rgba(255,255,255,0.40); font-size:20px;
+      display:flex; align-items:center; justify-content:center;
+      pointer-events:auto; user-select:none; cursor:pointer;
+      -webkit-tap-highlight-color:transparent;
+      transition:background .12s;
+    }
+    .cbtn:active { background:rgba(255,255,255,0.14); }
+    #mctrl-left { display:flex; gap:10px; }
+    @media (min-width:768px) { #mctrl { display:none; } #arrow-hint { bottom:32px; } }
   </style>
 </head>
 <body>
@@ -167,704 +178,633 @@
 <div id="hud">
   <div id="hud-left">
     <div id="hud-avatar">
-      <img src="assets/photo.jpg" alt="SB" onerror="this.style.display='none';this.parentNode.textContent='SB'" />
+      <img src="assets/photo.jpg" alt="SB" onerror="this.parentNode.innerHTML='SB'">
     </div>
-    <div>
+    <div id="hud-meta">
       <div id="hud-name">Shubham Bakre</div>
-      <div id="hud-title">Senior Software Engineer · AI</div>
+      <div id="hud-role">Senior Software Engineer · AI</div>
     </div>
   </div>
   <div id="hud-right">
-    <a href="https://linkedin.com/in/shubhambakre" target="_blank" rel="noopener" class="hud-link">LinkedIn ↗</a>
-    <a href="https://github.com/shubhambakre" target="_blank" rel="noopener" class="hud-link">GitHub ↗</a>
+    <a href="https://linkedin.com/in/shubhambakre" target="_blank" rel="noopener" class="hud-link">LinkedIn</a>
+    <a href="https://github.com/shubhambakre" target="_blank" rel="noopener" class="hud-link">GitHub</a>
     <a href="assets/resume.pdf" download id="resume-btn">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Resume
     </a>
-    <a href="https://github.com/shubhambakre" target="_blank" rel="noopener" id="skip-btn">GitHub Profile ↗</a>
   </div>
 </div>
 
-<!-- Info Card -->
-<div id="card">
-  <button class="close-btn" id="card-close">×</button>
-  <div id="card-tag"></div>
-  <div id="card-title"></div>
-  <div id="card-body"></div>
-  <div class="card-progress">
-    <span id="card-hint">Walk right to continue →</span>
-    <div class="prog-dot" id="d1"></div>
-    <div class="prog-dot" id="d2"></div>
-    <div class="prog-dot" id="d3"></div>
-    <div class="prog-dot" id="d4"></div>
-    <div class="prog-dot" id="d5"></div>
+<!-- Info Overlay -->
+<div id="overlay">
+  <div id="ov-inner">
+    <div id="ov-label"></div>
+    <div id="ov-title"></div>
+    <div id="ov-body"></div>
+    <button id="ov-continue">Continue <span>→</span></button>
   </div>
 </div>
 
-<!-- Zone label -->
-<div id="zone-label"></div>
-<div id="hint">← → Move &nbsp;|&nbsp; ↑ Space Jump</div>
+<!-- Progress dots -->
+<div id="progress">
+  <div class="pdot" id="pd0"></div>
+  <div class="pdot" id="pd1"></div>
+  <div class="pdot" id="pd2"></div>
+  <div class="pdot" id="pd3"></div>
+  <div class="pdot" id="pd4"></div>
+</div>
 
-<!-- Canvas -->
-<canvas id="c"></canvas>
+<!-- Arrow hint -->
+<div id="arrow-hint">walk right →</div>
 
 <!-- Mobile controls -->
 <div id="mctrl">
-  <div class="dpad">
-    <div class="cbtn" data-act="left">◀</div>
-    <div class="cbtn" data-act="right">▶</div>
+  <div id="mctrl-left">
+    <button class="cbtn" data-act="left">←</button>
+    <button class="cbtn" data-act="right">→</button>
   </div>
-  <div class="cbtn" id="jbtn" data-act="jump">▲</div>
+  <button class="cbtn" data-act="jump">↑</button>
 </div>
 
-<script>
-'use strict';
+<canvas id="c"></canvas>
 
-// ══════════════════════════════════════════════════════════
-//  PORTFOLIO DATA
-// ══════════════════════════════════════════════════════════
+<script>
+// ═══════════════════════════════════════════════════════
+//  MONUMENT VALLEY PORTFOLIO  ·  Shubham Bakre
+// ═══════════════════════════════════════════════════════
+
+// ── Zone definitions ────────────────────────────────────
+const ZONES = [
+  { label:'01 — About',      accent:'#e8727f', bg0:'#07080f', bg1:'#11071a' },
+  { label:'02 — Projects',   accent:'#38bfa8', bg0:'#060f0e', bg1:'#061918' },
+  { label:'03 — Experience', accent:'#e8b84b', bg0:'#0e0a04', bg1:'#1a1104' },
+  { label:'04 — Skills',     accent:'#6ee7b7', bg0:'#050f09', bg1:'#071a0f' },
+  { label:'05 — Contact',    accent:'#b57bee', bg0:'#08050f', bg1:'#100520' },
+];
+
+// ── Card content ────────────────────────────────────────
 const CARDS = [
   {
-    tag:'01 / 05 · About',
     title:'Shubham Bakre',
-    body:`
-      <p><strong style="color:#e2e2f5">Senior Software Engineer · AI</strong><br>
-      Walmart · Sunnyvale, CA</p>
-      <p>7+ years shipping production systems across fintech, hospitality, and large-scale e-commerce.
-      Currently building Go APIs handling <strong style="color:#818cf8">50M daily reviews & ratings</strong> at Walmart,
-      and previously shipped a production LLM chatbot over a <strong style="color:#818cf8">550M-SKU inventory dataset</strong>.</p>
-      <p>MS Computer Science, Arizona State University (GPA 3.7).<br>
-      Targeting Senior AI/ML Engineering roles at Google Cloud, Anthropic, OpenAI.</p>
-      <h4>Contact</h4>
-      <p><a href="mailto:shubhambakre@gmail.com">shubhambakre@gmail.com</a> &nbsp;·&nbsp;
-      <a href="https://linkedin.com/in/shubhambakre" target="_blank">LinkedIn</a> &nbsp;·&nbsp;
-      <a href="https://github.com/shubhambakre" target="_blank">GitHub</a></p>
-    `,
-    hint:'Walk right to see projects →',
-    zone:'About Me',
+    body:`<p>Senior Software Engineer at Walmart Labs, Sunnyvale.</p>
+<p>I build production AI systems — LLM pipelines, distributed data platforms, and backend infrastructure that scales to hundreds of millions of records.</p>
+<h4>Currently</h4>
+<p>LLM chatbot over a 550M-SKU inventory dataset. Zero SQL required from users. Powered by Vertex AI + BigQuery NL2SQL.</p>
+<h4>Education</h4>
+<p>MS Computer Science · Arizona State University · GPA 3.7<br>Udacity Deep Learning Nanodegree</p>`
   },
   {
-    tag:'02 / 05 · Projects',
     title:'Selected Work',
-    body:`
-      <h4>Inventory Intelligence Chatbot · Walmart Labs</h4>
-      <p>Production LLM system (Google Vertex AI + BigQuery NL2SQL). Business users query
-      a <strong style="color:#818cf8">550M-SKU</strong> dataset in plain English — zero SQL required.
-      Serving ~100 queries/day in production.</p>
-      <p><span class="tag">Vertex AI</span><span class="tag">NL2SQL</span><span class="tag">BigQuery</span><span class="tag">Java</span><span class="tag">Python</span></p>
-
-      <h4>Ratings & Reviews Pipeline · Walmart</h4>
-      <p>Go API layer handling <strong style="color:#818cf8">50M daily reviews</strong> across Walmart e-commerce.
-      High-throughput ingestion, deduplication, and routing at scale.</p>
-      <p><span class="tag">Go</span><span class="tag">Golang</span><span class="tag">Pipelines</span></p>
-
-      <h4>OmniMart Ratings & Reviews API · Open Source</h4>
-      <p>Production-grade Go service: hexagonal architecture, dual REST APIs, cursor pagination,
-      idempotent writes. <a href="https://github.com/shubhambakre/omnimart-ratings-reviews" target="_blank">GitHub ↗</a></p>
-      <p><span class="tag">Go</span><span class="tag">SQLite</span><span class="tag">REST API</span></p>
-    `,
-    hint:'Walk right to see experience →',
-    zone:'Projects',
+    body:`<h4>go-llm-gateway</h4>
+<p>Production API gateway for LLM requests — rate limiting, cost tracking, model failover. Go, zero deps.</p>
+<h4>vertex-ai-rag-pipeline</h4>
+<p>End-to-end RAG on Google Vertex AI. BigQuery Vector Search, LangChain, semantic retrieval at scale.</p>
+<h4>llm-eval-harness</h4>
+<p>LLM evaluation framework — faithfulness scoring, LLM-as-judge, batch runner, CSV/JSON export.</p>`
   },
   {
-    tag:'03 / 05 · Experience',
     title:'Career Timeline',
-    body:`
-      <h4>Walmart · Feb 2026 – Present</h4>
-      <p><strong style="color:#e2e2f5">Senior Software Engineer</strong><br>
-      Reviews & ratings pipelines · Go API · 50M daily events</p>
-
-      <h4>Walmart Global Tech · Feb 2023 – Feb 2026</h4>
-      <p><strong style="color:#e2e2f5">Software Engineer III · Data</strong><br>
-      LLM chatbot · 550M-SKU replenishment platform · Spark · Airflow · GCP</p>
-
-      <h4>Choice Hotels · Jun 2022 – Feb 2023</h4>
-      <p><strong style="color:#e2e2f5">Software Engineer II · Big Data</strong><br>
-      Live data streams · AWS EMR · Athena · Airflow</p>
-
-      <h4>Early Warning (Zelle) · Feb 2020 – Jun 2022</h4>
-      <p><strong style="color:#e2e2f5">Software Engineer</strong><br>
-      Payment backend · $690B+ in transactions · Java Spring Boot · AWS</p>
-
-      <h4>American Express · Aug–Dec 2019</h4>
-      <p><strong style="color:#e2e2f5">Data Science Intern</strong><br>
-      End-to-end ML pipeline for credit card offer prediction</p>
-    `,
-    hint:'Walk right to see skills →',
-    zone:'Experience',
+    body:`<h4>Walmart Global Tech · Feb 2026 – Present</h4>
+<p><strong>Senior Software Engineer</strong> — LLM chatbot, Vertex AI NL2SQL, 550M-SKU data platform, Spark ML pipelines.</p>
+<h4>Walmart Global Tech · Feb 2023 – Feb 2026</h4>
+<p><strong>Software Engineer III</strong> — Distributed inventory systems, BigQuery analytics, ML model integration.</p>
+<h4>Choice Hotels · Jun 2022 – Feb 2023</h4>
+<p>Big data engineering. Hadoop, Spark, Airflow.</p>
+<h4>Zelle · 2021 – 2022</h4>
+<p>High-value payment backend. Java, Spring Boot.</p>
+<h4>American Express · 2020</h4>
+<p>ML intern. Predictive models, TensorFlow, Python.</p>`
   },
   {
-    tag:'04 / 05 · Skills',
     title:'Tech Stack',
-    body:`
-      <h4>AI / LLM Engineering</h4>
-      <p><span class="tag">Google Vertex AI</span><span class="tag">Gemini Pro</span><span class="tag">LangChain</span><span class="tag">NL2SQL</span><span class="tag">RAG</span><span class="tag">Vector DBs</span><span class="tag">Prompt Engineering</span></p>
-
-      <h4>Languages</h4>
-      <p><span class="tag">Go</span><span class="tag">Java</span><span class="tag">Python</span><span class="tag">Scala</span></p>
-
-      <h4>Data & Distributed Systems</h4>
-      <p><span class="tag">Apache Spark</span><span class="tag">BigQuery</span><span class="tag">Airflow</span><span class="tag">Hadoop</span><span class="tag">SQL</span></p>
-
-      <h4>Cloud & Infrastructure</h4>
-      <p><span class="tag">GCP</span><span class="tag">AWS</span><span class="tag">Docker</span><span class="tag">Spring Boot</span></p>
-
-      <h4>Education</h4>
-      <p>MS Computer Science · Arizona State University (GPA 3.7)<br>
-      Udacity Deep Learning Nanodegree · CNNs · RNNs · GANs</p>
-    `,
-    hint:'Almost there — walk right →',
-    zone:'Skills',
+    body:`<h4>AI / ML</h4>
+<ul><li>Vertex AI · LLM Integration · RAG · NL2SQL</li><li>Vector DBs · LangChain · TensorFlow · PyTorch</li></ul>
+<h4>Backend & Systems</h4>
+<ul><li>Go · Java · Python · Scala · Spring Boot</li><li>REST APIs · gRPC · PostgreSQL · Docker</li></ul>
+<h4>Data & Cloud</h4>
+<ul><li>GCP · BigQuery · Apache Spark · Airflow</li><li>Hadoop · AWS (EC2, EMR, S3, Athena)</li></ul>`
   },
   {
-    tag:"05 / 05 · Let's Connect",
     title:"Let's Build Something.",
-    body:`
-      <p>If you're working on LLM platforms, agent infrastructure, or AI-native products
-      and need production engineering depth — I'd like to connect.</p>
-      <p>Open to <strong style="color:#818cf8">Senior AI/ML Engineering roles</strong> at cloud platforms
-      and AI-first companies in the Bay Area.</p>
-      <br>
-      <p style="text-align:center">
-        <a href="assets/resume.pdf" download style="
-          display:inline-flex;align-items:center;gap:8px;
-          background:linear-gradient(135deg,#818cf8,#6366f1);
-          color:#fff;padding:11px 24px;border-radius:10px;
-          font-weight:700;font-size:14px;text-decoration:none;
-          box-shadow:0 4px 20px rgba(99,102,241,0.45);
-        ">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download Resume
-        </a>
-      </p>
-      <br>
-      <p style="text-align:center">
-        <a href="mailto:shubhambakre@gmail.com" style="color:#818cf8">shubhambakre@gmail.com</a>
-        &nbsp;·&nbsp;
-        <a href="https://linkedin.com/in/shubhambakre" target="_blank" style="color:#818cf8">LinkedIn ↗</a>
-        &nbsp;·&nbsp;
-        <a href="https://github.com/shubhambakre" target="_blank" style="color:#818cf8">GitHub ↗</a>
-      </p>
-    `,
-    hint:'You made it! 🎉',
-    zone:'Contact',
+    body:`<p>If you're working on LLM platforms, agent infrastructure, or AI-native products and need production engineering depth — reach out.</p>
+<p style="margin-top:20px"><a href="mailto:shubhambakre@gmail.com">shubhambakre@gmail.com</a></p>
+<p><a href="https://linkedin.com/in/shubhambakre" target="_blank">LinkedIn ↗</a> &nbsp;·&nbsp; <a href="https://github.com/shubhambakre" target="_blank">GitHub ↗</a></p>
+<p style="margin-top:24px">
+  <a href="assets/resume.pdf" download style="display:inline-flex;align-items:center;gap:8px;padding:10px 26px;border:1px solid var(--ac);border-radius:24px;color:var(--ac);font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase">
+    ↓ Download Resume
+  </a>
+</p>`
   },
 ];
 
-// ══════════════════════════════════════════════════════════
-//  ENGINE CONSTANTS
-// ══════════════════════════════════════════════════════════
-const GV=0.65, JF=-14.5, MXF=18, SPD=7, TILE=40, HUD_H=52;
+// ── Canvas & resize ──────────────────────────────────────
+const canvas = document.getElementById('c');
+const ctx    = canvas.getContext('2d');
+let W, H;
+function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+resize();
+window.addEventListener('resize', () => { resize(); if(state==='play') initLevel(); });
 
-// Zone sky colors per card (gradient pairs)
-const ZONE_COLORS=[
-  ['#0a0a2e','#1a1a4e'],   // about — deep night
-  ['#0d1a3e','#1a2d5e'],   // projects — dark blue
-  ['#1a0d2e','#2d1a4e'],   // experience — deep purple
-  ['#0d2e2e','#0d3d3d'],   // skills — dark teal
-  ['#1a1200','#2e1f00'],   // contact — dark gold
-];
+// ── CSS accent var ───────────────────────────────────────
+function setAccent(col) { document.documentElement.style.setProperty('--ac', col); }
+setAccent(ZONES[0].accent);
 
-// ══════════════════════════════════════════════════════════
-//  INPUT
-// ══════════════════════════════════════════════════════════
+// ── Physics constants ────────────────────────────────────
+const GV=0.58, JF=-13.5, MXF=17, SPD=6.5, FRIC=0.72;
+const LW=1900, FLAG_X=1800;
+
+// ── Input ────────────────────────────────────────────────
 const K={}, TC={left:false,right:false,jump:false};
-window.addEventListener('keydown',e=>{K[e.code]=true;['Space','ArrowUp','ArrowLeft','ArrowRight'].includes(e.code)&&e.preventDefault();});
-window.addEventListener('keyup',e=>{K[e.code]=false;});
+window.addEventListener('keydown',e=>{
+  K[e.code]=true;
+  if(['Space','ArrowUp','ArrowLeft','ArrowRight'].includes(e.code)) e.preventDefault();
+  if(e.code==='Space'||e.code==='Enter'||e.code==='KeyE') dismissOverlay();
+});
+window.addEventListener('keyup',e=>{ K[e.code]=false; });
 document.querySelectorAll('.cbtn').forEach(b=>{
   const a=b.dataset.act;
   b.addEventListener('touchstart',e=>{e.preventDefault();TC[a]=true;},{passive:false});
-  b.addEventListener('touchend',e=>{e.preventDefault();TC[a]=false;},{passive:false});
+  b.addEventListener('touchend',  e=>{e.preventDefault();TC[a]=false;},{passive:false});
+  b.addEventListener('mousedown', ()=>TC[a]=true);
+  b.addEventListener('mouseup',   ()=>TC[a]=false);
 });
-const IN={get left(){return K.ArrowLeft||K.KeyA||TC.left;},get right(){return K.ArrowRight||K.KeyD||TC.right;},get jump(){return K.ArrowUp||K.KeyW||K.Space||TC.jump;}};
+const IN={
+  get left(){  return K.ArrowLeft ||K.KeyA||TC.left;  },
+  get right(){ return K.ArrowRight||K.KeyD||TC.right; },
+  get jump(){  return K.ArrowUp   ||K.KeyW||K.Space||TC.jump; },
+};
 
-// ══════════════════════════════════════════════════════════
-//  AUDIO
-// ══════════════════════════════════════════════════════════
-let AC=null;
-function getAC(){if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();return AC;}
-function beep(f,t,d,v=0.2,slide=0){
-  const ac=getAC(),o=ac.createOscillator(),g=ac.createGain();
-  o.connect(g);g.connect(ac.destination);
-  o.type=t;o.frequency.value=f;
-  if(slide)o.frequency.linearRampToValueAtTime(slide,ac.currentTime+d);
-  g.gain.setValueAtTime(v,ac.currentTime);
-  g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+d);
-  o.start();o.stop(ac.currentTime+d);
+// ── Overlay system ────────────────────────────────────────
+const overlayEl   = document.getElementById('overlay');
+const ovLabel     = document.getElementById('ov-label');
+const ovTitle     = document.getElementById('ov-title');
+const ovBody      = document.getElementById('ov-body');
+const pdots       = [0,1,2,3,4].map(i=>document.getElementById('pd'+i));
+const arrowHint   = document.getElementById('arrow-hint');
+let ovOpen=false, ovIdx=-1, hintGone=false;
+
+function showOverlay(idx) {
+  if(ovOpen && ovIdx===idx) return;
+  const c=CARDS[idx], z=ZONES[idx];
+  setAccent(z.accent);
+  ovLabel.textContent = z.label;
+  ovTitle.textContent = c.title;
+  ovBody.innerHTML    = c.body;
+  pdots.forEach((d,i)=>{
+    d.className='pdot'+(i<idx?' done':i===idx?' active':'');
+  });
+  overlayEl.classList.add('visible');
+  ovOpen=true; ovIdx=idx;
+  if(player) player.frozen=true;
 }
-const SFX={jump(){beep(350,'square',0.1,0.25,600);},collect(){beep(700,'sine',0.08,0.2);setTimeout(()=>beep(1050,'sine',0.1,0.15),70);},reveal(){beep(440,'sine',0.15,0.3);beep(660,'sine',0.15,0.25);beep(880,'sine',0.2,0.2);}};
+function dismissOverlay() {
+  if(!ovOpen) return;
+  overlayEl.classList.remove('visible');
+  ovOpen=false;
+  if(player) player.frozen=false;
+}
+document.getElementById('ov-continue').addEventListener('click', dismissOverlay);
+overlayEl.addEventListener('click', e=>{ if(e.target===overlayEl) dismissOverlay(); });
 
-// ══════════════════════════════════════════════════════════
-//  PLATFORM
-// ══════════════════════════════════════════════════════════
-class Platform{
-  constructor(x,y,w,h,type='ground',label=''){this.x=x;this.y=y;this.w=w;this.h=h;this.type=type;this.label=label;}
-  draw(ctx,cx,W){
-    const sx=this.x-cx; if(sx+this.w<0||sx>W) return;
-    if(this.type==='ground'){
-      ctx.fillStyle='#3a7a28';ctx.fillRect(sx,this.y,this.w,9);
-      ctx.fillStyle='#7a5020';ctx.fillRect(sx,this.y+9,this.w,this.h-9);
-      ctx.fillStyle='rgba(0,0,0,0.15)';ctx.fillRect(sx,this.y+9,this.w,2);
-    } else if(this.type==='brick'){
-      ctx.fillStyle='#8B4513';ctx.fillRect(sx,this.y,this.w,this.h);
-      ctx.fillStyle='#6B3410';
-      ctx.fillRect(sx,this.y,this.w,3);ctx.fillRect(sx,this.y+this.h-3,this.w,3);
-      for(let i=0;i<Math.ceil(this.w/TILE);i++){
-        ctx.fillRect(sx+i*TILE,this.y,2,this.h);
-      }
-    } else if(this.type==='cloud'){
-      ctx.fillStyle='rgba(180,200,255,0.15)';ctx.fillRect(sx,this.y,this.w,this.h);
-      ctx.fillStyle='rgba(200,220,255,0.3)';ctx.fillRect(sx+2,this.y+2,this.w-4,this.h-6);
-      ctx.strokeStyle='rgba(140,170,255,0.4)';ctx.lineWidth=1;ctx.strokeRect(sx,this.y,this.w,this.h);
-    } else if(this.type==='company'){
-      // Glowing platform
-      const grd=ctx.createLinearGradient(sx,this.y,sx,this.y+this.h);
-      grd.addColorStop(0,'rgba(129,140,248,0.5)');grd.addColorStop(1,'rgba(99,102,241,0.2)');
-      ctx.fillStyle=grd;ctx.fillRect(sx,this.y,this.w,this.h);
-      ctx.fillStyle='rgba(129,140,248,0.6)';ctx.fillRect(sx,this.y,this.w,2);
-      if(this.label){
-        ctx.fillStyle='rgba(129,140,248,0.9)';
-        ctx.font=`bold 11px monospace`;ctx.textAlign='center';
-        ctx.fillText(this.label,sx+this.w/2,this.y-8);
-      }
+function dismissHint() {
+  if(hintGone) return;
+  hintGone=true;
+  arrowHint.style.opacity='0';
+}
+
+// ── Colour helpers ────────────────────────────────────────
+function lerp(a,b,t){ return a+(b-a)*t; }
+function lerpHex(c1,c2,t){
+  const p=s=>parseInt(s,16);
+  const r1=p(c1.slice(1,3)),g1=p(c1.slice(3,5)),b1=p(c1.slice(5,7));
+  const r2=p(c2.slice(1,3)),g2=p(c2.slice(3,5)),b2=p(c2.slice(5,7));
+  return '#'+[lerp(r1,r2,t),lerp(g1,g2,t),lerp(b1,b2,t)]
+    .map(v=>Math.round(v).toString(16).padStart(2,'0')).join('');
+}
+function zoneColors(zt) {
+  const i=Math.min(Math.floor(zt),ZONES.length-2), f=zt-i;
+  return {
+    bg0:    lerpHex(ZONES[i].bg0,   ZONES[i+1].bg0,   f),
+    bg1:    lerpHex(ZONES[i].bg1,   ZONES[i+1].bg1,   f),
+    accent: lerpHex(ZONES[i].accent, ZONES[i+1].accent, f),
+  };
+}
+
+// ── Stars & background shapes ──────────────────────────────
+const STARS = Array.from({length:55},(_,i)=>({
+  x: (i*193.7)%LW, y: Math.random()*.6,
+  s: Math.random()<.18?1.5:1, p: .04+Math.random()*.10,
+}));
+const PILLARS=[
+  {x:320,h:280,w:2,p:.05},{x:680,h:340,w:2,p:.04},{x:1050,h:260,w:2,p:.06},
+  {x:1380,h:310,w:2,p:.045},{x:1700,h:290,w:2,p:.05},
+  {x:500,h:420,w:28,p:.07},{x:950,h:380,w:22,p:.06},{x:1250,h:440,w:26,p:.05},
+];
+
+function drawBG(cx,col,t){
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,col.bg0); g.addColorStop(1,col.bg1);
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+
+  // Stars
+  for(const s of STARS){
+    const sx=((s.x-cx*s.p)%W+W)%W;
+    const a=.18+.14*Math.sin(t*.012+s.x*.01);
+    ctx.fillStyle=`rgba(255,255,255,${a})`;
+    ctx.fillRect(sx,s.y*H,s.s,s.s);
+  }
+
+  // Background architectural pillars
+  ctx.save();
+  for(const p of PILLARS){
+    const sx=((p.x-cx*p.p)%(W+120)+W+120)%(W+120)-60;
+    if(p.w<8){
+      // Thin line
+      ctx.strokeStyle='rgba(255,255,255,0.035)';
+      ctx.lineWidth=p.w;
+      ctx.beginPath(); ctx.moveTo(sx,H*.08); ctx.lineTo(sx,H*.08+p.h); ctx.stroke();
+    } else {
+      // Tower block
+      ctx.fillStyle='rgba(255,255,255,0.018)';
+      ctx.fillRect(sx,H*.05,p.w,p.h);
+      // Battlements
+      ctx.fillStyle='rgba(255,255,255,0.018)';
+      for(let b=0;b<3;b++) ctx.fillRect(sx+b*(p.w/3+1),H*.05-12,p.w/3-1,12);
     }
   }
+  ctx.restore();
+
+  // Vanishing-point floor grid (Monument Valley feel)
+  const gy=H*.84;
+  ctx.save();
+  ctx.strokeStyle='rgba(255,255,255,0.022)'; ctx.lineWidth=.6;
+  for(let i=0;i<=14;i++){
+    const gx=(i/14)*W;
+    ctx.beginPath(); ctx.moveTo(gx,gy); ctx.lineTo(W/2+(gx-W/2)*.06,H); ctx.stroke();
+  }
+  for(let j=0;j<=5;j++){
+    const fy=gy+j*(H-gy)/5;
+    const spread=(fy-gy)/(H-gy);
+    const x0=W/2-(W/2)*spread, x1=W/2+(W/2)*spread;
+    ctx.beginPath(); ctx.moveTo(x0,fy); ctx.lineTo(x1,fy); ctx.stroke();
+  }
+  ctx.restore();
 }
 
-// ══════════════════════════════════════════════════════════
-//  QUESTION BLOCK
-// ══════════════════════════════════════════════════════════
-class QBlock{
-  constructor(x,y,cardIdx){this.x=x;this.y=y;this.w=TILE;this.h=TILE;this.cardIdx=cardIdx;this.hit=false;this.bump=0;this.t=0;}
-  draw(ctx,cx){
-    this.t++;
+// ── Isometric platform ────────────────────────────────────
+class IsoPlatform {
+  constructor(x,y,w,h,d,type,label){
+    this.x=x; this.y=y; this.w=w; this.h=h; this.d=d||20;
+    this.type=type||'stone'; this.label=label||'';
+  }
+  draw(cx,accent){
     const sx=this.x-cx;
-    const by=this.y-Math.abs(Math.sin(this.bump*0.3))*8;this.bump=Math.max(0,this.bump-1);
-    if(this.hit){
-      ctx.fillStyle='#555'; ctx.fillRect(sx,by,this.w,this.h);
-      ctx.fillStyle='#444'; ctx.fillRect(sx+2,by+2,this.w-4,this.h-4);
-      return;
+    if(sx+this.w+this.d<-40||sx>W+40) return;
+    const {x:_,y,w,h,d}=this, x=sx;
+    let top,front,right,edge,lc;
+    if(this.type==='ground'){
+      top='rgba(255,255,255,0.055)'; front='rgba(255,255,255,0.022)';
+      right='rgba(0,0,0,0.28)'; edge='rgba(255,255,255,0.08)'; lc=null;
+    } else if(this.type==='accent'){
+      top=accent+'22'; front=accent+'0f'; right='rgba(0,0,0,0.30)';
+      edge=accent+'55'; lc=null;
+    } else { // company
+      top=accent+'1a'; front=accent+'0d'; right='rgba(0,0,0,0.32)';
+      edge=accent+'66'; lc=this.label;
     }
-    // Glow
-    ctx.shadowColor='rgba(255,200,0,0.6)';ctx.shadowBlur=14+Math.sin(this.t*0.08)*6;
-    ctx.fillStyle='#C87800';ctx.fillRect(sx,by,this.w,this.h);
-    ctx.fillStyle='#FFAA00';ctx.fillRect(sx+2,by+2,this.w-4,this.h-4);
-    ctx.fillStyle='#FFD000';ctx.fillRect(sx+4,by+4,this.w-8,this.h-8);
-    ctx.shadowBlur=0;
-    // ?
-    ctx.fillStyle='#fff';ctx.font=`bold 20px monospace`;ctx.textAlign='center';
-    ctx.fillText('?',sx+this.w/2,by+this.h-10);
-    // Shine
-    ctx.fillStyle='rgba(255,255,255,0.35)';ctx.fillRect(sx+4,by+4,8,8);
+    // top face
+    ctx.beginPath();
+    ctx.moveTo(x,y); ctx.lineTo(x+w,y);
+    ctx.lineTo(x+w+d,y-d*.5); ctx.lineTo(x+d,y-d*.5);
+    ctx.closePath(); ctx.fillStyle=top; ctx.fill();
+    // front face
+    ctx.beginPath();
+    ctx.moveTo(x,y); ctx.lineTo(x,y+h);
+    ctx.lineTo(x+w,y+h); ctx.lineTo(x+w,y);
+    ctx.closePath(); ctx.fillStyle=front; ctx.fill();
+    // right face
+    ctx.beginPath();
+    ctx.moveTo(x+w,y); ctx.lineTo(x+w+d,y-d*.5);
+    ctx.lineTo(x+w+d,y+h-d*.5); ctx.lineTo(x+w,y+h);
+    ctx.closePath(); ctx.fillStyle=right; ctx.fill();
+    // edges
+    ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.lineWidth=.5;
+    ctx.strokeRect(x,y,w,h);
+    ctx.beginPath(); ctx.moveTo(x,y);
+    ctx.lineTo(x+d,y-d*.5); ctx.lineTo(x+w+d,y-d*.5); ctx.lineTo(x+w,y);
+    ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.stroke();
+    // accent top edge
+    ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+w,y);
+    ctx.strokeStyle=edge; ctx.lineWidth=1; ctx.stroke();
+    // label
+    if(lc){
+      ctx.fillStyle=accent+'bb'; ctx.font='bold 8px monospace';
+      ctx.textAlign='center';
+      ctx.fillText(lc.toUpperCase(),x+w/2,y-d*.5-7);
+    }
   }
-  checkHit(player){
-    if(this.hit) return false;
-    // Trigger by proximity — just walk near the block
-    const cx=this.x+this.w/2, pcx=player.x+player.w/2;
-    const xNear=Math.abs(pcx-cx)<70;
-    const yNear=player.y+player.h>this.y-40 && player.y<this.y+this.h+80;
-    // Also classic jump-hit from below
-    const hitsX=player.x+player.w>this.x+4&&player.x<this.x+this.w-4;
-    const hitsY=player.y<=this.y+this.h&&player.y>this.y&&player.vy<0;
-    if((xNear&&yNear)||(hitsX&&hitsY)){this.hit=true;this.bump=20;return true;}
+}
+
+// ── Floating skill orb ─────────────────────────────────────
+const SKILL_LABELS=['Go','Java','Python','GCP','Spark','BigQuery','Vertex AI','RAG','LangChain','Airflow'];
+class Orb {
+  constructor(x,y,label){
+    this.x=x; this.y=y; this.label=label;
+    this.t=Math.random()*Math.PI*2;
+    this.collected=false; this.fly=0;
+  }
+  update(){ this.t+=.038; if(this.fly>0)this.fly--; }
+  draw(cx,accent){
+    if(this.collected&&this.fly<=0) return;
+    const sx=this.x-cx;
+    if(sx<-30||sx>W+30) return;
+    const bob=Math.sin(this.t)*4;
+    const sy=this.y+bob;
+    if(this.collected){
+      ctx.globalAlpha=this.fly/18;
+      ctx.fillStyle=accent;
+      ctx.beginPath(); ctx.arc(sx+12,sy-(18-this.fly)*1.5,7,0,Math.PI*2); ctx.fill();
+      ctx.globalAlpha=1; return;
+    }
+    // glow
+    const gr=ctx.createRadialGradient(sx+12,sy+8,0,sx+12,sy+8,20);
+    gr.addColorStop(0,accent+'99'); gr.addColorStop(.6,accent+'33'); gr.addColorStop(1,accent+'00');
+    ctx.fillStyle=gr;
+    ctx.beginPath(); ctx.arc(sx+12,sy+8,20,0,Math.PI*2); ctx.fill();
+    // core
+    ctx.fillStyle=accent+'bb';
+    ctx.beginPath(); ctx.arc(sx+12,sy+8,7,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,0.6)';
+    ctx.beginPath(); ctx.arc(sx+9,sy+5,2.5,0,Math.PI*2); ctx.fill();
+    // label
+    ctx.fillStyle='rgba(255,255,255,0.65)';
+    ctx.font='700 8px monospace'; ctx.textAlign='center';
+    ctx.fillText(this.label,sx+12,sy-6);
+  }
+  checkCollect(player){
+    if(this.collected) return false;
+    const dx=(player.x+player.w*.5)-(this.x+12);
+    const dy=(player.y+player.h*.5)-(this.y+8);
+    if(Math.sqrt(dx*dx+dy*dy)<34){ this.collected=true; this.fly=18; return true; }
     return false;
   }
 }
 
-// ══════════════════════════════════════════════════════════
-//  SKILL COIN
-// ══════════════════════════════════════════════════════════
-const SKILL_LABELS=['Go','Java','Python','GCP','Spark','BigQuery','Vertex AI','RAG','LangChain','Airflow'];
-class SkillCoin{
-  constructor(x,y,label){this.x=x;this.y=y;this.w=22;this.h=22;this.label=label;this.collected=false;this.t=Math.random()*Math.PI*2;this.flyT=0;}
-  update(){this.t+=0.06;if(this.flyT>0)this.flyT--;}
-  draw(ctx,cx){
-    if(this.collected&&this.flyT<=0) return;
-    const sx=this.x-cx;
-    if(this.collected){
-      ctx.globalAlpha=this.flyT/25;
-      ctx.fillStyle='#FFCC00';
-      ctx.beginPath();ctx.arc(sx+11,this.y-5+(25-this.flyT)*2,9,0,Math.PI*2);ctx.fill();
-      ctx.globalAlpha=1;return;
-    }
-    const bob=Math.sin(this.t)*4;
-    ctx.shadowColor='rgba(255,200,0,0.5)';ctx.shadowBlur=8;
-    ctx.fillStyle='#AA8800';ctx.beginPath();ctx.arc(sx+11,this.y+bob+13,10,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle='#FFCC00';ctx.beginPath();ctx.arc(sx+11,this.y+bob+11,10,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle='#FFE844';ctx.beginPath();ctx.arc(sx+9,this.y+bob+9,4,0,Math.PI*2);ctx.fill();
-    ctx.shadowBlur=0;
-    if(this.label){
-      ctx.fillStyle='rgba(255,200,0,0.9)';ctx.font='bold 9px monospace';ctx.textAlign='center';
-      ctx.fillText(this.label,sx+11,this.y+bob-2);
-    }
+// ── Particle ──────────────────────────────────────────────
+class Particle {
+  constructor(x,y,col){
+    this.x=x; this.y=y; this.col=col;
+    this.vx=(Math.random()-.5)*4.5; this.vy=Math.random()*-4-1;
+    this.life=32; this.max=32; this.r=1+Math.random()*2.5;
+  }
+  update(){ this.vy+=.22; this.x+=this.vx; this.y+=this.vy; this.life--; }
+  draw(cx){
+    ctx.globalAlpha=this.life/this.max;
+    ctx.fillStyle=this.col;
+    ctx.beginPath(); ctx.arc(this.x-cx,this.y,this.r,0,Math.PI*2); ctx.fill();
+    ctx.globalAlpha=1;
   }
 }
 
-// ══════════════════════════════════════════════════════════
-//  PARTICLE
-// ══════════════════════════════════════════════════════════
-class Particle{
-  constructor(x,y,c){this.x=x;this.y=y;this.c=c;this.vx=(Math.random()-0.5)*6;this.vy=Math.random()*-5-2;this.life=40;this.max=40;this.s=3+Math.random()*5;}
-  update(){this.vy+=0.3;this.x+=this.vx;this.y+=this.vy;this.life--;}
-  draw(ctx,cx){ctx.globalAlpha=this.life/this.max;ctx.fillStyle=this.c;ctx.fillRect(this.x-cx,this.y,this.s,this.s);ctx.globalAlpha=1;}
-}
+// ── Player ────────────────────────────────────────────────
+function ov(a,b){ return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y; }
 
-// ══════════════════════════════════════════════════════════
-//  PLAYER
-// ══════════════════════════════════════════════════════════
-class Player{
+class Player {
   constructor(x,y){
-    this.x=x;this.y=y;this.w=28;this.h=40;
-    this.vx=0;this.vy=0;this.onGround=false;
-    this.facing=1;this.walkF=0;this.stepT=0;
-    this.jumpBuf=0;this.coyote=0;
-    this.moved=false; // track first move for hint
+    this.x=x; this.y=y; this.w=18; this.h=34;
+    this.vx=0; this.vy=0; this.onGround=false;
+    this.facing=1; this.walkT=0;
+    this.jBuf=0; this.coyote=0;
+    this.frozen=false; this.moved=false;
   }
-  update(plats,qblocks,skillCoins,parts,onBlockHit){
-    if(IN.left){this.vx=lerp(this.vx,-SPD,0.28);this.facing=-1;this.moved=true;}
-    else if(IN.right){this.vx=lerp(this.vx,SPD,0.28);this.facing=1;this.moved=true;}
-    else this.vx*=0.70;
-    if(IN.jump)this.jumpBuf=10; else if(this.jumpBuf>0)this.jumpBuf--;
-    if(this.onGround)this.coyote=10; else if(this.coyote>0)this.coyote--;
-    if(this.jumpBuf>0&&this.coyote>0){this.vy=JF;this.jumpBuf=0;this.coyote=0;SFX.jump();this.moved=true;}
-    if(!IN.jump&&this.vy<-4)this.vy+=2.2;
+  update(plats,orbs,parts,accent){
+    if(!this.frozen){
+      if(IN.left){  this.vx=lerp(this.vx,-SPD,.32); this.facing=-1; this.moved=true; }
+      else if(IN.right){ this.vx=lerp(this.vx, SPD,.32); this.facing= 1; this.moved=true; }
+      else this.vx*=FRIC;
+      if(IN.jump) this.jBuf=10; else if(this.jBuf>0) this.jBuf--;
+      if(this.onGround) this.coyote=10; else if(this.coyote>0) this.coyote--;
+      if(this.jBuf>0&&this.coyote>0){ this.vy=JF; this.jBuf=0; this.coyote=0; this.moved=true; }
+      if(!IN.jump&&this.vy<-3.5) this.vy+=2.2;
+    } else {
+      this.vx*=.80;
+    }
     this.vy=Math.min(this.vy+GV,MXF);
-    this.x+=this.vx; this.onGround=false;
-    for(const p of plats){
-      if(!ov(this,p))continue;
-      if(this.vx>0)this.x=p.x-this.w; else if(this.vx<0)this.x=p.x+p.w; this.vx=0;
-    }
+    this.x+=this.vx;
+    this.x=Math.max(0,Math.min(this.x,LW-this.w));
     this.y+=this.vy;
-    for(const p of plats){
-      if(!ov(this,p))continue;
-      if(this.vy>0){this.y=p.y-this.h;this.vy=0;this.onGround=true;}
-      else{this.y=p.y+p.h;this.vy=0.5;}
+    this.onGround=false;
+    this._collide(plats);
+    if(this.onGround&&Math.abs(this.vx)>.3) this.walkT+=.20; else if(this.onGround) this.walkT=0;
+    for(const o of orbs){
+      if(o.checkCollect(this)) for(let i=0;i<5;i++) parts.push(new Particle(o.x,o.y,accent));
     }
-    // Q blocks
-    for(const b of qblocks){if(b.checkHit(this)){onBlockHit(b.cardIdx);for(let i=0;i<12;i++)parts.push(new Particle(b.x+20,b.y,'#FFCC00'));}}
-    // Skill coins
-    for(const c of skillCoins){if(!c.collected&&ov(this,{x:c.x,y:c.y,w:c.w,h:c.h})){c.collected=true;c.flyT=25;SFX.collect();for(let i=0;i<6;i++)parts.push(new Particle(c.x+11,c.y,'#FFCC00'));}}
-    // Walk anim
-    if(this.onGround&&Math.abs(this.vx)>0.3){this.stepT++;if(this.stepT%7===0)this.walkF=(this.walkF+1)%4;}
-    else if(this.onGround)this.walkF=0;
   }
-  draw(ctx,cx){
-    const sx=Math.round(this.x-cx),sy=Math.round(this.y);
+  _collide(plats){
+    // X axis
+    for(const p of plats){
+      if(!ov(this,p)) continue;
+      if(this.vx>0){
+        const ledge=p.y-(this.y+this.h);
+        if(ledge>-22&&ledge<=0){ this.y=p.y-this.h; this.onGround=true; }
+        else { this.x=p.x-this.w; this.vx=0; }
+      } else if(this.vx<0){
+        this.x=p.x+p.w; this.vx=0;
+      }
+    }
+    // Y axis
+    for(const p of plats){
+      if(!ov(this,p)) continue;
+      if(this.vy>=0){ this.y=p.y-this.h; this.vy=0; this.onGround=true; }
+      else           { this.y=p.y+p.h;   this.vy=.5; }
+    }
+  }
+  draw(cx,accent){
+    const sx=Math.round(this.x-cx), sy=Math.round(this.y);
+    const leg=Math.sin(this.walkT)*5;
+    // shadow
+    ctx.fillStyle='rgba(0,0,0,0.18)';
+    ctx.beginPath(); ctx.ellipse(sx+9,sy+this.h+2,8,3,0,0,Math.PI*2); ctx.fill();
+    // subtle glow
+    const gr=ctx.createRadialGradient(sx+9,sy+17,0,sx+9,sy+17,26);
+    gr.addColorStop(0,accent+'16'); gr.addColorStop(1,accent+'00');
+    ctx.fillStyle=gr; ctx.fillRect(sx-17,sy-8,52,52);
     ctx.save();
-    if(this.facing===-1){ctx.translate(sx+this.w/2,0);ctx.scale(-1,1);ctx.translate(-(sx+this.w/2),0);}
-    // Shadow
-    ctx.fillStyle='rgba(0,0,0,0.25)';ctx.beginPath();ctx.ellipse(sx+14,sy+41,11,4,0,0,Math.PI*2);ctx.fill();
-    // Shoes
-    ctx.fillStyle='#1a0a00';
-    const lf=this.onGround?(this.walkF<2?-3:3):0,rf=this.onGround?(this.walkF<2?3:-3):0;
-    ctx.fillRect(sx+lf,sy+34,11,7);ctx.fillRect(sx+17+rf,sy+34,11,7);
-    // Overalls
-    ctx.fillStyle='#1a3a99';ctx.fillRect(sx+2,sy+22,24,14);ctx.fillRect(sx+5,sy+14,18,10);
-    ctx.fillStyle='rgba(255,255,255,0.1)';ctx.fillRect(sx+8,sy+16,12,4);
-    // Shirt
-    ctx.fillStyle='#cc1a1a';ctx.fillRect(sx+1,sy+12,26,12);
-    // Arms
-    ctx.fillStyle='#cc1a1a';ctx.fillRect(sx-4,sy+13,7,10);ctx.fillRect(sx+25,sy+13,7,10);
-    ctx.fillStyle='#fad6ac';ctx.fillRect(sx-4,sy+21,7,5);ctx.fillRect(sx+25,sy+21,7,5);
-    // Head
-    ctx.fillStyle='#fad6ac';ctx.fillRect(sx+4,sy+2,20,13);
-    // Hair
-    ctx.fillStyle='#3a1800';ctx.fillRect(sx+4,sy+2,20,4);ctx.fillRect(sx+4,sy+2,4,8);
-    // Hat
-    ctx.fillStyle='#cc1a1a';ctx.fillRect(sx+2,sy-2,24,7);ctx.fillRect(sx+6,sy-8,16,8);
-    // Eye
-    ctx.fillStyle='#000';ctx.fillRect(sx+17,sy+6,5,5);ctx.fillStyle='#fff';ctx.fillRect(sx+19,sy+7,2,2);
-    // Mustache
-    ctx.fillStyle='#3a1800';ctx.fillRect(sx+8,sy+12,5,3);ctx.fillRect(sx+15,sy+12,7,3);ctx.fillRect(sx+11,sy+13,5,4);
+    if(this.facing===-1){ ctx.translate(sx+9,0); ctx.scale(-1,1); ctx.translate(-(sx+9),0); }
+    // legs
+    ctx.fillStyle='rgba(255,255,255,0.45)';
+    ctx.fillRect(sx+2+leg*.28,  sy+22, 6, 12);
+    ctx.fillRect(sx+10-leg*.28, sy+22, 6, 12);
+    // body
+    ctx.fillStyle='rgba(255,255,255,0.82)';
+    ctx.fillRect(sx+1,sy+10,16,14);
+    // arms
+    ctx.fillStyle='rgba(255,255,255,0.45)';
+    ctx.fillRect(sx-4, sy+12-leg*.18, 6, 10);
+    ctx.fillRect(sx+16,sy+12+leg*.18, 6, 10);
+    // head
+    ctx.fillStyle='rgba(255,255,255,0.92)';
+    ctx.beginPath(); ctx.arc(sx+9,sy+6,7,0,Math.PI*2); ctx.fill();
+    // eye
+    ctx.fillStyle='rgba(0,0,0,0.65)';
+    ctx.beginPath(); ctx.arc(sx+12,sy+5.5,2.2,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,0.8)';
+    ctx.beginPath(); ctx.arc(sx+13,sy+4.8,0.9,0,Math.PI*2); ctx.fill();
     ctx.restore();
   }
 }
 
-function ov(a,b){return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;}
-
-// ══════════════════════════════════════════════════════════
-//  FLAG
-// ══════════════════════════════════════════════════════════
-function drawFlag(ctx,cx,x,gY,t){
-  const sx=x-cx;
-  ctx.fillStyle='rgba(129,140,248,0.6)';ctx.fillRect(sx-3,gY-280,4,280);
-  ctx.fillStyle='rgba(129,140,248,0.9)';
-  ctx.beginPath();ctx.moveTo(sx+1,gY-280);ctx.lineTo(sx+1,gY-220);ctx.lineTo(sx+56,gY-250);ctx.closePath();ctx.fill();
-  // Glow
-  ctx.shadowColor='rgba(129,140,248,0.8)';ctx.shadowBlur=20+Math.sin(t*0.05)*8;
-  ctx.fillStyle='#818cf8';ctx.font='bold 22px monospace';ctx.textAlign='left';
-  ctx.fillText("Let's Connect",sx+10,gY-244);
-  ctx.shadowBlur=0;
-  ctx.fillStyle='rgba(255,255,255,0.2)';ctx.fillRect(sx-14,gY-6,28,8);
+// ── Flag ──────────────────────────────────────────────────
+function drawFlag(cx,gY,t,accent){
+  const sx=FLAG_X-cx;
+  if(sx<-60||sx>W+60) return;
+  ctx.strokeStyle='rgba(255,255,255,0.22)'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(sx,gY); ctx.lineTo(sx,gY-160); ctx.stroke();
+  const w=Math.sin(t*.048)*5;
+  ctx.fillStyle=accent+'cc';
+  ctx.beginPath();
+  ctx.moveTo(sx,gY-160);
+  ctx.quadraticCurveTo(sx+30,gY-150+w,sx+55,gY-142);
+  ctx.quadraticCurveTo(sx+30,gY-133+w,sx,gY-124);
+  ctx.closePath(); ctx.fill();
 }
 
-// ══════════════════════════════════════════════════════════
-//  BACKGROUND
-// ══════════════════════════════════════════════════════════
-function lerp(a,b,t){return a+(b-a)*t;}
-function lerpColor(c1,c2,t){
-  const r1=parseInt(c1.slice(1,3),16),g1=parseInt(c1.slice(3,5),16),b1=parseInt(c1.slice(5,7),16);
-  const r2=parseInt(c2.slice(1,3),16),g2=parseInt(c2.slice(3,5),16),b2=parseInt(c2.slice(5,7),16);
-  const r=Math.round(lerp(r1,r2,t)).toString(16).padStart(2,'0');
-  const g=Math.round(lerp(g1,g2,t)).toString(16).padStart(2,'0');
-  const b=Math.round(lerp(b1,b2,t)).toString(16).padStart(2,'0');
-  return `#${r}${g}${b}`;
-}
-
-const STARS=Array.from({length:50},(_,i)=>({x:i*137.5%1900,y:Math.random()*300,s:Math.random()<0.15?2:1}));
-const CLOUDS=[
-  {x:150,y:85,w:140,h:50},{x:500,y:65,w:160,h:56},{x:860,y:78,w:130,h:46},
-  {x:1200,y:68,w:150,h:54},{x:1550,y:82,w:140,h:50},
-];
-
-function drawCloud(ctx,x,y,w,h,alpha=0.18){
-  ctx.fillStyle=`rgba(255,255,255,${alpha})`;
-  ctx.beginPath();ctx.arc(x+w*.3,y+h*.55,h*.42,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.arc(x+w*.5,y+h*.38,h*.5,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.arc(x+w*.7,y+h*.55,h*.36,0,Math.PI*2);ctx.fill();
-  ctx.fillRect(x+w*.18,y+h*.5,w*.64,h*.5);
-}
-
-function drawBG(ctx,cx,W,H,zoneT,zoneIdx){
-  const zi=Math.floor(zoneIdx),zt=zoneT-zi;
-  const ci=Math.min(zi,ZONE_COLORS.length-1),cn=Math.min(zi+1,ZONE_COLORS.length-1);
-  const c1=lerpColor(ZONE_COLORS[ci][0],ZONE_COLORS[cn][0],zt);
-  const c2=lerpColor(ZONE_COLORS[ci][1],ZONE_COLORS[cn][1],zt);
-  const grad=ctx.createLinearGradient(0,0,0,H);
-  grad.addColorStop(0,c1);grad.addColorStop(1,c2);
-  ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
-  // Stars (more visible in dark zones)
+// ── Title screen ──────────────────────────────────────────
+function drawTitle(t){
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,ZONES[0].bg0); g.addColorStop(1,ZONES[0].bg1);
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
   for(const s of STARS){
-    const sx=((s.x-cx*0.1)%W+W)%W;
-    ctx.fillStyle=`rgba(255,255,255,${0.4+0.4*Math.sin(Date.now()*0.001+s.x)})`;
-    ctx.fillRect(sx,s.y,s.s,s.s);
+    ctx.fillStyle=`rgba(255,255,255,${.15+.12*Math.sin(t*.01+s.x*.01)})`;
+    ctx.fillRect(s.x%W,s.y*H,s.s,s.s);
   }
-  // Clouds
-  for(const c of CLOUDS){
-    const ccx=c.x-cx*0.2;
-    const wrapped=((ccx%(W+300))+(W+300))%(W+300)-150;
-    drawCloud(ctx,wrapped,c.y,c.w,c.h,0.12);
+  // Thin architectural lines
+  ctx.strokeStyle='rgba(255,255,255,0.035)'; ctx.lineWidth=1;
+  for(let i=0;i<6;i++){
+    ctx.beginPath(); ctx.moveTo(W*.08+i*(W*.17),H*.06); ctx.lineTo(W*.08+i*(W*.17),H*.65); ctx.stroke();
   }
-}
-
-// ══════════════════════════════════════════════════════════
-//  LEVEL BUILDER
-// ══════════════════════════════════════════════════════════
-function buildLevel(H){
-  const gY=H-80-HUD_H;
-  const plats=[],qblocks=[],skillCoins=[];
-  const LW=1900;
-
-  // ── Ground sections — small 65px gaps between each zone ──
-  [[0,330],[395,730],[795,1130],[1195,1530],[1595,LW]].forEach(([a,b])=>{
-    plats.push(new Platform(a,gY,b-a,80,'ground'));
-  });
-
-  // ── Zone 0: About (0-330) — auto-card on spawn ──
-  plats.push(new Platform(140,gY-100,90,'brick','brick'));
-
-  // ── Zone 1: Projects (395-730) — Q block triggers card ──
-  qblocks.push(new QBlock(500,gY-130,1));
-  plats.push(new Platform(440,gY-70,140,'brick','brick'));
-  plats.push(new Platform(630,gY-120,110,'cloud','cloud'));
-
-  // ── Zone 2: Experience (795-1130) — Q block triggers card ──
-  qblocks.push(new QBlock(900,gY-130,2));
-  const companies=[
-    [820,gY-90,130,'Walmart'],[950,gY-65,120,'Choice Hotels'],
-    [1068,gY-110,90,'Zelle'],[1155,gY-75,90,'Amex'],
-  ];
-  companies.forEach(([x,y,w,l])=>plats.push(new Platform(x,y,w,16,'company',l)));
-
-  // ── Zone 3: Skills (1195-1530) — Q block triggers card ──
-  qblocks.push(new QBlock(1290,gY-130,3));
-  SKILL_LABELS.forEach((label,i)=>{
-    const x=1220+i*34;
-    const y=gY-90-Math.abs(Math.sin(i*0.7))*80;
-    skillCoins.push(new SkillCoin(x,y,label));
-  });
-  plats.push(new Platform(1200,gY-90,120,'brick','brick'));
-  plats.push(new Platform(1360,gY-130,100,'cloud','cloud'));
-  plats.push(new Platform(1470,gY-80,110,'brick','brick'));
-
-  // ── Zone 4: Contact (1595+) — reach the flag ──
-  plats.push(new Platform(1630,gY-85,160,'company','You made it!'));
-
-  const FLAG_X=1820;
-  return{plats,qblocks,skillCoins,gY,LW,FLAG_X};
-}
-
-// ══════════════════════════════════════════════════════════
-//  CARD SYSTEM
-// ══════════════════════════════════════════════════════════
-const cardEl=document.getElementById('card');
-const cardTag=document.getElementById('card-tag');
-const cardTitle=document.getElementById('card-title');
-const cardBody=document.getElementById('card-body');
-const cardHint=document.getElementById('card-hint');
-const dots=[1,2,3,4,5].map(i=>document.getElementById('d'+i));
-let cardOpen=false,currentCard=-1;
-
-function showCard(idx){
-  if(idx>=CARDS.length||idx<0) return;
-  SFX.reveal();
-  const c=CARDS[idx];
-  cardTag.textContent=c.tag;
-  cardTitle.textContent=c.title;
-  cardBody.innerHTML=c.body;
-  cardHint.textContent=c.hint;
-  dots.forEach((d,i)=>d.className='prog-dot'+(i<=idx?' active':''));
-  document.getElementById('card-title').style.display = idx===0?'none':'block';
-  if(idx===0)cardTag.style.fontSize='15px';else cardTag.style.fontSize='';
-  cardEl.classList.add('show');
-  cardOpen=true; currentCard=idx;
-  showZone(CARDS[idx].zone);
-  // Show hud title after about card
-  if(idx>=0) document.getElementById('hud-title').style.display='block';
-}
-function hideCard(){cardEl.classList.remove('show');cardOpen=false;}
-document.getElementById('card-close').addEventListener('click',hideCard);
-window.addEventListener('keydown',e=>{if(e.code==='Escape'||e.code==='KeyE')hideCard();});
-
-const zoneLabel=document.getElementById('zone-label');
-let zLT=null;
-function showZone(name){
-  zoneLabel.textContent=name;
-  zoneLabel.classList.add('show');
-  if(zLT)clearTimeout(zLT);
-  zLT=setTimeout(()=>zoneLabel.classList.remove('show'),2500);
-}
-
-// Dismiss hint after first move
-const hintEl=document.getElementById('hint');
-let hintGone=false;
-function dismissHint(){if(!hintGone){hintGone=true;hintEl.style.opacity='0';}}
-
-// ══════════════════════════════════════════════════════════
-//  TITLE SCREEN
-// ══════════════════════════════════════════════════════════
-function drawTitleScreen(ctx,W,H,t){
-  ctx.fillStyle='#0a0a1a';ctx.fillRect(0,HUD_H,W,H-HUD_H);
-  for(const s of STARS){ctx.fillStyle=`rgba(255,255,255,${0.3+0.3*Math.sin(t*0.02+s.x)})`;ctx.fillRect(s.x%W,s.y+HUD_H,s.s,s.s);}
-  // Title
   ctx.textAlign='center';
-  ctx.shadowColor='rgba(129,140,248,0.8)';ctx.shadowBlur=30;
-  ctx.fillStyle='#818cf8';ctx.font=`bold ${Math.min(60,W/10)}px monospace`;
-  ctx.fillText('SHUBHAM BAKRE',W/2,H*.38);
+  // Name
+  ctx.shadowColor=ZONES[0].accent; ctx.shadowBlur=50;
+  ctx.fillStyle='rgba(255,255,255,0.95)';
+  ctx.font=`300 ${Math.min(48,W*.068)}px 'Segoe UI',system-ui`;
+  ctx.fillText('SHUBHAM  BAKRE',W/2,H*.44);
   ctx.shadowBlur=0;
-  ctx.fillStyle='rgba(226,226,245,0.7)';ctx.font=`${Math.min(18,W/34)}px monospace`;
-  ctx.fillText('Senior Software Engineer · AI · Walmart',W/2,H*.38+50);
-  // Blinking start
-  if(Math.floor(t/28)%2===0){
-    ctx.fillStyle='#FFCC00';ctx.font=`bold ${Math.min(18,W/38)}px monospace`;
-    ctx.fillText(W<768?'TAP ▲ TO START':'PRESS  SPACE  TO  START',W/2,H*.62);
+  ctx.fillStyle='rgba(255,255,255,0.28)';
+  ctx.font=`${Math.min(11,W*.016)}px 'Segoe UI',system-ui`;
+  ctx.fillText('SENIOR  SOFTWARE  ENGINEER  ·  AI',W/2,H*.44+34);
+  // Prompt blink
+  if(Math.floor(t/32)%2===0){
+    ctx.fillStyle=ZONES[0].accent+'cc';
+    ctx.font=`${Math.min(10,W*.015)}px 'Segoe UI',system-ui`;
+    ctx.fillText(W<600?'TAP TO ENTER':'PRESS  SPACE  TO  ENTER',W/2,H*.64);
   }
-  ctx.fillStyle='rgba(226,226,245,0.25)';ctx.font=`12px monospace`;
-  ctx.fillText('Walk right through 5 zones to explore my full profile',W/2,H*.62+32);
 }
 
-// ══════════════════════════════════════════════════════════
-//  MAIN
-// ══════════════════════════════════════════════════════════
-const canvas=document.getElementById('c');
-const ctx=canvas.getContext('2d');
-let W,H;
-function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;canvas.style.marginTop=HUD_H+'px';canvas.height=H-HUD_H;H=canvas.height;}
-resize();
-window.addEventListener('resize',resize);
-
-let state='title',t=0;
-let player,plats,qblocks,skillCoins,parts,camX,gY,LW,FLAG_X;
-let zoneIdx=0,zoneFrac=0; // for sky color lerp
-let triggeredFlag=false;
-
-// Zone trigger X positions (where card auto-shows for zone 0)
-const ZONE_TRIGGERS=[
-  {x:80,cardIdx:0,done:false},   // About — at spawn
+// ── Level builder ──────────────────────────────────────────
+let plats, orbs, parts, player, gY;
+const TRIGGERS=[
+  {x:50,  idx:0, done:false},
+  {x:415, idx:1, done:false},
+  {x:815, idx:2, done:false},
+  {x:1215,idx:3, done:false},
 ];
+let flagDone=false;
 
-function init(){
-  const lv=buildLevel(H);
-  plats=lv.plats;qblocks=lv.qblocks;skillCoins=lv.skillCoins;
-  gY=lv.gY;LW=lv.LW;FLAG_X=lv.FLAG_X;
-  player=new Player(80,gY-80);
-  parts=[];camX=0;triggeredFlag=false;
-  ZONE_TRIGGERS.forEach(z=>z.done=false);
-  // Auto-show about card after short delay
-  setTimeout(()=>showCard(0),600);
+function initLevel(){
+  gY=H-96;
+  plats=[]; orbs=[];
+  // Ground sections — 4 gaps of 65px
+  [[0,330],[395,730],[795,1130],[1195,1530],[1595,LW]].forEach(([a,b])=>{
+    plats.push(new IsoPlatform(a,gY,b-a,80,22,'ground'));
+  });
+  // Zone 0: About
+  plats.push(new IsoPlatform(140,gY-85, 90,85,18,'accent'));
+  plats.push(new IsoPlatform(255,gY-120,80,120,18,'stone'));
+  // Zone 1: Projects
+  plats.push(new IsoPlatform(430,gY-65,150,65,18,'accent'));
+  plats.push(new IsoPlatform(615,gY-100,110,100,18,'stone'));
+  plats.push(new IsoPlatform(720,gY-55, 80, 55,18,'stone'));
+  // Zone 2: Experience — company labelled platforms
+  [[820,gY-80,130,'Walmart'],[955,gY-60,115,'Choice Hotels'],
+   [1072,gY-95,90,'Zelle'],[1162,gY-65,80,'Amex']].forEach(([x,y,w,l])=>{
+    plats.push(new IsoPlatform(x,y,w,Math.abs(y-gY),18,'company',l));
+  });
+  // Zone 3: Skills — orbs + accent platforms
+  plats.push(new IsoPlatform(1220,gY-75,120,75,18,'accent'));
+  plats.push(new IsoPlatform(1358,gY-105,105,105,18,'stone'));
+  plats.push(new IsoPlatform(1463,gY-65, 90, 65,18,'stone'));
+  SKILL_LABELS.forEach((label,i)=>{
+    orbs.push(new Orb(1208+i*33, gY-130-Math.abs(Math.sin(i*.72))*55, label));
+  });
+  // Zone 4: Contact
+  plats.push(new IsoPlatform(1628,gY-75,160,75,18,'accent'));
+  plats.push(new IsoPlatform(1728,gY-110,120,110,18,'accent'));
 }
 
-function tick(){
-  t++;
-  if(state==='title'){if(IN.jump||IN.right){state='play';init();}return;}
-  if(state!=='play') return;
+// ── Main loop ──────────────────────────────────────────────
+let state='title', tick=0, camX=0, zoneT=0, triggeredFlag=false;
 
-  player.update(plats,qblocks,skillCoins,parts,(cardIdx)=>{showCard(cardIdx);});
-  skillCoins.forEach(c=>c.update());
-  parts=parts.filter(p=>{p.update();return p.life>0;});
+function loop(){
+  tick++;
+  if(state==='title'){
+    drawTitle(tick);
+    if(IN.jump||IN.right){ state='play'; initLevel(); parts=[]; camX=0; zoneT=0; triggeredFlag=false; TRIGGERS.forEach(t=>t.done=false); flagDone=false; setTimeout(()=>showOverlay(0),700); }
+    requestAnimationFrame(loop); return;
+  }
 
+  // Zone colour progress
+  const zw=LW/ZONES.length;
+  const tz=Math.min(camX/zw, ZONES.length-1.001);
+  zoneT+=(tz-zoneT)*.06;
+  const col=zoneColors(Math.max(0,zoneT));
+  setAccent(col.accent);
+
+  // Update
+  player.update(plats,orbs,parts,col.accent);
+  orbs.forEach(o=>o.update());
+  parts=parts.filter(p=>{ p.update(); return p.life>0; });
   if(player.moved) dismissHint();
 
   // Zone triggers
-  for(const z of ZONE_TRIGGERS){
-    if(!z.done&&player.x>z.x){z.done=true;showCard(z.cardIdx);}
+  for(const tr of TRIGGERS){
+    if(!tr.done&&player.x>tr.x){ tr.done=true; showOverlay(tr.idx); }
   }
-
-  // Flag trigger
-  if(!triggeredFlag&&player.x>FLAG_X-60){
-    triggeredFlag=true;showCard(4);
-  }
+  if(!triggeredFlag&&player.x>FLAG_X-55){ triggeredFlag=true; showOverlay(4); }
 
   // Camera
-  const targetCam=player.x-W*0.35;
-  camX+=(targetCam-camX)*0.10;
+  const tc=player.x-W*.36;
+  camX+=(tc-camX)*.092;
   camX=Math.max(0,Math.min(camX,LW-W));
 
-  // Zone color tracking based on camera position
-  const zoneWidth=LW/ZONE_COLORS.length;
-  zoneIdx=camX/zoneWidth;
+  // Respawn
+  if(player.y>H+80){ player.y=gY-60; player.vy=0; player.x=Math.max(60,player.x-80); }
 
-  // Death (fell off)
-  if(player.y>H+100){
-    player=new Player(Math.max(80,player.x-200),gY-80);
-    camX=Math.max(0,player.x-W*0.3);
-  }
-}
-
-function render(){
+  // Render
   ctx.clearRect(0,0,W,H);
-  if(state==='title'){drawTitleScreen(ctx,W,H,t);return;}
+  drawBG(camX,col,tick);
+  plats.forEach(p=>p.draw(camX,col.accent));
+  orbs.forEach(o=>o.draw(camX,col.accent));
+  parts.forEach(p=>p.draw(camX));
+  drawFlag(camX,gY,tick,col.accent);
+  player.draw(camX,col.accent);
 
-  drawBG(ctx,camX,W,H,zoneIdx,zoneIdx);
-
-  // Ground line
-  ctx.fillStyle='rgba(0,0,0,0.3)';ctx.fillRect(0,gY+80,W,H-gY-80);
-
-  plats.forEach(p=>p.draw(ctx,camX,W));
-  qblocks.forEach(b=>b.draw(ctx,camX));
-  skillCoins.forEach(c=>c.draw(ctx,camX));
-  parts.forEach(p=>p.draw(ctx,camX));
-  drawFlag(ctx,camX,FLAG_X,gY,t);
-  player.draw(ctx,camX);
-
-  // Zone name in world space (ambient)
-  const zoneNames=[
-    {x:165,name:'About Me',col:'rgba(226,226,245,0.12)'},
-    {x:560,name:'Projects',col:'rgba(226,226,245,0.12)'},
-    {x:960,name:'Experience',col:'rgba(226,226,245,0.12)'},
-    {x:1360,name:'Skills',col:'rgba(226,226,245,0.12)'},
-    {x:1700,name:"Let's Connect",col:'rgba(129,140,248,0.2)'},
-  ];
-  ctx.textAlign='center';
-  for(const z of zoneNames){
+  // Zone ambient text
+  ctx.textAlign='center'; ctx.font=`bold ${Math.min(56,W*.072)}px monospace`;
+  const zLabels=[{x:165,'n':'About'},{x:562,'n':'Projects'},{x:962,'n':'Experience'},{x:1362,'n':'Skills'},{x:1700,'n':'Connect'}];
+  for(const z of zLabels){
     const sx=z.x-camX;
-    if(sx<-200||sx>W+200) continue;
-    ctx.fillStyle=z.col;ctx.font=`bold ${Math.min(64,W/8)}px monospace`;
-    ctx.fillText(z.name,sx,gY-10);
+    if(sx<-120||sx>W+120) continue;
+    ctx.fillStyle='rgba(255,255,255,0.05)';
+    ctx.fillText(z.n,sx,gY-18);
   }
+
+  requestAnimationFrame(loop);
 }
 
-function loop(){tick();render();requestAnimationFrame(loop);}
+// Init player once so it exists before first overlay
+plats=[]; orbs=[]; parts=[]; gY=H-96;
+player=new Player(80,gY-60);
 loop();
 </script>
 </body>
