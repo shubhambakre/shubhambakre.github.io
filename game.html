@@ -2,607 +2,720 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-<title>The Engineer's Path — Shubham Bakre</title>
-<meta name="description" content="An interactive Monument Valley-style journey through Shubham Bakre's engineering career." />
-<meta property="og:title" content="The Engineer's Path — Shubham Bakre" />
-<meta property="og:description" content="An interactive Monument Valley-style journey through a senior engineer's career." />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>shubham@portfolio:~ — Interactive Terminal</title>
+<meta name="description" content="An interactive terminal exploring Shubham Bakre's career. Type 'help' to begin." />
+<meta property="og:title" content="shubham@portfolio:~" />
+<meta property="og:description" content="Interactive CLI portfolio · Senior Software Engineer · AI" />
 <link rel="canonical" href="https://shubhambakre.com/game.html" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --bg:           #07090e;
+    --term:         #0d1117;
+    --term-soft:    #161b22;
+    --line:         rgba(255,255,255,0.06);
+    --line-strong:  rgba(255,255,255,0.12);
+    --fg:           #d4d4d4;
+    --muted:        rgba(212,212,212,0.55);
+    --whisper:      rgba(212,212,212,0.32);
+    --prompt:       #4ade80;
+    --user:         #4ade80;
+    --host:         #60a5fa;
+    --path:         #c084fc;
+    --string:       #fbbf24;
+    --error:        #f87171;
+    --link:         #93c5fd;
+    --heading:      #fafafa;
+    --shadow:       0 30px 80px rgba(0,0,0,0.55), 0 8px 24px rgba(0,0,0,0.35);
+  }
+
   *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
   html, body {
-    width:100%; height:100%; overflow:hidden;
-    background:#1a1230;
-    font-family:'Inter',-apple-system,sans-serif;
+    height:100%; width:100%;
+    background:var(--bg);
+    color:var(--fg);
+    font-family:'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
     -webkit-font-smoothing:antialiased;
-    color:#fefdf6;
-  }
-  canvas { display:block; position:fixed; inset:0; width:100%; height:100%; }
-
-  /* Top chrome */
-  #chrome {
-    position:fixed; top:24px; left:24px; right:24px;
-    display:flex; justify-content:space-between; align-items:flex-start;
-    z-index:10; pointer-events:none;
-  }
-  #chrome > * { pointer-events:auto; }
-
-  #chapter {
-    background:rgba(26,18,48,0.55);
-    backdrop-filter:blur(14px);
-    -webkit-backdrop-filter:blur(14px);
-    border:1px solid rgba(255,255,255,0.08);
-    border-radius:14px;
-    padding:16px 22px;
-    max-width:340px;
-    transform:translateY(-12px); opacity:0;
-    transition:transform .65s cubic-bezier(.2,.8,.3,1), opacity .65s ease;
-  }
-  #chapter.show { transform:none; opacity:1; }
-  #ch-num {
-    font-family:'JetBrains Mono',monospace;
-    font-size:10px; font-weight:500; letter-spacing:0.22em;
-    color:rgba(255,228,180,0.85); text-transform:uppercase;
-    margin-bottom:8px;
-  }
-  #ch-title {
-    font-size:20px; font-weight:300; letter-spacing:-0.02em;
-    color:#fefdf6; line-height:1.2; margin-bottom:6px;
-  }
-  #ch-body {
-    font-size:12.5px; color:rgba(254,253,246,0.62);
-    line-height:1.55;
+    overflow:hidden;
   }
 
-  #back-link {
+  /* Ambient gradient */
+  body::before, body::after {
+    content:''; position:fixed; pointer-events:none; z-index:0;
+    width:480px; height:480px; border-radius:50%;
+    filter:blur(120px); opacity:0.18;
+  }
+  body::before { background:#4ade80; top:-180px; left:-120px; }
+  body::after  { background:#60a5fa; bottom:-180px; right:-120px; }
+
+  /* ── Outer page ── */
+  .page {
+    position:fixed; inset:0;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    padding:24px 18px;
+    z-index:1;
+    overflow:hidden;
+  }
+
+  /* Top bar — back to portfolio */
+  .topbar {
+    position:absolute; top:18px; left:24px; right:24px;
+    display:flex; justify-content:space-between; align-items:center;
+    z-index:5; pointer-events:none;
+  }
+  .topbar > * { pointer-events:auto; }
+  .brand {
+    font-family:'Inter',sans-serif;
+    font-size:11px; font-weight:500; letter-spacing:0.1em;
+    color:var(--whisper); text-transform:uppercase;
+  }
+  .back {
     display:inline-flex; align-items:center; gap:7px;
-    padding:9px 16px; border-radius:100px;
-    background:rgba(26,18,48,0.55);
-    backdrop-filter:blur(14px);
-    -webkit-backdrop-filter:blur(14px);
-    border:1px solid rgba(255,255,255,0.08);
-    color:rgba(254,253,246,0.65);
+    font-family:'Inter',sans-serif;
+    padding:7px 14px; border-radius:100px;
+    background:rgba(255,255,255,0.04);
+    border:1px solid var(--line-strong);
+    color:var(--muted);
     font-size:11px; font-weight:500; letter-spacing:0.04em;
     text-decoration:none;
     transition:color .2s, border-color .2s, background .2s;
   }
-  #back-link:hover {
-    color:#fefdf6;
-    border-color:rgba(255,255,255,0.20);
-    background:rgba(26,18,48,0.75);
-  }
-  #back-link svg { width:11px; height:11px; }
+  .back:hover { color:var(--fg); border-color:rgba(255,255,255,0.28); background:rgba(255,255,255,0.08); }
+  .back svg { width:11px; height:11px; }
 
-  /* Bottom chrome */
-  #foot {
-    position:fixed; bottom:28px; left:0; right:0;
-    z-index:10; display:flex; flex-direction:column; align-items:center; gap:14px;
+  /* ── Terminal window (macOS style) ── */
+  .term {
+    width:100%; max-width:980px;
+    height:min(640px, calc(100vh - 80px));
+    background:var(--term);
+    border:1px solid var(--line);
+    border-radius:12px;
+    box-shadow:var(--shadow);
+    display:flex; flex-direction:column;
+    overflow:hidden;
+    position:relative;
+  }
+  .term::after {
+    content:''; position:absolute; inset:0;
+    border-radius:12px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.04);
     pointer-events:none;
   }
-  #pips { display:flex; gap:8px; }
-  .pip {
-    width:6px; height:6px; border-radius:50%;
-    background:rgba(255,255,255,0.16);
-    transition:background .4s, transform .4s;
-  }
-  .pip.done { background:rgba(255,228,180,0.55); }
-  .pip.now { background:rgba(255,228,180,1); transform:scale(1.55); }
 
-  #hint {
-    font-family:'JetBrains Mono',monospace;
-    font-size:10px; font-weight:500; letter-spacing:0.18em;
-    color:rgba(255,255,255,0.30); text-transform:uppercase;
-    transition:opacity 1s;
+  .titlebar {
+    height:38px; flex-shrink:0;
+    display:flex; align-items:center;
+    padding:0 14px;
+    background:var(--term-soft);
+    border-bottom:1px solid var(--line);
+    position:relative;
   }
-  #hint kbd {
-    display:inline-block;
-    padding:3px 7px; margin:0 3px;
-    background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.14);
-    border-radius:4px; font-family:inherit; font-size:9px;
+  .lights { display:flex; gap:7px; }
+  .light { width:12px; height:12px; border-radius:50%; }
+  .l-r { background:#ff5f57; }
+  .l-y { background:#febc2e; }
+  .l-g { background:#28c840; }
+  .titlebar-title {
+    position:absolute; left:50%; transform:translateX(-50%);
+    font-size:11.5px; color:var(--muted); font-weight:500;
+    letter-spacing:0.02em;
   }
 
-  /* Mobile arrows */
-  #mctl {
-    position:fixed; bottom:80px; left:0; right:0;
-    display:flex; justify-content:center; gap:14px;
-    z-index:10; pointer-events:none;
+  /* Body */
+  .body {
+    flex:1; min-height:0;
+    overflow-y:auto; overflow-x:hidden;
+    padding:20px 22px 12px;
+    font-size:13.5px; line-height:1.65;
+    scrollbar-width:thin;
+    scrollbar-color:rgba(255,255,255,0.12) transparent;
   }
-  .mb {
-    width:54px; height:54px; border-radius:50%;
-    background:rgba(26,18,48,0.55);
-    backdrop-filter:blur(10px);
-    -webkit-backdrop-filter:blur(10px);
-    border:1px solid rgba(255,255,255,0.10);
-    color:rgba(254,253,246,0.65); font-size:20px;
-    display:flex; align-items:center; justify-content:center;
-    pointer-events:auto; cursor:pointer; user-select:none;
-    -webkit-tap-highlight-color:transparent;
-    transition:background .15s;
-  }
-  .mb:active { background:rgba(255,255,255,0.16); color:#fff; }
-  @media (min-width:768px) { #mctl { display:none; } }
+  .body::-webkit-scrollbar { width:8px; }
+  .body::-webkit-scrollbar-track { background:transparent; }
+  .body::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.10); border-radius:4px; }
 
-  /* End-state CTA — bottom centred so it doesn't cover the tower */
-  #end-cta {
-    position:fixed; left:50%; bottom:90px;
-    transform:translate(-50%,16px);
-    opacity:0; transition:opacity .8s ease, transform .8s cubic-bezier(.2,.8,.3,1);
-    pointer-events:none; z-index:11;
-    text-align:center;
+  /* Lines */
+  .ln { white-space:pre-wrap; word-break:break-word; margin-bottom:1px; }
+  .ln-prompt { display:flex; align-items:flex-start; gap:0; margin-top:8px; }
+  .ln-prompt .cmd { color:var(--fg); margin-left:8px; }
+  .prompt-tok {
+    display:inline-flex; align-items:center; gap:0; flex-shrink:0;
   }
-  #end-cta.show {
-    opacity:1; transform:translate(-50%,0);
-    pointer-events:auto;
+  .prompt-tok .u { color:var(--user); }
+  .prompt-tok .at { color:var(--muted); }
+  .prompt-tok .h { color:var(--host); }
+  .prompt-tok .col { color:var(--muted); }
+  .prompt-tok .p { color:var(--path); }
+  .prompt-tok .dollar { color:var(--prompt); margin-left:4px; }
+
+  .ascii {
+    color:var(--prompt);
+    font-size:11.5px; line-height:1.15;
+    margin:6px 0 14px;
+    text-shadow:0 0 14px rgba(74,222,128,0.32);
+    white-space:pre;
+    overflow-x:auto;
   }
-  #end-cta::before {
-    content:'YOU REACHED THE SUMMIT';
-    display:block;
-    font-family:'JetBrains Mono',monospace;
-    font-size:9.5px; font-weight:500; letter-spacing:0.22em;
-    color:rgba(255,228,180,0.65); margin-bottom:14px;
+  .heading { color:var(--heading); font-weight:600; }
+  .muted   { color:var(--muted); }
+  .accent  { color:var(--prompt); }
+  .amber   { color:var(--string); }
+  .lavender{ color:var(--path); }
+  .blue    { color:var(--host); }
+  .err     { color:var(--error); }
+  .link    { color:var(--link); text-decoration:none; border-bottom:1px solid rgba(147,197,253,0.35); }
+  .link:hover { border-bottom-color:var(--link); }
+
+  .chip {
+    display:inline-block; cursor:pointer;
+    padding:1px 8px; margin:1px 2px;
+    border-radius:4px;
+    background:rgba(74,222,128,0.10);
+    color:var(--prompt);
+    border:1px solid rgba(74,222,128,0.22);
+    transition:background .15s, border-color .15s;
+    font-size:12.5px;
   }
-  #end-cta a {
-    display:inline-flex; align-items:center; gap:9px;
-    padding:13px 26px; border-radius:100px;
-    background:#fefdf6; color:#1a1230;
-    font-size:13px; font-weight:500; letter-spacing:-0.005em;
-    text-decoration:none;
-    transition:transform .2s;
+  .chip:hover { background:rgba(74,222,128,0.18); border-color:rgba(74,222,128,0.40); }
+
+  table.proj { width:100%; margin:6px 0 8px; border-collapse:collapse; }
+  table.proj td { padding:3px 0; vertical-align:top; }
+  table.proj td:first-child { color:var(--prompt); padding-right:18px; white-space:nowrap; }
+  table.proj td:last-child { color:var(--muted); }
+
+  .tl-entry { margin:6px 0 12px; }
+  .tl-date { color:var(--whisper); font-size:11.5px; }
+  .tl-role { color:var(--heading); font-weight:600; }
+  .tl-org  { color:var(--muted); }
+  .tl-desc { color:var(--muted); margin-top:3px; max-width:62ch; }
+
+  ul.bare { list-style:none; padding:0; }
+  ul.bare li { padding:1px 0; color:var(--muted); }
+  ul.bare li::before { content:'· '; color:var(--whisper); }
+
+  /* Input row (always at bottom) */
+  .inp {
+    flex-shrink:0;
+    display:flex; align-items:center;
+    padding:8px 22px 16px;
+    background:var(--term);
+    border-top:1px solid var(--line);
+    gap:10px;
   }
-  #end-cta a:hover { transform:scale(1.04); }
-  #end-cta svg { width:13px; height:13px; }
+  .inp .prompt-tok { font-size:13.5px; }
+  .inp input {
+    flex:1; min-width:0;
+    background:transparent; border:none; outline:none;
+    color:var(--fg);
+    font-family:inherit; font-size:13.5px; font-weight:400;
+    caret-color:var(--prompt);
+    padding:0;
+  }
+  .inp input::placeholder { color:var(--whisper); }
+  .caret {
+    display:inline-block; width:8px; height:15px;
+    background:var(--prompt);
+    margin-left:1px;
+    animation:blink 1s step-end infinite;
+    box-shadow:0 0 8px rgba(74,222,128,0.5);
+    vertical-align:middle;
+  }
+  @keyframes blink { 50% { opacity:0; } }
+
+  /* Suggestion bar */
+  .suggest {
+    flex-shrink:0;
+    padding:0 22px 14px;
+    display:flex; flex-wrap:wrap; gap:6px;
+    background:var(--term);
+  }
+  .suggest .lbl {
+    font-size:10.5px; color:var(--whisper);
+    letter-spacing:0.12em; text-transform:uppercase;
+    margin-right:4px; align-self:center;
+  }
+
+  /* Footer hint outside terminal */
+  .below-hint {
+    margin-top:14px; font-family:'Inter',sans-serif;
+    font-size:11px; color:var(--whisper); letter-spacing:0.04em;
+  }
+  .below-hint kbd {
+    display:inline-block; font-family:'JetBrains Mono',monospace;
+    font-size:9.5px; padding:2px 6px;
+    background:rgba(255,255,255,0.06); border:1px solid var(--line-strong);
+    border-radius:4px; margin:0 2px;
+  }
+
+  /* Boot fade-in */
+  .boot { opacity:0; animation:boot .35s ease forwards; }
+  @keyframes boot { to { opacity:1; } }
+
+  @media (max-width:640px) {
+    .body { font-size:12.5px; padding:16px 16px 10px; }
+    .inp { padding:8px 16px 14px; }
+    .suggest { padding:0 16px 12px; }
+    .ascii { font-size:9px; }
+    .titlebar-title { font-size:10.5px; }
+  }
 </style>
 </head>
 <body>
 
-<canvas id="c"></canvas>
+<div class="page">
 
-<div id="chrome">
-  <div id="chapter">
-    <div id="ch-num">CHAPTER 01 · OF 05</div>
-    <div id="ch-title">The Foundation</div>
-    <div id="ch-body">A degree in Phoenix, a city in the Bay, a question — what could a system actually do?</div>
+  <div class="topbar">
+    <div class="brand">SHUBHAM BAKRE · /TERMINAL</div>
+    <a class="back" href="/">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to portfolio
+    </a>
   </div>
-  <a href="/" id="back-link">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-    Portfolio
-  </a>
-</div>
 
-<div id="mctl">
-  <button class="mb" data-a="back">←</button>
-  <button class="mb" data-a="fwd">→</button>
-</div>
+  <div class="term" id="term">
+    <div class="titlebar">
+      <div class="lights">
+        <div class="light l-r"></div>
+        <div class="light l-y"></div>
+        <div class="light l-g"></div>
+      </div>
+      <div class="titlebar-title">shubham@portfolio: ~ </div>
+    </div>
 
-<div id="foot">
-  <div id="pips">
-    <div class="pip now"></div><div class="pip"></div><div class="pip"></div>
-    <div class="pip"></div><div class="pip"></div>
+    <div class="body" id="body"></div>
+
+    <div class="suggest" id="suggest"></div>
+
+    <form class="inp" id="form" autocomplete="off">
+      <span class="prompt-tok">
+        <span class="u">shubham</span><span class="at">@</span><span class="h">portfolio</span><span class="col">:</span><span class="p">~</span><span class="dollar">$</span>
+      </span>
+      <input id="cmd" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" aria-label="Terminal input" />
+    </form>
   </div>
-  <div id="hint"><kbd>→</kbd> to continue · <kbd>←</kbd> back · or tap</div>
-</div>
 
-<div id="end-cta">
-  <a href="/">
-    Return to portfolio
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-  </a>
+  <div class="below-hint">
+    <kbd>Tab</kbd> autocomplete · <kbd>↑</kbd> <kbd>↓</kbd> history · <kbd>help</kbd> for all commands
+  </div>
 </div>
 
 <script>
 // ════════════════════════════════════════════════════
-//  THE ENGINEER'S PATH
-//  An isometric Monument Valley-style portfolio scene
+//  shubham@portfolio:~  ·  Interactive terminal
 // ════════════════════════════════════════════════════
 
-const canvas = document.getElementById('c');
-const ctx    = canvas.getContext('2d');
-let DW, DH, DPR = Math.min(window.devicePixelRatio || 1, 2);
+const body    = document.getElementById('body');
+const form    = document.getElementById('form');
+const input   = document.getElementById('cmd');
+const sugBar  = document.getElementById('suggest');
 
-function resize() {
-  DPR = Math.min(window.devicePixelRatio || 1, 2);
-  DW = window.innerWidth;
-  DH = window.innerHeight;
-  canvas.width  = DW * DPR;
-  canvas.height = DH * DPR;
-  canvas.style.width  = DW + 'px';
-  canvas.style.height = DH + 'px';
-  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+// ─── Output helpers ───
+const esc = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function out(html, cls='') {
+  const div = document.createElement('div');
+  div.className = 'ln boot' + (cls ? ' ' + cls : '');
+  div.innerHTML = html;
+  body.appendChild(div);
+  scrollDown();
+  return div;
 }
-resize();
-window.addEventListener('resize', resize);
+function blank(n=1) { for (let i=0; i<n; i++) out(' '); }
+function scrollDown() { body.scrollTop = body.scrollHeight; }
 
-// ── Isometric projection ──
-const ISO = { TW: 78, TH: 39, BH: 56 };
+const promptHTML = `<span class="prompt-tok"><span class="u">shubham</span><span class="at">@</span><span class="h">portfolio</span><span class="col">:</span><span class="p">~</span><span class="dollar">$</span></span>`;
 
-function project(x, y, z) {
-  return {
-    sx: (x - z) * ISO.TW * 0.5,
-    sy: (x + z) * ISO.TH * 0.5 - y * ISO.BH,
-  };
+function echoCmd(cmd) {
+  out(`<span class="ln-prompt">${promptHTML}<span class="cmd"> ${esc(cmd)}</span></span>`);
 }
-let originX = 0, originY = 0;
-const world = (x, y, z) => {
-  const p = project(x, y, z);
-  return { sx: p.sx + originX, sy: p.sy + originY };
+
+// ─── Content ───
+const ASCII = `   ▄▖▌    ▌▌      ▖▖▘   ▌      ▘
+   ▚ ▛▌▌▌▛▌▛▌▀▌▛▛▌▙▌▌▌▛▌▘▀▌▙▘▛▘█▌
+   ▄▌▌▌▙▌▙▌▌▌█▌▌▌▌▌▌▙▌▌ ▌█▌▌▌▌ ▙▖
+                                   `;
+
+const ABOUT = `
+<span class="heading">▌ About</span>
+
+I'm a <span class="heading">Senior Software Engineer</span> at <span class="amber">Walmart Global Tech</span> in Sunnyvale, CA.
+I build production AI systems — LLM pipelines, distributed data
+platforms, and backend infrastructure that scales to <span class="amber">hundreds of
+millions of records</span>.
+
+<span class="muted">Currently shipping an LLM-powered chatbot over a 550M-SKU
+inventory dataset. Zero SQL required from users. Vertex AI + BigQuery NL2SQL.</span>
+
+<span class="muted">7+ years across retail · fintech · big data.</span>
+<span class="muted">MS in Computer Science, Arizona State University (3.7 GPA).</span>
+`;
+
+const SKILLS = `
+<span class="heading">▌ Tech stack</span>
+
+<span class="accent">AI / ML</span>     <span class="muted">Vertex AI · LLM Integration · RAG · NL2SQL · LangChain · Vector DBs · TensorFlow · PyTorch</span>
+<span class="accent">Backend</span>     <span class="muted">Go · Java · Python · Scala · Spring Boot · REST · gRPC · PostgreSQL · Docker</span>
+<span class="accent">Data</span>        <span class="muted">BigQuery · Apache Spark · Airflow · Hadoop · Kafka</span>
+<span class="accent">Cloud</span>       <span class="muted">GCP · AWS (EC2, EMR, S3, Athena)</span>
+`;
+
+const EXPERIENCE = `
+<span class="heading">▌ Career timeline</span>
+
+<div class="tl-entry">
+  <div class="tl-date">FEB 2026 — PRESENT</div>
+  <div class="tl-role">Senior Software Engineer</div>
+  <div class="tl-org">Walmart Global Tech · Sunnyvale, CA</div>
+  <div class="tl-desc">Lead engineering on an LLM-powered chatbot over 550M-SKU inventory data. Vertex AI + BigQuery NL2SQL. Spark ML forecasting pipelines.</div>
+</div>
+
+<div class="tl-entry">
+  <div class="tl-date">FEB 2023 — FEB 2026</div>
+  <div class="tl-role">Software Engineer III</div>
+  <div class="tl-org">Walmart Global Tech · Sunnyvale, CA</div>
+  <div class="tl-desc">Distributed inventory systems, BigQuery analytics, ML model integration into production fulfilment flows.</div>
+</div>
+
+<div class="tl-entry">
+  <div class="tl-date">JUN 2022 — FEB 2023</div>
+  <div class="tl-role">Big Data Engineer</div>
+  <div class="tl-org">Choice Hotels · Phoenix, AZ</div>
+  <div class="tl-desc">ETL and batch pipelines on Hadoop and Spark. Airflow orchestration, EMR cluster ops.</div>
+</div>
+
+<div class="tl-entry">
+  <div class="tl-date">2021 — 2022</div>
+  <div class="tl-role">Software Engineer</div>
+  <div class="tl-org">Zelle (Early Warning Services)</div>
+  <div class="tl-desc">High-value payment backend services. Java, Spring Boot, REST APIs over PostgreSQL.</div>
+</div>
+
+<div class="tl-entry">
+  <div class="tl-date">2020</div>
+  <div class="tl-role">Machine Learning Intern</div>
+  <div class="tl-org">American Express</div>
+  <div class="tl-desc">Predictive models for transaction risk signals. Python, TensorFlow.</div>
+</div>
+`;
+
+const PROJECTS = `
+<span class="heading">▌ Selected projects</span>
+
+<table class="proj">
+<tr><td>go-llm-gateway</td><td>API gateway for LLM requests · Go · zero deps</td></tr>
+<tr><td>vertex-ai-rag-pipeline</td><td>End-to-end RAG · Vertex AI + BigQuery Vector Search</td></tr>
+<tr><td>llm-eval-harness</td><td>LLM eval framework · faithfulness, LLM-as-judge</td></tr>
+<tr><td>omnimart-ratings-reviews</td><td>Hexagonal-arch ratings service · Go</td></tr>
+<tr><td>bq-genai-poc</td><td>BigQuery + GenAI NL2SQL prototype · Python</td></tr>
+</table>
+<span class="muted">Type <span class="chip" data-cmd="cat go-llm-gateway">cat go-llm-gateway</span> to read details, or <span class="chip" data-cmd="open github">open github</span> to browse all repos.</span>
+`;
+
+const PROJECT_DETAILS = {
+  'go-llm-gateway': `
+<span class="heading">▌ go-llm-gateway</span> <span class="muted">· Go · 2026</span>
+
+Production API gateway for LLM requests.
+Per-IP token-bucket rate limiting, atomic int64 cost tracking,
+structured JSON logging, primary→fallback model failover.
+
+<span class="accent">Stack</span>     <span class="muted">Go 1.21 · zero external deps · stdlib net/http</span>
+<span class="accent">Endpoints</span> <span class="muted">POST /v1/chat/completions · GET /health · GET /metrics</span>
+<span class="accent">GitHub</span>    <a class="link" href="https://github.com/shubhambakre/go-llm-gateway" target="_blank">github.com/shubhambakre/go-llm-gateway</a>
+`,
+  'vertex-ai-rag-pipeline': `
+<span class="heading">▌ vertex-ai-rag-pipeline</span> <span class="muted">· Python · 2026</span>
+
+End-to-end RAG pipeline on Google Vertex AI.
+BigQuery Vector Search for retrieval, LangChain orchestration,
+semantic grounding, batch evaluation hooks.
+
+<span class="accent">Stack</span>     <span class="muted">Python · Vertex AI · BigQuery · LangChain</span>
+<span class="accent">GitHub</span>    <a class="link" href="https://github.com/shubhambakre/vertex-ai-rag-pipeline" target="_blank">github.com/shubhambakre/vertex-ai-rag-pipeline</a>
+`,
+  'llm-eval-harness': `
+<span class="heading">▌ llm-eval-harness</span> <span class="muted">· Python · 2026</span>
+
+Evaluation framework for LLM outputs.
+Faithfulness scoring, correctness vs ground truth, LLM-as-judge,
+batch runner with CSV/JSON export. CI-ready (exits non-zero on regression).
+
+<span class="accent">Stack</span>     <span class="muted">Python · google-generativeai · python-dotenv</span>
+<span class="accent">GitHub</span>    <a class="link" href="https://github.com/shubhambakre/llm-eval-harness" target="_blank">github.com/shubhambakre/llm-eval-harness</a>
+`,
+  'omnimart-ratings-reviews': `
+<span class="heading">▌ omnimart-ratings-reviews</span> <span class="muted">· Go · 2026</span>
+
+Hexagonal-architecture ratings &amp; reviews service.
+Dual REST APIs, cursor-based pagination, comprehensive integration tests.
+
+<span class="accent">Stack</span>     <span class="muted">Go · PostgreSQL · Docker · GitHub Pages docs</span>
+<span class="accent">GitHub</span>    <a class="link" href="https://github.com/shubhambakre/omnimart-ratings-reviews" target="_blank">github.com/shubhambakre/omnimart-ratings-reviews</a>
+`,
+  'bq-genai-poc': `
+<span class="heading">▌ bq-genai-poc</span> <span class="muted">· Python · 2026</span>
+
+BigQuery + GenAI prototype — natural-language to SQL over BigQuery.
+Public sibling of the production Walmart inventory chatbot.
+
+<span class="accent">Stack</span>     <span class="muted">Python · BigQuery · Vertex AI · Streamlit UI</span>
+<span class="accent">GitHub</span>    <a class="link" href="https://github.com/shubhambakre/bq-genai-poc" target="_blank">github.com/shubhambakre/bq-genai-poc</a>
+`,
 };
 
-// ── Chapters ──
-const CHAPTERS = [
-  { num:'01', title:'The Foundation',
-    body:"Arizona State, MS in Computer Science. Mornings reading papers, nights writing tensors that wouldn't compile." },
-  { num:'02', title:'The First Path',
-    body:"Zelle, then American Express. High-value payments, fraud signals, the discipline of code that cannot fail." },
-  { num:'03', title:'The Climb',
-    body:"Choice Hotels. Spark, Hadoop, Airflow at scale. Learning that data is never clean, only quietly negotiated." },
-  { num:'04', title:'The Pinnacle',
-    body:"Walmart Global Tech. 550 million SKUs. An LLM chatbot that needs no SQL. Production AI, every day." },
-  { num:'05', title:'The Summit',
-    body:"Open to senior AI engineering roles in the Bay Area. If you're building what comes next — let's talk." },
+const CONTACT = `
+<span class="heading">▌ Contact</span>
+
+<span class="accent">email</span>     <a class="link" href="mailto:shubhambakre@gmail.com">shubhambakre@gmail.com</a>
+<span class="accent">linkedin</span>  <a class="link" href="https://linkedin.com/in/shubhambakre" target="_blank">linkedin.com/in/shubhambakre</a>
+<span class="accent">github</span>    <a class="link" href="https://github.com/shubhambakre" target="_blank">github.com/shubhambakre</a>
+<span class="accent">site</span>      <a class="link" href="https://shubhambakre.com">shubhambakre.com</a>
+
+<span class="muted">Open to senior AI/ML engineering roles in the Bay Area.</span>
+`;
+
+const HELP = `
+<span class="heading">▌ Available commands</span>
+
+<table class="proj">
+<tr><td>about</td>      <td>About me, currently, education</td></tr>
+<tr><td>experience</td> <td>Career timeline (5 roles)</td></tr>
+<tr><td>projects</td>   <td>Open-source projects</td></tr>
+<tr><td>cat &lt;name&gt;</td>  <td>Read details on a project</td></tr>
+<tr><td>skills</td>     <td>Tech stack by category</td></tr>
+<tr><td>resume</td>     <td>Download resume (PDF)</td></tr>
+<tr><td>contact</td>    <td>Email, LinkedIn, GitHub</td></tr>
+<tr><td>open &lt;target&gt;</td><td>Open github · linkedin · site · resume</td></tr>
+<tr><td>whoami</td>     <td>Identity</td></tr>
+<tr><td>ls</td>         <td>List sections</td></tr>
+<tr><td>theme</td>      <td>Cycle terminal accent (green · amber · blue · pink)</td></tr>
+<tr><td>clear</td>      <td>Clear the screen</td></tr>
+<tr><td>exit</td>       <td>Return to portfolio site</td></tr>
+</table>
+<span class="muted">Tip: try <span class="chip" data-cmd="sudo hire-me">sudo hire-me</span></span>
+`;
+
+// ─── Theme cycling ───
+const THEMES = [
+  { prompt:'#4ade80', user:'#4ade80', host:'#60a5fa', path:'#c084fc' },
+  { prompt:'#fbbf24', user:'#fbbf24', host:'#f87171', path:'#c084fc' },
+  { prompt:'#60a5fa', user:'#60a5fa', host:'#4ade80', path:'#c084fc' },
+  { prompt:'#f472b6', user:'#f472b6', host:'#c084fc', path:'#60a5fa' },
 ];
-
-// ── Tower structure (cubes at integer x,y,z) ──
-const STRUCTURE = [];
-// Foundation: 4×4 at y=0
-for (let x = -1; x <= 2; x++)
-  for (let z = -1; z <= 2; z++)
-    STRUCTURE.push({ x, y:0, z, tier:0 });
-// Stair on south-east edge (y=1)
-STRUCTURE.push({ x:2, y:1, z:2, tier:1 });
-// Mid platform: 3×3 at y=1
-for (let x = 0; x <= 2; x++)
-  for (let z = 0; z <= 2; z++)
-    STRUCTURE.push({ x, y:1, z, tier:1 });
-// Stair to upper (y=2)
-STRUCTURE.push({ x:0, y:2, z:0, tier:2 });
-// Upper platform: 2×2 at y=2 (offset)
-for (let x = 0; x <= 1; x++)
-  for (let z = -1; z <= 0; z++)
-    STRUCTURE.push({ x, y:2, z, tier:2 });
-// Crown approach + tower
-STRUCTURE.push({ x:1, y:3, z:-1, tier:3 });
-STRUCTURE.push({ x:1, y:3, z:-2, tier:3 });
-STRUCTURE.push({ x:1, y:4, z:-2, tier:4 });
-
-// Sort back-to-front for painter's algorithm
-const SORTED = [...STRUCTURE].sort((a, b) => (a.x + a.z + a.y * 0.5) - (b.x + b.z + b.y * 0.5));
-
-// ── Path: standing positions (y = top-of-cube level you're walking on) ──
-const PATH = [
-  { x:-1, y:1, z:-1, chapter:0 },
-  { x:0,  y:1, z:-1 },
-  { x:1,  y:1, z:-1 },
-  { x:2,  y:1, z:-1 },
-  { x:2,  y:1, z:0 },
-  { x:2,  y:1, z:1 },
-  { x:2,  y:1, z:2, chapter:1 },
-  { x:2,  y:2, z:2 },
-  { x:2,  y:2, z:1 },
-  { x:2,  y:2, z:0, chapter:2 },
-  { x:1,  y:2, z:0 },
-  { x:0,  y:2, z:0 },
-  { x:0,  y:3, z:0, chapter:3 },
-  { x:0,  y:3, z:-1 },
-  { x:1,  y:3, z:-1 },
-  { x:1,  y:4, z:-1 },
-  { x:1,  y:4, z:-2 },
-  { x:1,  y:5, z:-2, chapter:4 },
-];
-
-// ── Tier palette (Monument Valley pastel architecture) ──
-const TIERS = [
-  { top:'#e8c074', left:'#b89254', right:'#7a5e2e' }, // foundation — gold sand
-  { top:'#d49797', left:'#a86c6c', right:'#7a4848' }, // mid — peachy rose
-  { top:'#c896e8', left:'#9c70b8', right:'#6f4d8a' }, // upper — lavender
-  { top:'#9bc6e8', left:'#6f9ec0', right:'#4c7894' }, // crown base — sky blue
-  { top:'#fefdf6', left:'#c9c4a8', right:'#928e74' }, // crown top — cream
-];
-
-// ── Sky gradient (dusk → dawn) ──
-const SKY = ['#1a1230', '#2a1f4a', '#583a64', '#a86b75', '#e8a98c'];
-
-// ── Stars + drifting dust ──
-const STARS = Array.from({length:90}, () => ({
-  x: Math.random(), y: Math.random()*0.45,
-  s: Math.random()<0.18 ? 1.6 : 1,
-  a: 0.25 + Math.random()*0.45,
-  tw: Math.random()*Math.PI*2,
-}));
-const DUST = Array.from({length:18}, () => ({
-  x: Math.random()*1.2 - 0.1, y: Math.random()*0.85,
-  v: 0.00012 + Math.random()*0.00018,
-  s: 0.6 + Math.random()*1.4,
-  a: 0.10 + Math.random()*0.18,
-}));
-
-// ── Input ──
-window.addEventListener('keydown', e => {
-  if (['ArrowRight','KeyD','Space','Enter'].includes(e.code)) { e.preventDefault(); advance(+1); }
-  if (['ArrowLeft','KeyA'].includes(e.code))                  { e.preventDefault(); advance(-1); }
-});
-
-document.querySelectorAll('.mb').forEach(b => {
-  const a = b.dataset.a;
-  const fire = (e) => { e.preventDefault(); advance(a === 'fwd' ? 1 : -1); };
-  b.addEventListener('touchstart', fire, { passive:false });
-  b.addEventListener('mousedown', fire);
-});
-
-let tStartX = null;
-canvas.addEventListener('touchstart', e => { tStartX = e.touches[0].clientX; }, { passive:true });
-canvas.addEventListener('touchend', e => {
-  if (tStartX === null) return;
-  const dx = e.changedTouches[0].clientX - tStartX;
-  if (Math.abs(dx) > 28) advance(dx > 0 ? 1 : -1);
-  tStartX = null;
-}, { passive:true });
-canvas.addEventListener('click', () => advance(+1));
-
-// ── Chapter UI ──
-const chEl   = document.getElementById('chapter');
-const chNum  = document.getElementById('ch-num');
-const chTit  = document.getElementById('ch-title');
-const chBod  = document.getElementById('ch-body');
-const pips   = [...document.querySelectorAll('.pip')];
-const hintEl = document.getElementById('hint');
-const endCTA = document.getElementById('end-cta');
-let hintHidden = false;
-let lastChapterShown = 0;
-
-function showChapter(idx) {
-  if (idx === lastChapterShown && chEl.classList.contains('show')) return;
-  lastChapterShown = idx;
-  const c = CHAPTERS[idx];
-  chEl.classList.remove('show');
-  setTimeout(() => {
-    chNum.textContent = `CHAPTER ${c.num} · OF 05`;
-    chTit.textContent = c.title;
-    chBod.textContent = c.body;
-    pips.forEach((p,i) => p.className = 'pip' + (i < idx ? ' done' : i === idx ? ' now' : ''));
-    chEl.classList.add('show');
-    if (idx === CHAPTERS.length - 1) endCTA.classList.add('show');
-    else endCTA.classList.remove('show');
-  }, 180);
+let themeIdx = 0;
+function applyTheme(i) {
+  const t = THEMES[i % THEMES.length];
+  document.documentElement.style.setProperty('--prompt', t.prompt);
+  document.documentElement.style.setProperty('--user',   t.user);
+  document.documentElement.style.setProperty('--host',   t.host);
+  document.documentElement.style.setProperty('--path',   t.path);
 }
-showChapter(0);
 
-// ── Path traversal ──
-let pathIdx    = 0;
-let targetIdx  = 0;
-let interpFrom = null;
-let interpTo   = PATH[0];
-let interpT    = 1;  // already at start
-
-function ease(t) { return t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2; }
-
-function currentPos() {
-  if (interpFrom && interpT < 1) {
-    const t = ease(interpT);
-    return {
-      x: interpFrom.x + (interpTo.x - interpFrom.x) * t,
-      y: interpFrom.y + (interpTo.y - interpFrom.y) * t,
-      z: interpFrom.z + (interpTo.z - interpFrom.z) * t,
+// ─── Commands ───
+const COMMANDS = {
+  help:    () => out(HELP),
+  about:   () => out(ABOUT),
+  skills:  () => out(SKILLS),
+  experience: () => out(EXPERIENCE),
+  projects:  () => out(PROJECTS),
+  contact: () => out(CONTACT),
+  whoami:  () => out(`<span class="accent">shubham</span> <span class="muted">— Senior Software Engineer · Walmart · Sunnyvale, CA</span>`),
+  pwd:     () => out(`<span class="muted">/home/shubham</span>`),
+  date:    () => out(`<span class="muted">${new Date().toString()}</span>`),
+  ls:      () => out(`<span class="accent">about.md</span>  <span class="accent">experience.md</span>  <span class="accent">projects/</span>  <span class="accent">skills.md</span>  <span class="accent">contact.md</span>  <span class="accent">resume.pdf</span>`),
+  resume:  () => {
+    out(`<span class="muted">Downloading <span class="amber">resume.pdf</span> ...</span>`);
+    setTimeout(() => {
+      const a = document.createElement('a');
+      a.href = '/assets/resume.pdf'; a.download = 'shubham-bakre-resume.pdf';
+      document.body.appendChild(a); a.click(); a.remove();
+    }, 250);
+  },
+  clear:   () => { body.innerHTML = ''; },
+  theme:   () => {
+    themeIdx = (themeIdx + 1) % THEMES.length;
+    applyTheme(themeIdx);
+    const names = ['green','amber','blue','pink'];
+    out(`<span class="muted">theme · </span><span class="accent">${names[themeIdx]}</span>`);
+  },
+  exit:    () => {
+    out(`<span class="muted">closing terminal...</span>`);
+    setTimeout(() => location.href = '/', 350);
+  },
+  cat: (arg) => {
+    if (!arg) return out(`<span class="err">cat: missing operand</span>`);
+    if (arg === 'about' || arg === 'about.md') return COMMANDS.about();
+    if (arg === 'skills' || arg === 'skills.md') return COMMANDS.skills();
+    if (arg === 'contact' || arg === 'contact.md') return COMMANDS.contact();
+    if (PROJECT_DETAILS[arg])         return out(PROJECT_DETAILS[arg]);
+    out(`<span class="err">cat: ${esc(arg)}: no such file</span> <span class="muted">— try one of:</span> ${
+      Object.keys(PROJECT_DETAILS).map(k => `<span class="chip" data-cmd="cat ${k}">${k}</span>`).join('')
+    }`);
+  },
+  open: (arg) => {
+    const targets = {
+      github:   'https://github.com/shubhambakre',
+      linkedin: 'https://linkedin.com/in/shubhambakre',
+      site:     'https://shubhambakre.com',
+      portfolio:'https://shubhambakre.com',
+      resume:   '/assets/resume.pdf',
+      email:    'mailto:shubhambakre@gmail.com',
     };
-  }
-  return PATH[pathIdx];
-}
-
-function advance(dir) {
-  const next = Math.max(0, Math.min(PATH.length - 1, targetIdx + dir));
-  if (next === targetIdx) return;
-  if (!hintHidden) { hintEl.style.opacity = '0'; hintHidden = true; }
-  interpFrom = currentPos();
-  targetIdx  = next;
-  interpTo   = PATH[targetIdx];
-  interpT    = 0;
-}
-
-// ── Drawing ──
-function poly(pts) {
-  ctx.beginPath();
-  ctx.moveTo(pts[0].sx, pts[0].sy);
-  for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].sx, pts[i].sy);
-  ctx.closePath();
-  ctx.fill();
-}
-
-function drawCube(cube) {
-  const t = TIERS[cube.tier];
-  const { x, y, z } = cube;
-  const a  = world(x,   y+1, z);
-  const b  = world(x+1, y+1, z);
-  const c  = world(x+1, y+1, z+1);
-  const d  = world(x,   y+1, z+1);
-  const b2 = world(x+1, y,   z);
-  const c2 = world(x+1, y,   z+1);
-  const d2 = world(x,   y,   z+1);
-
-  ctx.fillStyle = t.right;  poly([b, c, c2, b2]);
-  ctx.fillStyle = t.left;   poly([d, c, c2, d2]);
-  ctx.fillStyle = t.top;    poly([a, b, c, d]);
-
-  // Subtle top edge highlight
-  ctx.strokeStyle = 'rgba(255,255,255,0.10)';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(a.sx, a.sy); ctx.lineTo(b.sx, b.sy);
-  ctx.lineTo(c.sx, c.sy); ctx.lineTo(d.sx, d.sy);
-  ctx.closePath();
-  ctx.stroke();
-}
-
-function drawTower() {
-  for (const cube of SORTED) drawCube(cube);
-}
-
-// Player — Ida-inspired silhouette (sized to read clearly against tower)
-function drawPlayer(pos, time) {
-  const ground = world(pos.x + 0.5, pos.y, pos.z + 0.5);
-  const bob = Math.sin(time * 0.004) * 1.8;
-  const x = ground.sx;
-  const baseY = ground.sy + 4 - bob;
-  const pulse = 0.85 + 0.15 * Math.sin(time * 0.003);
-
-  // Pulsing aura — keeps her visible at all times
-  const auraR = 56 * pulse;
-  const aura = ctx.createRadialGradient(ground.sx, ground.sy + 4, 0, ground.sx, ground.sy + 4, auraR);
-  aura.addColorStop(0,   'rgba(255,228,180,0.30)');
-  aura.addColorStop(0.5, 'rgba(255,228,180,0.10)');
-  aura.addColorStop(1,   'rgba(255,228,180,0)');
-  ctx.fillStyle = aura;
-  ctx.beginPath(); ctx.arc(ground.sx, ground.sy + 4, auraR, 0, Math.PI*2); ctx.fill();
-
-  // Ground shadow
-  ctx.fillStyle = 'rgba(0,0,0,0.34)';
-  ctx.beginPath();
-  ctx.ellipse(ground.sx, ground.sy + 5, 18, 7.5, 0, 0, Math.PI*2);
-  ctx.fill();
-
-  // Cape/dress (tall, flowing — ~62px)
-  ctx.fillStyle = '#fefdf6';
-  ctx.beginPath();
-  ctx.moveTo(x - 13, baseY);
-  ctx.quadraticCurveTo(x - 9, baseY - 38, x - 6, baseY - 54);
-  ctx.lineTo(x + 6, baseY - 54);
-  ctx.quadraticCurveTo(x + 9, baseY - 38, x + 13, baseY);
-  ctx.closePath();
-  ctx.fill();
-
-  // Right-side dress shading
-  ctx.fillStyle = 'rgba(0,0,0,0.12)';
-  ctx.beginPath();
-  ctx.moveTo(x + 1, baseY - 54);
-  ctx.lineTo(x + 6, baseY - 54);
-  ctx.quadraticCurveTo(x + 9, baseY - 38, x + 13, baseY);
-  ctx.lineTo(x + 6, baseY);
-  ctx.closePath();
-  ctx.fill();
-
-  // Head
-  ctx.fillStyle = '#fefdf6';
-  ctx.beginPath();
-  ctx.arc(x, baseY - 64, 9, 0, Math.PI*2);
-  ctx.fill();
-
-  // Pointed cap — Ida signature, much taller
-  ctx.beginPath();
-  ctx.moveTo(x - 9,  baseY - 68);
-  ctx.lineTo(x,      baseY - 92);
-  ctx.lineTo(x + 9,  baseY - 68);
-  ctx.closePath();
-  ctx.fill();
-
-  // Cap right-side shading
-  ctx.fillStyle = 'rgba(0,0,0,0.16)';
-  ctx.beginPath();
-  ctx.moveTo(x,      baseY - 92);
-  ctx.lineTo(x + 9,  baseY - 68);
-  ctx.lineTo(x,      baseY - 68);
-  ctx.closePath();
-  ctx.fill();
-
-  // Tip highlight on cap
-  ctx.fillStyle = 'rgba(255,228,180,0.85)';
-  ctx.beginPath();
-  ctx.arc(x, baseY - 92, 1.6, 0, Math.PI*2);
-  ctx.fill();
-}
-
-// Background
-function drawSky(t) {
-  const grd = ctx.createLinearGradient(0, 0, 0, DH);
-  for (let i = 0; i < SKY.length; i++) grd.addColorStop(i/(SKY.length-1), SKY[i]);
-  ctx.fillStyle = grd;
-  ctx.fillRect(0, 0, DW, DH);
-
-  // Stars (top portion)
-  for (const s of STARS) {
-    const x = s.x * DW, y = s.y * DH;
-    s.tw += 0.018;
-    const a = s.a * (0.6 + 0.4 * Math.sin(s.tw));
-    ctx.fillStyle = `rgba(255,253,232,${a})`;
-    ctx.fillRect(x, y, s.s, s.s);
-  }
-
-  // Distant moon
-  const mx = DW * 0.78, my = DH * 0.18;
-  const moon = ctx.createRadialGradient(mx, my, 0, mx, my, 220);
-  moon.addColorStop(0, 'rgba(255,234,200,0.20)');
-  moon.addColorStop(0.4, 'rgba(255,234,200,0.06)');
-  moon.addColorStop(1, 'rgba(255,234,200,0)');
-  ctx.fillStyle = moon;
-  ctx.fillRect(0, 0, DW, DH);
-  ctx.fillStyle = 'rgba(255,243,220,0.85)';
-  ctx.beginPath(); ctx.arc(mx, my, 26, 0, Math.PI*2); ctx.fill();
-
-  // Drifting dust
-  for (const d of DUST) {
-    d.x += d.v;
-    if (d.x > 1.1) d.x = -0.1;
-    const x = d.x * DW;
-    const y = d.y * DH + Math.sin(t * 0.0008 + d.y * 6) * 8;
-    ctx.fillStyle = `rgba(255,253,232,${d.a})`;
-    ctx.beginPath(); ctx.arc(x, y, d.s, 0, Math.PI*2); ctx.fill();
-  }
-}
-
-function drawGroundGlow() {
-  const center = world(0.5, 0, 0.5);
-  const grd = ctx.createRadialGradient(center.sx, center.sy + 60, 0, center.sx, center.sy + 60, 380);
-  grd.addColorStop(0, 'rgba(232,169,140,0.22)');
-  grd.addColorStop(0.5, 'rgba(232,169,140,0.06)');
-  grd.addColorStop(1, 'rgba(232,169,140,0)');
-  ctx.fillStyle = grd;
-  ctx.fillRect(0, 0, DW, DH);
-}
-
-// ── Main loop ──
-let last = performance.now();
-
-function tick(now) {
-  const dt = Math.min(40, now - last);
-  last = now;
-
-  // Center the tower by computing extreme corners in projection space
-  const corners = [
-    project(-1, 0, -1), project(3, 0, -1), project(-1, 0, 3), project(3, 0, 3),
-    project(1, 5, -2), project(2, 2, 2), project(-1, 1, -1),
-  ];
-  const minSY = Math.min(...corners.map(p => p.sy));
-  const maxSY = Math.max(...corners.map(p => p.sy));
-  const minSX = Math.min(...corners.map(p => p.sx));
-  const maxSX = Math.max(...corners.map(p => p.sx));
-  // Mobile: more bottom margin for chrome
-  const yShift = DW < 700 ? 0.50 : 0.55;
-  originX = DW * 0.5 - (minSX + maxSX) * 0.5;
-  originY = DH * yShift - (minSY + maxSY) * 0.5;
-
-  // Movement interpolation
-  if (interpFrom && interpT < 1) {
-    interpT += dt / 600;
-    if (interpT >= 1) {
-      interpT = 1;
-      pathIdx = targetIdx;
-      const wp = PATH[pathIdx];
-      if (wp.chapter !== undefined) showChapter(wp.chapter);
-      interpFrom = null;
+    if (!arg || !targets[arg]) return out(`<span class="err">open: usage</span> <span class="muted">open &lt;github | linkedin | site | resume | email&gt;</span>`);
+    out(`<span class="muted">opening <span class="amber">${arg}</span> ...</span>`);
+    window.open(targets[arg], '_blank', 'noopener');
+  },
+  sudo: (arg, rest) => {
+    if (arg === 'hire-me') {
+      out(`<span class="muted">[sudo] password for shubham: </span><span class="amber">●●●●●●●</span>`);
+      out(``);
+      out(`<span class="accent">✓ access granted.</span>`);
+      out(`<span class="muted">drafting introduction email...</span>`);
+      setTimeout(() => {
+        out(`<span class="accent">→ opening</span> <a class="link" href="mailto:shubhambakre@gmail.com?subject=Let%27s%20talk%20%E2%80%94%20Senior%20AI%20Engineering%20role&body=Hi%20Shubham%2C%0A%0AI%20came%20across%20your%20portfolio%20and...">your default mail client</a>`);
+        location.href = "mailto:shubhambakre@gmail.com?subject=Let's talk — Senior AI Engineering role&body=Hi Shubham,%0A%0AI came across your portfolio and...";
+      }, 500);
+    } else {
+      out(`<span class="err">sudo: ${esc(arg||'')}: command not found</span>`);
     }
-  }
+  },
+  echo: (...args) => out(`<span class="muted">${esc(args.join(' '))}</span>`),
+  banner: () => printBanner(),
+};
 
-  // Render
-  ctx.clearRect(0, 0, DW, DH);
-  drawSky(now);
-  drawGroundGlow();
-  drawTower();
-  drawPlayer(currentPos(), now);
+// Aliases
+COMMANDS.ll = COMMANDS.ls;
+COMMANDS.work = COMMANDS.experience;
+COMMANDS.career = COMMANDS.experience;
+COMMANDS.email = () => COMMANDS.open('email');
+COMMANDS.linkedin = () => COMMANDS.open('linkedin');
+COMMANDS.github = () => COMMANDS.open('github');
 
-  requestAnimationFrame(tick);
+// ─── Boot sequence ───
+function printBanner() {
+  out(`<pre class="ascii">${ASCII}</pre>`);
+  out(`<span class="muted">Welcome. You're inside an interactive resume.</span>`);
+  out(`<span class="muted">Type <span class="chip" data-cmd="help">help</span> to see commands, or click any chip to run it.</span>`);
+  blank();
 }
 
-requestAnimationFrame(tick);
+// ─── Run a command ───
+const history = [];
+let histIdx = -1;
+
+function run(rawCmd) {
+  const cmd = (rawCmd || '').trim();
+  echoCmd(cmd);
+  if (!cmd) return;
+  history.push(cmd); histIdx = history.length;
+  const [name, ...args] = cmd.split(/\s+/);
+  const fn = COMMANDS[name.toLowerCase()];
+  if (!fn) {
+    out(`<span class="err">command not found:</span> <span class="amber">${esc(name)}</span> <span class="muted">— try</span> <span class="chip" data-cmd="help">help</span>`);
+    return;
+  }
+  try { fn(...args); } catch (e) { out(`<span class="err">${esc(String(e))}</span>`); }
+}
+
+// ─── Tab completion ───
+function complete(prefix) {
+  const cmds = Object.keys(COMMANDS);
+  // Two-token complete: "cat g..." → cat go-llm-gateway
+  const parts = prefix.split(/\s+/);
+  if (parts.length === 2 && parts[0] === 'cat') {
+    const opts = Object.keys(PROJECT_DETAILS).filter(k => k.startsWith(parts[1]));
+    if (opts.length === 1) return 'cat ' + opts[0];
+    return null;
+  }
+  if (parts.length === 2 && parts[0] === 'open') {
+    const opts = ['github','linkedin','site','resume','email'].filter(k => k.startsWith(parts[1]));
+    if (opts.length === 1) return 'open ' + opts[0];
+    return null;
+  }
+  const opts = cmds.filter(c => c.startsWith(prefix));
+  if (opts.length === 1) return opts[0];
+  if (opts.length > 1) {
+    out(`<span class="muted">${opts.map(o => `<span class="chip" data-cmd="${o}">${o}</span>`).join('')}</span>`);
+  }
+  return null;
+}
+
+// ─── Suggestions bar ───
+const SUGGESTED = ['about','experience','projects','skills','contact','resume','sudo hire-me'];
+function renderSuggestions() {
+  sugBar.innerHTML = '';
+  const lbl = document.createElement('span');
+  lbl.className = 'lbl'; lbl.textContent = 'try';
+  sugBar.appendChild(lbl);
+  SUGGESTED.forEach(c => {
+    const s = document.createElement('span');
+    s.className = 'chip';
+    s.dataset.cmd = c;
+    s.textContent = c;
+    sugBar.appendChild(s);
+  });
+}
+
+// ─── Wiring ───
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const v = input.value;
+  input.value = '';
+  run(v);
+});
+
+input.addEventListener('keydown', (e) => {
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    const c = complete(input.value.trim());
+    if (c) input.value = c;
+  }
+  if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (history.length === 0) return;
+    histIdx = Math.max(0, histIdx - 1);
+    input.value = history[histIdx] || '';
+  }
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (history.length === 0) return;
+    histIdx = Math.min(history.length, histIdx + 1);
+    input.value = history[histIdx] || '';
+  }
+});
+
+// Click-to-run chips (in suggestions or output)
+document.addEventListener('click', (e) => {
+  const chip = e.target.closest('.chip[data-cmd]');
+  if (chip) {
+    const cmd = chip.dataset.cmd;
+    input.value = '';
+    run(cmd);
+    input.focus();
+    return;
+  }
+  // Click anywhere in terminal body or input row → focus input
+  if (e.target.closest('.term') && !e.target.closest('a') && !e.target.closest('input')) {
+    input.focus();
+  }
+});
+
+// Auto-focus on load (and keep focus)
+window.addEventListener('load', () => input.focus());
+input.addEventListener('blur', () => setTimeout(() => {
+  if (document.activeElement.tagName !== 'A' && document.activeElement.tagName !== 'BUTTON') {
+    input.focus();
+  }
+}, 50));
+
+// Boot
+applyTheme(0);
+renderSuggestions();
+printBanner();
 </script>
 
 </body>
