@@ -10,18 +10,32 @@
   <meta property="og:url" content="https://shubhambakre.com/" />
   <meta property="og:title" content="Shubham Bakre — Senior Software Engineer · AI" />
   <meta property="og:description" content="7+ years of production backend engineering. LLM integrations, distributed systems, Spark at scale." />
-  <meta property="og:image" content="https://shubhambakre.com/assets/photo.jpg" />
+  <meta property="og:image" content="https://shubhambakre.com/assets/og-share.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Shubham Bakre — Senior Software Engineer building production AI at scale" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Shubham Bakre — Senior Software Engineer · AI" />
   <meta name="twitter:description" content="Senior Software Engineer with 7+ years of production experience. Shipped LLM integrations at Walmart scale." />
-  <meta name="twitter:image" content="https://shubhambakre.com/assets/photo.jpg" />
+  <meta name="twitter:image" content="https://shubhambakre.com/assets/og-share.png" />
   <link rel="canonical" href="https://shubhambakre.com/" />
   <meta name="robots" content="index, follow" />
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+  <link rel="apple-touch-icon" href="/assets/photo.jpg" />
+  <meta name="theme-color" content="#0a0a0f" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"Person","name":"Shubham Bakre","url":"https://shubhambakre.com","image":"https://shubhambakre.com/assets/photo.jpg","jobTitle":"Senior Software Engineer","worksFor":{"@type":"Organization","name":"Walmart"},"alumniOf":[{"@type":"CollegeOrUniversity","name":"Arizona State University"}],"email":"shubhambakre@gmail.com","sameAs":["https://linkedin.com/in/shubhambakre","https://github.com/shubhambakre"]}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"ItemList","name":"Open-source projects by Shubham Bakre","itemListElement":[
+   {"@type":"SoftwareSourceCode","position":1,"name":"go-llm-gateway","description":"Production API gateway for LLM requests with per-IP rate limiting, atomic cost tracking, structured logging, and primary→fallback model failover. Zero external dependencies.","programmingLanguage":"Go","codeRepository":"https://github.com/shubhambakre/go-llm-gateway","author":{"@type":"Person","name":"Shubham Bakre"}},
+   {"@type":"SoftwareSourceCode","position":2,"name":"vertex-ai-rag-pipeline","description":"End-to-end RAG pipeline on Google Vertex AI with BigQuery Vector Search, LangChain orchestration, semantic retrieval with grounding.","programmingLanguage":"Python","codeRepository":"https://github.com/shubhambakre/vertex-ai-rag-pipeline","author":{"@type":"Person","name":"Shubham Bakre"}},
+   {"@type":"SoftwareSourceCode","position":3,"name":"llm-eval-harness","description":"Evaluation framework for LLM outputs — faithfulness scoring, correctness vs ground truth, LLM-as-judge, batch runner with CSV/JSON export. CI-ready.","programmingLanguage":"Python","codeRepository":"https://github.com/shubhambakre/llm-eval-harness","author":{"@type":"Person","name":"Shubham Bakre"}},
+   {"@type":"SoftwareSourceCode","position":4,"name":"omnimart-ratings-reviews","description":"Hexagonal-architecture ratings & reviews service in Go with dual REST APIs, cursor-based pagination, full integration tests, deployed docs site.","programmingLanguage":"Go","codeRepository":"https://github.com/shubhambakre/omnimart-ratings-reviews","author":{"@type":"Person","name":"Shubham Bakre"}}
+  ]}
   </script>
   <style>
     /* ─── Reset + tokens ─── */
@@ -561,7 +575,7 @@
       <a class="project reveal" href="https://github.com/shubhambakre/go-llm-gateway" target="_blank" rel="noopener">
         <div class="project-head">
           <div class="project-title">go-llm-gateway <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg></div>
-          <div class="project-meta">Go · 2026</div>
+          <div class="project-meta">Go</div>
         </div>
         <div class="project-desc">Production API gateway for LLM requests. Per-IP rate limiting, atomic cost tracking, structured logging, primary→fallback model failover. Zero external dependencies.</div>
         <div class="tags"><span class="tag">Go</span><span class="tag">LLM Infra</span><span class="tag">Rate Limiting</span><span class="tag">Cost Tracking</span></div>
@@ -570,7 +584,7 @@
       <a class="project reveal" href="https://github.com/shubhambakre/vertex-ai-rag-pipeline" target="_blank" rel="noopener">
         <div class="project-head">
           <div class="project-title">vertex-ai-rag-pipeline <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg></div>
-          <div class="project-meta">Python · 2026</div>
+          <div class="project-meta">Python</div>
         </div>
         <div class="project-desc">End-to-end RAG pipeline on Google Vertex AI. BigQuery Vector Search, LangChain orchestration, semantic retrieval with grounding, cost-aware batch processing.</div>
         <div class="tags"><span class="tag">Vertex AI</span><span class="tag">RAG</span><span class="tag">LangChain</span><span class="tag">BigQuery</span></div>
@@ -579,7 +593,7 @@
       <a class="project reveal" href="https://github.com/shubhambakre/llm-eval-harness" target="_blank" rel="noopener">
         <div class="project-head">
           <div class="project-title">llm-eval-harness <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg></div>
-          <div class="project-meta">Python · 2026</div>
+          <div class="project-meta">Python</div>
         </div>
         <div class="project-desc">Evaluation framework for LLM outputs. Faithfulness scoring, correctness vs ground truth, LLM-as-judge, batch runner with CSV/JSON export. CI-ready.</div>
         <div class="tags"><span class="tag">Python</span><span class="tag">Gemini</span><span class="tag">LLM-as-Judge</span><span class="tag">Evaluation</span></div>
@@ -588,10 +602,10 @@
       <a class="project reveal" href="https://github.com/shubhambakre/omnimart-ratings-reviews" target="_blank" rel="noopener">
         <div class="project-head">
           <div class="project-title">omnimart-ratings-reviews <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg></div>
-          <div class="project-meta">Go · 2026</div>
+          <div class="project-meta">Go</div>
         </div>
         <div class="project-desc">Hexagonal-architecture ratings & reviews service. Dual REST APIs, cursor-based pagination, full integration tests, deployed docs site.</div>
-        <div class="tags"><span class="tag">Go</span><span class="tag">Hexagonal</span><span class="tag">REST</span><span class="tag">Postgres</span></div>
+        <div class="tags"><span class="tag">Go</span><span class="tag">Hexagonal</span><span class="tag">REST</span><span class="tag">SQLite</span></div>
       </a>
 
     </div>

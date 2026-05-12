@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a0a0f"/>
+      <stop offset="100%" stop-color="#15131f"/>
+    </linearGradient>
+    <radialGradient id="blob1" cx="0.15" cy="0.2" r="0.5">
+      <stop offset="0%" stop-color="#818cf8" stop-opacity="0.55"/>
+      <stop offset="60%" stop-color="#818cf8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="blob2" cx="0.92" cy="0.85" r="0.55">
+      <stop offset="0%" stop-color="#f472b6" stop-opacity="0.5"/>
+      <stop offset="60%" stop-color="#f472b6" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#a5b4fc"/>
+      <stop offset="55%" stop-color="#f472b6"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+    <linearGradient id="logo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#f472b6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#blob1)"/>
+  <rect width="1200" height="630" fill="url(#blob2)"/>
+
+  <!-- Status pill -->
+  <g transform="translate(80, 80)">
+    <rect x="0" y="0" width="370" height="42" rx="21" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.14)"/>
+    <circle cx="22" cy="21" r="5" fill="#22c55e"/>
+    <text x="40" y="27" font-family="ui-monospace, 'JetBrains Mono', Menlo, monospace"
+          font-size="14" fill="rgba(250,250,250,0.78)" letter-spacing="0.6">
+      Open to senior AI engineering roles
+    </text>
+  </g>
+
+  <!-- Headline -->
+  <g transform="translate(80, 200)">
+    <text font-family="-apple-system, BlinkMacSystemFont, Inter, 'Segoe UI', sans-serif"
+          font-size="78" font-weight="300" fill="#fafafa" letter-spacing="-3">
+      <tspan x="0" y="0">Shubham Bakre.</tspan>
+      <tspan x="0" y="92" font-weight="500" fill="url(#accent)">Building production AI</tspan>
+      <tspan x="0" y="184" fill="rgba(250,250,250,0.42)">at scale.</tspan>
+    </text>
+  </g>
+
+  <!-- Subtitle -->
+  <text x="80" y="490" font-family="-apple-system, BlinkMacSystemFont, Inter, sans-serif"
+        font-size="22" fill="rgba(250,250,250,0.62)" letter-spacing="-0.3">
+    Senior Software Engineer · Walmart Labs · 7+ yrs · LLM systems, distributed data, Go/Python
+  </text>
+
+  <!-- Domain -->
+  <text x="80" y="565" font-family="ui-monospace, 'JetBrains Mono', Menlo, monospace"
+        font-size="16" fill="rgba(250,250,250,0.42)" letter-spacing="1.2">
+    SHUBHAMBAKRE.COM
+  </text>
+
+  <!-- SB monogram -->
+  <g transform="translate(990, 470)">
+    <rect width="120" height="120" rx="28" fill="url(#logo)"/>
+    <text x="60" y="60" text-anchor="middle" dominant-baseline="central"
+          font-family="-apple-system, BlinkMacSystemFont, Inter, sans-serif"
+          font-size="56" font-weight="700" fill="#ffffff" letter-spacing="-2">SB</text>
+  </g>
+</svg>
