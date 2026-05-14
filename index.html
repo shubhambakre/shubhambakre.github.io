@@ -585,6 +585,10 @@
 
     <section id="work">
       <div class="eyebrow">03 · Selected work</div>
+      <p style="color:var(--muted);font-size:13.5px;margin:-14px 0 24px;max-width:60ch;">
+        For an interactive architecture diagram, a live semantic-search demo, and a deep-dive essay,
+        <a href="/lab.html" style="color:var(--accent);border-bottom:1px solid var(--accent-line);transition:border-color .2s">visit the Lab&nbsp;↗</a>.
+      </p>
       <div class="work-grid">
 
         <a class="work" href="https://github.com/shubhambakre/go-llm-gateway" target="_blank" rel="noopener">
@@ -771,6 +775,7 @@
     { kind:'nav', label:'Selected work', hint:'03',       action: () => goto('#work') },
     { kind:'nav', label:'Now',          hint:'04',        action: () => goto('#now') },
     { kind:'nav', label:'Connect',      hint:'05',        action: () => goto('#connect') },
+    { kind:'nav', label:'Lab — diagrams · demo · essay', hint:'↗', action: () => location.href = '/lab.html' },
     // Projects
     { kind:'proj', label:'go-llm-gateway',          hint:'Go',     action: () => open('https://github.com/shubhambakre/go-llm-gateway') },
     { kind:'proj', label:'vertex-ai-rag-pipeline',  hint:'Python', action: () => open('https://github.com/shubhambakre/vertex-ai-rag-pipeline') },
