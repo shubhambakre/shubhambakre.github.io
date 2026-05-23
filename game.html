@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevMario: The Principal Wizard Quest</title>
+    <title>DevValley: A Monument & Mario Fusion</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Outfit:wght@400;600;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Press+Start+2P&display=swap');
         
         * {
             box-sizing: border-box;
@@ -14,7 +14,7 @@
         }
 
         body {
-            background: radial-gradient(circle at center, #181926 0%, #0c0d14 100%);
+            background: radial-gradient(circle at center, #1b1d2a 0%, #10121a 100%);
             color: #cad3f5;
             font-family: 'Outfit', sans-serif;
             display: flex;
@@ -29,276 +29,226 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
         }
 
-        .title-bar {
+        .header {
             text-align: center;
         }
 
-        .title-bar h2 {
-            font-family: 'Press Start 2P', monospace;
-            font-size: 20px;
-            color: #8bd5ca;
-            text-shadow: 0 4px 10px rgba(139, 213, 202, 0.4);
-            margin-bottom: 5px;
+        .header h1 {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: #b7bdf8;
+            text-shadow: 0 0 20px rgba(183, 189, 248, 0.3);
+            text-transform: uppercase;
+        }
+
+        .header p {
+            font-size: 13px;
+            color: #8cad3f;
+            margin-top: 4px;
             letter-spacing: 1px;
         }
 
-        .title-bar p {
-            font-size: 14px;
-            color: #a5adcb;
-            font-weight: 400;
-        }
-
-        #game-wrapper {
+        #game-frame {
             position: relative;
-            width: 960px;
-            height: 540px;
-            border-radius: 16px;
+            width: 800px;
+            height: 560px;
+            border-radius: 24px;
             overflow: hidden;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 40px rgba(139, 213, 202, 0.1);
-            border: 2px solid rgba(139, 213, 202, 0.2);
-            background-color: #1e1e2e;
+            border: 2px solid rgba(183, 189, 248, 0.15);
+            background: #181926;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.6), inset 0 0 30px rgba(183, 189, 248, 0.05);
         }
 
         canvas {
             display: block;
             width: 100%;
             height: 100%;
+            cursor: default;
+        }
+
+        /* Ambient Audio Control */
+        .audio-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(36, 39, 57, 0.7);
+            border: 1px solid rgba(183, 189, 248, 0.2);
+            color: #cad3f5;
+            padding: 8px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            z-index: 10;
+            transition: all 0.25s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .audio-btn:hover {
+            background: rgba(183, 189, 248, 0.15);
+            transform: scale(1.05);
         }
 
         /* Overlay UI Screens */
-        .screen-overlay {
+        .screen {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(30, 30, 46, 0.9);
+            background: rgba(24, 25, 38, 0.92);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            backdrop-filter: blur(12px);
-            z-index: 10;
-            transition: opacity 0.3s ease;
+            backdrop-filter: blur(15px);
+            z-index: 20;
             padding: 40px;
             text-align: center;
+            transition: opacity 0.4s ease;
         }
 
-        .screen-overlay h1 {
-            font-family: 'Press Start 2P', monospace;
-            font-size: 32px;
-            color: #f5bde6;
-            margin-bottom: 20px;
-            line-height: 1.4;
-            text-shadow: 0 0 15px rgba(245, 190, 230, 0.4);
+        .screen h2 {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #b7bdf8 0%, #f5bde6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            letter-spacing: 2px;
         }
 
-        .screen-overlay p {
-            font-size: 16px;
-            color: #cad3f5;
-            max-width: 600px;
-            margin-bottom: 30px;
+        .screen p {
+            font-size: 15px;
+            color: #a5adcb;
+            max-width: 500px;
             line-height: 1.6;
-        }
-
-        .instructions {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 15px 25px;
             margin-bottom: 30px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            text-align: left;
-        }
-
-        .instructions div {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-            color: #b8c0e0;
-        }
-
-        .key-badge {
-            background: #36394f;
-            border-bottom: 3px solid #1e2030;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 12px;
-            color: #f4dbd6;
         }
 
         .btn {
-            background: linear-gradient(135deg, #c6a0f6 0%, #8bd5ca 100%);
+            background: linear-gradient(135deg, #b7bdf8 0%, #eed49f 100%);
             border: none;
-            color: #1e1e2e;
-            padding: 14px 40px;
-            font-family: 'Press Start 2P', monospace;
+            color: #181926;
+            padding: 14px 36px;
             font-size: 14px;
-            border-radius: 30px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            border-radius: 40px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 25px rgba(198, 160, 246, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 20px rgba(183, 189, 248, 0.2);
         }
 
         .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(198, 160, 246, 0.6);
-            filter: brightness(1.1);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(183, 189, 248, 0.35);
         }
 
         .btn:active {
             transform: translateY(1px);
         }
 
-        /* Sound Control */
-        .audio-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(36, 39, 57, 0.6);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #cad3f5;
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            z-index: 12;
-            transition: background 0.2s;
-            pointer-events: auto;
-        }
-
-        .audio-toggle:hover {
-            background: rgba(36, 39, 57, 0.9);
-        }
-
+        /* Top HUD */
         #hud {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 20px 30px;
+            top: 20px;
+            left: 20px;
             display: flex;
-            justify-content: space-between;
+            gap: 15px;
             pointer-events: none;
-            z-index: 5;
+            z-index: 10;
         }
 
-        .hud-element {
-            background: rgba(30, 30, 46, 0.7);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 10px 18px;
-            border-radius: 12px;
+        .hud-panel {
+            background: rgba(24, 25, 38, 0.7);
+            border: 1px solid rgba(183, 189, 248, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 16px;
             display: flex;
             flex-direction: column;
-            gap: 4px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            gap: 2px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
         }
 
-        .hud-label {
-            font-size: 11px;
+        .hud-lbl {
+            font-size: 10px;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: #8bd5ca;
-            font-weight: 900;
+            letter-spacing: 1px;
+            color: #8ad3f5;
+            font-weight: 800;
         }
 
-        .hud-value {
-            font-family: 'Press Start 2P', monospace;
+        .hud-val {
             font-size: 16px;
+            font-weight: 700;
             color: #ffffff;
-        }
-
-        #timer-value {
-            color: #ee99a0;
         }
     </style>
 </head>
 <body>
 
     <div id="app-container">
-        <div class="title-bar">
-            <h2>DEV MARIO</h2>
-            <p>A 1-Minute Principal Software Engineer Portfolio Adventure</p>
+        <div class="header">
+            <h1>DEV VALLEY</h1>
+            <p>Interactive Isometric Skillset Monument Journey</p>
         </div>
 
-        <div id="game-wrapper">
-            <button class="audio-toggle" onclick="toggleAudio()">
-                <span id="audio-icon">🔊</span> <span id="audio-text">Sound: ON</span>
+        <div id="game-frame">
+            <button class="audio-btn" onclick="toggleAudio()">
+                <span id="audio-icon">🔊</span> <span id="audio-txt">Audio: On</span>
             </button>
 
             <div id="hud">
-                <div class="hud-element">
-                    <span class="hud-label">Tickets Solved</span>
-                    <span class="hud-value" id="score-val">0000</span>
+                <div class="hud-panel">
+                    <span class="hud-lbl">Core Skills</span>
+                    <span class="hud-val" id="skills-count">0/5</span>
                 </div>
-                <div class="hud-element">
-                    <span class="hud-label">Core Skills</span>
-                    <span class="hud-value" id="skills-val">0/5</span>
-                </div>
-                <div class="hud-element">
-                    <span class="hud-label">Sprint Time</span>
-                    <span class="hud-value" id="timer-value">60.0</span>
+                <div class="hud-panel">
+                    <span class="hud-lbl">Sprint Budget</span>
+                    <span class="hud-val" id="time-left">60s</span>
                 </div>
             </div>
 
             <!-- Start Screen -->
-            <div id="start-screen" class="screen-overlay">
-                <h1>WIZARD QUEST</h1>
-                <p>Welcome to the ultimate Principal Engineer interview sprint. Debug the codebases, absorb the essential skill tokens, and reach production deployment before the sprint deadline (1 minute)!</p>
+            <div id="start-screen" class="screen">
+                <h2>The Wizard's Path</h2>
+                <p>An interactive 2.5D architectural isometric journey. <b>Click on adjacent blocks</b> to move, collect all 5 skill nodes, and guide the Wizard to the golden deployment arch!</p>
                 
-                <div class="instructions">
-                    <div>
-                        <span class="key-badge">←</span> <span class="key-badge">→</span> / <span class="key-badge">A</span> <span class="key-badge">D</span>
-                        <span>Move Wizard</span>
-                    </div>
-                    <div>
-                        <span class="key-badge">↑</span> / <span class="key-badge">W</span> / <span class="key-badge">Space</span>
-                        <span>Jump / Double Jump</span>
-                    </div>
-                    <div>
-                        <span class="key-badge">Bounce</span>
-                        <span>Hit "?" Blocks & Squash bugs</span>
-                    </div>
-                    <div>
-                        <span class="key-badge">Goal</span>
-                        <span>Deploy to Production (Flag)</span>
-                    </div>
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(183,189,248,0.1); border-radius: 16px; padding: 15px; margin-bottom: 25px; text-align: left; font-size: 13px; color: #a5adcb; max-width: 450px;">
+                    💡 <b>Tip:</b> If a path seems blocked, click the glowing <b>yellow switch</b> on the left to rotate the bridge.
                 </div>
-
-                <button class="btn" onclick="startGame()">Start Sprint</button>
+                <button class="btn" onclick="startGame()">Begin Journey</button>
             </div>
 
             <!-- Game Over Screen -->
-            <div id="gameover-screen" class="screen-overlay" style="display:none;">
-                <h1 style="color: #ed8796;">SPRINT FAILURE!</h1>
-                <p>You hit a production blocking bug or ran out of sprint budget. The rollout was rolled back.</p>
-                <button class="btn" onclick="resetGame()">Try Again</button>
+            <div id="fail-screen" class="screen" style="display:none; opacity:0;">
+                <h2 style="color:#ee99a0;">Sprint Budget Exhausted</h2>
+                <p>The deployment was postponed. Let's optimize the route and try again!</p>
+                <button class="btn" onclick="restartGame()">Retry Sprint</button>
             </div>
 
             <!-- Victory Screen -->
-            <div id="victory-screen" class="screen-overlay" style="display:none;">
-                <h1 style="color: #a6da95;">PROD DEPLOYED!</h1>
-                <p id="victory-desc">Outstanding! You squashed bugs, collected all crucial core skills, and reached the production flagpole inside the sprint budget.</p>
-                <button class="btn" onclick="resetGame()">Play Again</button>
+            <div id="win-screen" class="screen" style="display:none; opacity:0;">
+                <h2 style="color:#a6da95;">Production Release Complete!</h2>
+                <p>Outstanding! You navigated the isometric architecture, collected all crucial skill nodes, and deployed the golden release arch.</p>
+                <button class="btn" onclick="restartGame()">Play Again</button>
             </div>
 
-            <canvas id="gameCanvas" width="960" height="540"></canvas>
+            <canvas id="gameCanvas" width="800" height="560"></canvas>
         </div>
     </div>
 
     <script>
-        // --- Web Audio Retro Synthesizer ---
+        // --- Retro Audio Synthesizer (Web Audio API) ---
         let audioCtx = null;
         let isMuted = false;
 
@@ -311,63 +261,45 @@
         function toggleAudio() {
             isMuted = !isMuted;
             document.getElementById('audio-icon').textContent = isMuted ? '🔇' : '🔊';
-            document.getElementById('audio-text').textContent = isMuted ? 'Sound: OFF' : 'Sound: ON';
+            document.getElementById('audio-txt').textContent = isMuted ? 'Audio: Off' : 'Audio: On';
         }
 
         function playSound(type) {
             if (isMuted) return;
             initAudio();
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+            if (audioCtx.state === 'suspended') audioCtx.resume();
 
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.connect(gain);
             gain.connect(audioCtx.destination);
-
+            
             const now = audioCtx.currentTime;
 
-            if (type === 'jump') {
+            if (type === 'hop') {
                 osc.type = 'triangle';
-                osc.frequency.setValueAtTime(150, now);
-                osc.frequency.exponentialRampToValueAtTime(600, now + 0.15);
-                gain.gain.setValueAtTime(0.15, now);
-                gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+                osc.frequency.setValueAtTime(200, now);
+                osc.frequency.exponentialRampToValueAtTime(500, now + 0.15);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.linearRampToValueAtTime(0.001, now + 0.15);
                 osc.start(now);
                 osc.stop(now + 0.15);
-            } else if (type === 'coin') {
+            } else if (type === 'collect') {
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(523.25, now); // C5
-                osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+                osc.frequency.setValueAtTime(587.33, now); // D5
+                osc.frequency.setValueAtTime(880, now + 0.08); // A5
                 gain.gain.setValueAtTime(0.15, now);
-                gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+                gain.gain.linearRampToValueAtTime(0.001, now + 0.25);
                 osc.start(now);
                 osc.stop(now + 0.25);
-            } else if (type === 'hit') {
-                osc.type = 'square';
-                osc.frequency.setValueAtTime(200, now);
-                osc.frequency.linearRampToValueAtTime(80, now + 0.1);
-                gain.gain.setValueAtTime(0.2, now);
-                gain.gain.linearRampToValueAtTime(0.01, now + 0.1);
-                osc.start(now);
-                osc.stop(now + 0.1);
-            } else if (type === 'squash') {
+            } else if (type === 'bridge') {
                 osc.type = 'triangle';
-                osc.frequency.setValueAtTime(300, now);
-                osc.frequency.exponentialRampToValueAtTime(50, now + 0.2);
-                gain.gain.setValueAtTime(0.25, now);
-                gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+                osc.frequency.setValueAtTime(120, now);
+                osc.frequency.linearRampToValueAtTime(80, now + 0.5);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.linearRampToValueAtTime(0.001, now + 0.5);
                 osc.start(now);
-                osc.stop(now + 0.2);
-            } else if (type === 'hurt') {
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(150, now);
-                osc.frequency.linearRampToValueAtTime(40, now + 0.3);
-                gain.gain.setValueAtTime(0.25, now);
-                gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
-                osc.start(now);
-                osc.stop(now + 0.3);
+                osc.stop(now + 0.5);
             } else if (type === 'win') {
                 const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
                 notes.forEach((freq, idx) => {
@@ -375,771 +307,615 @@
                     const g = audioCtx.createGain();
                     o.connect(g);
                     g.connect(audioCtx.destination);
-                    o.type = 'square';
+                    o.type = 'sine';
                     o.frequency.setValueAtTime(freq, now + idx * 0.08);
-                    g.gain.setValueAtTime(0.12, now + idx * 0.08);
-                    g.gain.linearRampToValueAtTime(0.01, now + idx * 0.08 + 0.2);
+                    g.gain.setValueAtTime(0.1, now + idx * 0.08);
+                    g.gain.linearRampToValueAtTime(0.001, now + idx * 0.08 + 0.25);
                     o.start(now + idx * 0.08);
-                    o.stop(now + idx * 0.08 + 0.2);
+                    o.stop(now + idx * 0.08 + 0.25);
                 });
+            } else if (type === 'fail') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.linearRampToValueAtTime(50, now + 0.35);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.linearRampToValueAtTime(0.001, now + 0.35);
+                osc.start(now);
+                osc.stop(now + 0.35);
             }
         }
 
-        // --- Game Setup ---
+        // --- Isometric Configurations ---
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        // HUD Elements
-        const scoreValEl = document.getElementById('score-val');
-        const skillsValEl = document.getElementById('skills-val');
-        const timerValueEl = document.getElementById('timer-value');
+        const TILE_WIDTH = 46;
+        const TILE_HEIGHT = 23;
+        const CUBE_HEIGHT = 28;
 
-        // Game state variables
-        let state = 'start';
-        let sprintTime = 60.0;
-        let score = 0;
+        function isoToScreen(x, y, z) {
+            const screenX = canvas.width / 2 + (x - y) * TILE_WIDTH;
+            const screenY = canvas.height / 2 + 100 + (x + y) * TILE_HEIGHT - z * CUBE_HEIGHT;
+            return { x: screenX, y: screenY };
+        }
+
+        // --- Game state variables ---
+        let gameState = 'start';
+        let sprintTime = 60;
+        let timerInterval = null;
         let skillsCollected = 0;
-        let gameLoopId = null;
-        let lastTime = 0;
+        let activePath = [];
+        let pathProgress = 0;
+        let jumpArc = 0; // vertical offset during a step hop
+        let hoverBlock = null;
 
-        // Key states
-        const keys = { left: false, right: false, up: false };
-
-        // Camera
-        const camera = { x: 0, y: 0, width: 960, height: 540 };
-
-        // Player configuration
+        // Player Wizard model (Grid coords)
         const player = {
-            x: 100, y: 350,
-            width: 32, height: 48,
-            vx: 0, vy: 0,
-            speed: 5.5,
-            jumpPower: -11.5,
-            grounded: false,
-            doubleJumpAvailable: true,
-            facingRight: true,
-            trail: [],
-            isInvulnerable: 0, // Frame count
+            gridX: 0,
+            gridY: 2,
+            gridZ: 1,
+            visualX: 0,
+            visualY: 2,
+            visualZ: 1,
+            state: 'idle', // idle, moving
+            bob: 0
         };
 
-        const gravity = 0.55;
-        const friction = 0.85;
-
-        // Level Elements
-        let platforms = [];
+        // --- Isometric Level design ---
         let blocks = [];
         let items = [];
-        let enemies = [];
         let particles = [];
-        let flagpole = { x: 3400, y: 150, width: 10, height: 350, flagY: 170, size: 40 };
+        
+        let bridgeAngle = 0; // 0 = Connected horizontally, 1 = Connected vertically
+        const switchBlock = { x: 2, y: 0, z: 2 };
+        const goldenArchBlock = { x: 5, y: 5, z: 3 };
 
-        // Lists of Skills to pop out
-        const skillList = ["TypeScript", "Golang", "Docker", "Kubernetes", "System Design"];
-
-        // Parallax Background Layers
-        const bgLayers = [
-            { speed: 0.1, color: '#11111b', stars: [] },
-            { speed: 0.25, structures: [] },
-            { speed: 0.5, structures: [] }
-        ];
-
-        // Generate parallax items
-        for (let i = 0; i < 80; i++) {
-            bgLayers[0].stars.push({
-                x: Math.random() * 4000,
-                y: Math.random() * 300,
-                size: Math.random() * 2 + 1,
-                alpha: Math.random() * 0.5 + 0.3
-            });
-        }
-        for (let i = 0; i < 20; i++) {
-            bgLayers[1].structures.push({
-                x: i * 250 + Math.random() * 50,
-                y: 200 + Math.random() * 100,
-                width: 80 + Math.random() * 60,
-                height: 300,
-                color: '#1e1e2e'
-            });
-            bgLayers[2].structures.push({
-                x: i * 180 + Math.random() * 30,
-                y: 300 + Math.random() * 80,
-                width: 50 + Math.random() * 40,
-                height: 200,
-                color: '#252538'
-            });
-        }
-
-        // --- Controls ---
-        window.addEventListener('keydown', e => {
-            if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = true;
-            if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = true;
-            if ((e.code === 'ArrowUp' || e.code === 'KeyW' || e.code === 'Space') && player.grounded) {
-                player.dy = player.jumpPower;
-                player.grounded = false;
-                player.doubleJumpAvailable = true;
-                playSound('jump');
-                createDust(player.x + player.width/2, player.y + player.height, '#f5bde6');
-            } else if ((e.code === 'ArrowUp' || e.code === 'KeyW' || e.code === 'Space') && player.doubleJumpAvailable) {
-                player.vy = player.jumpPower * 0.85;
-                player.doubleJumpAvailable = false;
-                playSound('jump');
-                createDust(player.x + player.width/2, player.y + player.height, '#8bd5ca');
-            }
-        });
-
-        window.addEventListener('keyup', e => {
-            if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
-            if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = false;
-        });
-
-        // --- Initialize / Reset level design ---
         function buildLevel() {
-            // Platforms (solid blocks)
-            platforms = [
-                // Ground segments
-                { x: 0, y: 480, width: 800, height: 60, type: 'ground' },
-                { x: 950, y: 480, width: 900, height: 60, type: 'ground' },
-                { x: 2000, y: 480, width: 600, height: 60, type: 'ground' },
-                { x: 2800, y: 480, width: 1000, height: 60, type: 'ground' },
-                
-                // Floating platforms
-                { x: 300, y: 350, width: 150, height: 20, type: 'glass' },
-                { x: 600, y: 280, width: 150, height: 20, type: 'glass' },
-                
-                // Tech stacks (ascending steps)
-                { x: 1100, y: 380, width: 100, height: 100, type: 'brick' },
-                { x: 1200, y: 300, width: 100, height: 180, type: 'brick' },
-                { x: 1300, y: 220, width: 100, height: 260, type: 'brick' },
-
-                { x: 1600, y: 330, width: 200, height: 20, type: 'glass' },
-                
-                // Pit structures
-                { x: 2150, y: 360, width: 300, height: 20, type: 'glass' },
-                { x: 2250, y: 240, width: 100, height: 20, type: 'glass' },
-
-                // Final stretch
-                { x: 2900, y: 380, width: 150, height: 100, type: 'brick' },
-                { x: 3100, y: 280, width: 150, height: 20, type: 'glass' },
-            ];
-
-            // "?" Hit blocks containing skills or tickets
             blocks = [
-                { x: 350, y: 220, width: 40, height: 40, hit: false, bounceY: 0, content: 'skill', skillIndex: 0 },
-                { x: 650, y: 150, width: 40, height: 40, hit: false, bounceY: 0, content: 'ticket', amount: 200 },
-                { x: 1650, y: 200, width: 40, height: 40, hit: false, bounceY: 0, content: 'skill', skillIndex: 1 },
-                { x: 1750, y: 200, width: 40, height: 40, hit: false, bounceY: 0, content: 'skill', skillIndex: 2 },
-                { x: 2200, y: 120, width: 40, height: 40, hit: false, bounceY: 0, content: 'skill', skillIndex: 3 },
-                { x: 2300, y: 120, width: 40, height: 40, hit: false, bounceY: 0, content: 'skill', skillIndex: 4 },
-                { x: 2950, y: 250, width: 40, height: 40, hit: false, bounceY: 0, content: 'ticket', amount: 500 }
-            ];
+                // Start path
+                { x: 0, y: 2, z: 1, walkable: true, color: '#f5bde6' },
+                { x: 1, y: 2, z: 1, walkable: true, color: '#b7bdf8' },
+                { x: 2, y: 2, z: 1, walkable: true, color: '#b7bdf8' },
 
-            // Collectible static tickets (instead of floating coins)
-            items = [
-                { x: 200, y: 430, width: 16, height: 16, collected: false, type: 'ticket', value: 100 },
-                { x: 330, y: 300, width: 16, height: 16, collected: false, type: 'ticket', value: 100 },
-                { x: 380, y: 300, width: 16, height: 16, collected: false, type: 'ticket', value: 100 },
-                { x: 620, y: 230, width: 16, height: 16, collected: false, type: 'ticket', value: 100 },
-                { x: 680, y: 230, width: 16, height: 16, collected: false, type: 'ticket', value: 100 },
+                // Switch branch path
+                { x: 2, y: 1, z: 2, walkable: true, color: '#8bd5ca' },
+                { x: 2, y: 0, z: 2, walkable: true, color: '#eed49f', isSwitch: true },
+
+                // Rotating Bridge Pivot
+                { x: 3, y: 2, z: 1, walkable: true, isBridge: true, color: '#eed49f' },
+
+                // Right Branch Path (Orientation 0)
+                { x: 4, y: 2, z: 1, walkable: true, color: '#b7bdf8' },
+                { x: 5, y: 2, z: 1, walkable: true, color: '#b7bdf8' },
+
+                // Vertical branch path (Orientation 1)
+                { x: 3, y: 3, z: 1, walkable: true, color: '#c6a0f6' },
+                { x: 3, y: 4, z: 1, walkable: true, color: '#c6a0f6' },
                 
-                // Path lines of tickets
-                { x: 1150, y: 330, width: 16, height: 16, collected: false, type: 'ticket', value: 100 },
-                { x: 1250, y: 250, width: 16, height: 16, collected: false, type: 'ticket', value: 100 },
-                { x: 1350, y: 170, width: 16, height: 16, collected: false, type: 'ticket', value: 100 },
-
-                { x: 2180, y: 310, width: 16, height: 16, collected: false, type: 'ticket', value: 100 },
-                { x: 2280, y: 190, width: 16, height: 16, collected: false, type: 'ticket', value: 100 },
+                // Climb path up to Golden Arch
+                { x: 4, y: 4, z: 2, walkable: true, color: '#8bd5ca' },
+                { x: 5, y: 4, z: 2, walkable: true, color: '#8bd5ca' },
+                { x: 5, y: 5, z: 3, walkable: true, color: '#cad3f5', isGoal: true }
             ];
 
-            // Enemies: "Bugs" (crawlers that hurt you unless jumped on top)
-            enemies = [
-                { x: 500, y: 448, width: 32, height: 32, vx: -1.5, type: 'bug', squashed: false, walkRange: [400, 700] },
-                { x: 1050, y: 448, width: 32, height: 32, vx: -1.8, type: 'bug', squashed: false, walkRange: [960, 1400] },
-                { x: 1550, y: 448, width: 32, height: 32, vx: -1.8, type: 'bug', squashed: false, walkRange: [1400, 1800] },
-                { x: 2400, y: 448, width: 32, height: 32, vx: 2, type: 'bug', squashed: false, walkRange: [2050, 2550] },
-                { x: 3100, y: 448, width: 32, height: 32, vx: -1.5, type: 'bug', squashed: false, walkRange: [2850, 3350] }
+            // Floating core skillset nodes
+            items = [
+                { x: 2, y: 0, z: 2.7, name: 'TS', collected: false, color: '#eed49f' },
+                { x: 2, y: 2, z: 1.7, name: 'Go', collected: false, color: '#8bd5ca' },
+                { x: 5, y: 2, z: 1.7, name: 'Docker', collected: false, color: '#b7bdf8' },
+                { x: 3, y: 4, z: 1.7, name: 'K8s', collected: false, color: '#c6a0f6' },
+                { x: 5, y: 4, z: 2.7, name: 'System', collected: false, color: '#f5bde6' }
             ];
 
             particles = [];
-            flagpole.flagY = 170;
-        }
-
-        function startGame() {
-            initAudio();
-            document.getElementById('start-screen').style.opacity = 0;
-            setTimeout(() => {
-                document.getElementById('start-screen').style.display = 'none';
-                resetLevel();
-                state = 'playing';
-            }, 300);
-        }
-
-        function resetLevel() {
-            player.x = 100;
-            player.y = 350;
-            player.vx = 0;
-            player.vy = 0;
-            player.grounded = false;
-            player.doubleJumpAvailable = true;
-            player.trail = [];
-            player.isInvulnerable = 0;
-
-            sprintTime = 60.0;
-            score = 0;
+            bridgeAngle = 0;
             skillsCollected = 0;
+            sprintTime = 60;
+            activePath = [];
+            pathProgress = 0;
+            jumpArc = 0;
+
+            player.gridX = 0; player.gridY = 2; player.gridZ = 1;
+            player.visualX = 0; player.visualY = 2; player.visualZ = 1;
+            player.state = 'idle';
 
             updateHUD();
-            buildLevel();
-
-            lastTime = performance.now();
-            if (gameLoopId) cancelAnimationFrame(gameLoopId);
-            gameLoopId = requestAnimationFrame(loop);
-        }
-
-        function resetGame() {
-            document.getElementById('gameover-screen').style.opacity = 0;
-            document.getElementById('victory-screen').style.opacity = 0;
-            setTimeout(() => {
-                document.getElementById('gameover-screen').style.display = 'none';
-                document.getElementById('victory-screen').style.display = 'none';
-                resetLevel();
-                state = 'playing';
-            }, 300);
-        }
-
-        function endGame(victory) {
-            state = victory ? 'victory' : 'gameover';
-            if (gameLoopId) cancelAnimationFrame(gameLoopId);
-
-            if (victory) {
-                playSound('win');
-                document.getElementById('victory-screen').style.display = 'flex';
-                setTimeout(() => { document.getElementById('victory-screen').style.opacity = 1; }, 50);
-                document.getElementById('victory-desc').innerHTML = `Outstanding! You solved all issues, gained <b>${skillsCollected}/5</b> crucial skillset nodes, scored a solid score of <b>${score}</b> tickets, and achieved 100% deployment under the sprint limit!`;
-            } else {
-                playSound('hurt');
-                document.getElementById('gameover-screen').style.display = 'flex';
-                setTimeout(() => { document.getElementById('gameover-screen').style.opacity = 1; }, 50);
-            }
         }
 
         function updateHUD() {
-            scoreValEl.textContent = String(score).padStart(4, '0');
-            skillsValEl.textContent = `${skillsCollected}/5`;
-            timerValueEl.textContent = sprintTime.toFixed(1);
+            document.getElementById('skills-count').textContent = `${skillsCollected}/5`;
+            document.getElementById('time-left').textContent = `${sprintTime}s`;
         }
 
-        // --- Visual Effects & Particles ---
+        // --- Setup interactions & Click detection ---
+        function screenToIso(mx, my) {
+            // Precise raycast / projection math is hard on flat 2D mouse coordinate
+            // So we hit-test bounding diamonds of top face blocks in reverse-draw depth order
+            for(let i = blocks.length - 1; i >= 0; i--) {
+                const b = blocks[i];
+                // Get standard top face location
+                const screen = isoToScreen(b.x, b.y, b.z);
+                
+                // Perform Diamond shape hit-test
+                const dx = Math.abs(mx - screen.x);
+                const dy = Math.abs(my - (screen.y - TILE_HEIGHT));
+                
+                if ((dx / TILE_WIDTH + dy / TILE_HEIGHT) <= 1) {
+                    return b;
+                }
+            }
+            return null;
+        }
+
+        canvas.addEventListener('mousemove', e => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            const b = screenToIso(mouseX, mouseY);
+            if (b && isReachableBlock(b)) {
+                hoverBlock = b;
+                canvas.style.cursor = 'pointer';
+            } else {
+                hoverBlock = null;
+                canvas.style.cursor = 'default';
+            }
+        });
+
+        canvas.addEventListener('click', e => {
+            if (gameState !== 'playing') return;
+            initAudio();
+
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+
+            const b = screenToIso(mouseX, mouseY);
+            if (b && isReachableBlock(b) && player.state === 'idle') {
+                const path = findPath(getBlock(player.gridX, player.gridY, player.gridZ), b);
+                if (path && path.length > 1) {
+                    activePath = path;
+                    pathProgress = 1;
+                    player.state = 'moving';
+                    hopToNextNode();
+                }
+            }
+        });
+
+        // --- Monument Bridge & Path logic ---
+        function getBlock(x, y, z) {
+            return blocks.find(b => b.x === x && b.y === y && b.z === z);
+        }
+
+        function getNeighbors(b) {
+            const list = [];
+            const dirs = [
+                { x: 1, y: 0 }, { x: -1, y: 0 },
+                { x: 0, y: 1 }, { x: 0, y: -1 }
+            ];
+
+            dirs.forEach(d => {
+                const nx = b.x + d.x;
+                const ny = b.y + d.y;
+
+                // Search for any blocks at adjacent grid heights (climbing/stepping)
+                for (let nz = b.z - 1; nz <= b.z + 1; nz++) {
+                    const neighbor = getBlock(nx, ny, nz);
+                    if (neighbor) {
+                        // Bridge connectivity rules
+                        if (b.isBridge) {
+                            if (bridgeAngle === 0 && d.y !== 0) continue; // Connected horizontally only
+                            if (bridgeAngle === 1 && d.x !== 0) continue; // Connected vertically only
+                        }
+                        if (neighbor.isBridge) {
+                            if (bridgeAngle === 0 && d.y !== 0) continue; 
+                            if (bridgeAngle === 1 && d.x !== 0) continue; 
+                        }
+                        list.push(neighbor);
+                    }
+                }
+            });
+
+            return list;
+        }
+
+        function isReachableBlock(target) {
+            // Find path using BFS
+            const start = getBlock(player.gridX, player.gridY, player.gridZ);
+            if (!start) return false;
+            return findPath(start, target) !== null;
+        }
+
+        function findPath(start, target) {
+            if (start === target) return [start];
+            const queue = [[start]];
+            const visited = new Set([`${start.x},${start.y},${start.z}`]);
+
+            while(queue.length > 0) {
+                const path = queue.shift();
+                const curr = path[path.length - 1];
+
+                if (curr === target) return path;
+
+                const neighbors = getNeighbors(curr);
+                for(let n of neighbors) {
+                    const key = `${n.x},${n.y},${n.z}`;
+                    if (!visited.has(key)) {
+                        visited.add(key);
+                        queue.push([...path, n]);
+                    }
+                }
+            }
+            return null;
+        }
+
+        // --- Character Hop Mechanics ---
+        function hopToNextNode() {
+            if (pathProgress >= activePath.length) {
+                player.state = 'idle';
+                activePath = [];
+                
+                // If landed on the bridge switch
+                if (player.gridX === switchBlock.x && player.gridY === switchBlock.y && player.gridZ === switchBlock.z) {
+                    bridgeAngle = bridgeAngle === 0 ? 1 : 0;
+                    playSound('bridge');
+                    createExplosion(isoToScreen(3, 2, 1).x, isoToScreen(3, 2, 1).y, '#eed49f');
+                }
+
+                // If landed at the Deployment target Golden Arch
+                if (player.gridX === goldenArchBlock.x && player.gridY === goldenArchBlock.y && player.gridZ === goldenArchBlock.z) {
+                    if (skillsCollected >= 5) {
+                        endGame(true);
+                    }
+                }
+                return;
+            }
+
+            const next = activePath[pathProgress];
+            playSound('hop');
+
+            // Set grid coordinate targets
+            player.gridX = next.x;
+            player.gridY = next.y;
+            player.gridZ = next.z;
+
+            // Animate leap
+            let startT = performance.now();
+            const duration = 280; // Fast and snappy hop
+
+            const startX = player.visualX;
+            const startY = player.visualY;
+            const startZ = player.visualZ;
+
+            function animateHop(t) {
+                const elapsed = t - startT;
+                let pct = elapsed / duration;
+                if (pct > 1) pct = 1;
+
+                // Lerp visual position
+                player.visualX = startX + (next.x - startX) * pct;
+                player.visualY = startY + (next.y - startY) * pct;
+                player.visualZ = startZ + (next.z - startZ) * pct;
+
+                // Add nice parabolic height arc
+                jumpArc = Math.sin(pct * Math.PI) * 0.8;
+
+                if (pct < 1) {
+                    requestAnimationFrame(animateHop);
+                } else {
+                    jumpArc = 0;
+                    pathProgress++;
+                    
+                    // Create landing dust
+                    const screen = isoToScreen(player.gridX, player.gridY, player.gridZ);
+                    createDust(screen.x, screen.y, '#b7bdf8');
+
+                    // Collect items at current coordinates
+                    items.forEach(item => {
+                        if (!item.collected && Math.round(item.x) === player.gridX && Math.round(item.y) === player.gridY) {
+                            item.collected = true;
+                            skillsCollected++;
+                            playSound('collect');
+                            createExplosion(screen.x, screen.y - 20, item.color);
+                            updateHUD();
+                        }
+                    });
+
+                    hopToNextNode();
+                }
+            }
+            requestAnimationFrame(animateHop);
+        }
+
+        // --- Visual Effects ---
         function createExplosion(x, y, color) {
-            for (let i = 0; i < 24; i++) {
+            for (let i = 0; i < 20; i++) {
                 particles.push({
                     x: x,
                     y: y,
-                    vx: (Math.random() - 0.5) * 8,
-                    vy: (Math.random() - 0.5) * 8 - 2,
-                    radius: Math.random() * 4 + 2,
+                    vx: (Math.random() - 0.5) * 6,
+                    vy: (Math.random() - 0.5) * 6 - 2,
+                    r: Math.random() * 3 + 1.5,
                     color: color,
                     alpha: 1,
-                    decay: Math.random() * 0.03 + 0.015,
-                    gravity: 0.15
+                    decay: 0.03
                 });
             }
         }
 
         function createDust(x, y, color) {
-            for (let i = 0; i < 8; i++) {
+            for (let i = 0; i < 6; i++) {
                 particles.push({
                     x: x,
                     y: y,
-                    vx: (Math.random() - 0.5) * 3,
-                    vy: -Math.random() * 1.5,
-                    radius: Math.random() * 3 + 1.5,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: -Math.random() * 1.2,
+                    r: Math.random() * 2 + 1,
                     color: color,
-                    alpha: 0.7,
-                    decay: 0.04,
-                    gravity: -0.02
+                    alpha: 0.6,
+                    decay: 0.05
                 });
             }
         }
 
-        function createFloatyText(x, y, text, color) {
-            particles.push({
-                x: x,
-                y: y - 10,
-                text: text,
-                vy: -1.2,
-                color: color || '#ffffff',
-                alpha: 1,
-                decay: 0.02
-            });
+        // --- Main Game Loops ---
+        function startGame() {
+            initAudio();
+            document.getElementById('start-screen').style.opacity = 0;
+            setTimeout(() => {
+                document.getElementById('start-screen').style.display = 'none';
+                restartGame();
+            }, 400);
         }
 
-        // --- Physics & Interactions ---
-        function checkAABB(r1, r2) {
-            return r1.x < r2.x + r2.width &&
-                   r1.x + r1.width > r2.x &&
-                   r1.y < r2.y + r2.height &&
-                   r1.y + r1.height > r2.y;
+        function restartGame() {
+            document.getElementById('fail-screen').style.opacity = 0;
+            document.getElementById('win-screen').style.opacity = 0;
+            setTimeout(() => {
+                document.getElementById('fail-screen').style.display = 'none';
+                document.getElementById('win-screen').style.display = 'none';
+                buildLevel();
+                gameState = 'playing';
+                startTimer();
+            }, 300);
         }
 
-        function loop(timestamp) {
-            if (state !== 'playing') return;
-
-            const dt = (timestamp - lastTime) / 1000;
-            lastTime = timestamp;
-
-            // Timer management
-            sprintTime -= dt;
-            if (sprintTime <= 0) {
-                sprintTime = 0;
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (gameState !== 'playing') return;
+                sprintTime--;
                 updateHUD();
-                endGame(false);
-                return;
-            }
-
-            update(dt);
-            draw();
-
-            gameLoopId = requestAnimationFrame(loop);
+                if (sprintTime <= 0) {
+                    endGame(false);
+                }
+            }, 1000);
         }
 
-        function update(dt) {
-            // Player input / movement
-            if (keys.right) {
-                player.vx += 0.8;
-                player.facingRight = true;
-            } else if (keys.left) {
-                player.vx -= 0.8;
-                player.facingRight = false;
-            }
-            player.vx *= friction;
-            player.vy += gravity;
+        function endGame(victory) {
+            gameState = victory ? 'win' : 'fail';
+            clearInterval(timerInterval);
+            playSound(victory ? 'win' : 'fail');
 
-            // Invulnerability flash timer
-            if (player.isInvulnerable > 0) player.isInvulnerable--;
-
-            // Record trail
-            if (Math.abs(player.vx) > 1.5) {
-                player.trail.push({ x: player.x, y: player.y, alpha: 0.4 });
-                if (player.trail.length > 6) player.trail.shift();
-            } else {
-                if (player.trail.length > 0) player.trail.shift();
-            }
-
-            // Move player X
-            player.x += player.vx;
-            // X-bounds boundary wall
-            if (player.x < 0) {
-                player.x = 0;
-                player.vx = 0;
-            }
-            if (player.x > 3800) {
-                player.x = 3800;
-                player.vx = 0;
-            }
-
-            // Platform collision (X-axis resolution)
-            platforms.forEach(p => {
-                if (checkAABB(player, p)) {
-                    if (player.vx > 0) {
-                        player.x = p.x - player.width;
-                        player.vx = 0;
-                    } else if (player.vx < 0) {
-                        player.x = p.x + p.width;
-                        player.vx = 0;
-                    }
-                }
-            });
-
-            // Move player Y
-            player.y += player.vy;
-
-            // Platform collision (Y-axis resolution)
-            player.grounded = false;
-            platforms.forEach(p => {
-                if (checkAABB(player, p)) {
-                    // Moving down (falling)
-                    if (player.vy > 0 && player.y + player.height - player.vy <= p.y + 3) {
-                        player.y = p.y - player.height;
-                        player.vy = 0;
-                        player.grounded = true;
-                        player.doubleJumpAvailable = true;
-                    } 
-                    // Moving up (jumping)
-                    else if (player.vy < 0 && player.y - player.vy >= p.y + p.height - 3) {
-                        player.y = p.y + p.height;
-                        player.vy = 0;
-                    }
-                }
-            });
-
-            // Hit Block head-bumps
-            blocks.forEach(b => {
-                // Return hit block animation state
-                if (b.bounceY > 0) {
-                    b.bounceY -= 1.5;
-                }
-
-                if (checkAABB(player, b)) {
-                    // Check if hit from bottom
-                    if (player.vy < 0 && player.y - player.vy >= b.y + b.height - 4) {
-                        player.y = b.y + b.height;
-                        player.vy = 1; // instantly drop down
-
-                        if (!b.hit) {
-                            b.hit = true;
-                            b.bounceY = 10;
-                            playSound('hit');
-                            
-                            if (b.content === 'skill') {
-                                skillsCollected++;
-                                score += 500;
-                                const skillName = skillList[b.skillIndex] || "Awesome Skill";
-                                createFloatyText(b.x + b.width/2, b.y, `[SKILL: ${skillName}]`, '#a6da95');
-                                createExplosion(b.x + b.width/2, b.y, '#8bd5ca');
-                            } else if (b.content === 'ticket') {
-                                score += b.amount;
-                                createFloatyText(b.x + b.width/2, b.y, `+${b.amount} Tickets`, '#f5a97f');
-                                createExplosion(b.x + b.width/2, b.y, '#c6a0f6');
-                            }
-                            updateHUD();
-                        }
-                    }
-                }
-            });
-
-            // Pit Fall / Out of bounds check
-            if (player.y > canvas.height + 100) {
-                endGame(false);
-                return;
-            }
-
-            // Items (Tickets) Collection
-            items.forEach(item => {
-                if (item.collected) return;
-                if (checkAABB(player, item)) {
-                    item.collected = true;
-                    score += item.value;
-                    playSound('coin');
-                    createExplosion(item.x + 8, item.y + 8, '#f5e0dc');
-                    createFloatyText(item.x + 8, item.y, `+${item.value}`, '#eed49f');
-                    updateHUD();
-                }
-            });
-
-            // Enemy / Bug Mechanics
-            enemies.forEach(enemy => {
-                if (enemy.squashed) return;
-
-                // Simple AI movement
-                enemy.x += enemy.vx;
-                if (enemy.x <= enemy.walkRange[0] || enemy.x + enemy.width >= enemy.walkRange[1]) {
-                    enemy.vx *= -1;
-                }
-
-                // Interaction
-                if (checkAABB(player, enemy)) {
-                    // Landing on enemy head (Squash bug)
-                    if (player.vy > 0 && player.y + player.height - player.vy <= enemy.y + 10) {
-                        enemy.squashed = true;
-                        player.vy = player.jumpPower * 0.75; // bounce up
-                        playSound('squash');
-                        score += 300;
-                        createFloatyText(enemy.x + enemy.width/2, enemy.y, "BUG SOLVED!", '#a6da95');
-                        createExplosion(enemy.x + enemy.width/2, enemy.y + enemy.height/2, '#ed8796');
-                        updateHUD();
-                    } else {
-                        // Dev gets hurt
-                        if (player.isInvulnerable === 0) {
-                            playSound('hurt');
-                            player.isInvulnerable = 60; // 1 sec invulnerable frames
-                            score = Math.max(0, score - 200);
-                            createFloatyText(player.x + player.width/2, player.y, "-200 (Bug Leak!)", '#ed8796');
-                            updateHUD();
-                        }
-                    }
-                }
-            });
-
-            // Flagpole final deploy detection
-            if (checkAABB(player, flagpole)) {
-                if (skillsCollected >= 5) {
-                    // Win state
-                    if (flagpole.flagY < flagpole.y + flagpole.height - 50) {
-                        flagpole.flagY += 4;
-                    }
-                    endGame(true);
-                } else {
-                    // Warn player to collect all core skills
-                    if (Math.random() < 0.05) {
-                        createFloatyText(flagpole.x - 50, flagpole.y + 100, "MISSING CRITICAL SKILLS!", '#ed8796');
-                    }
-                }
-            }
-
-            // Particles system update
-            for (let i = particles.length - 1; i >= 0; i--) {
-                const p = particles[i];
-                if (p.text) {
-                    p.y += p.vy;
-                    p.alpha -= p.decay;
-                    if (p.alpha <= 0) particles.splice(i, 1);
-                } else {
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.vy += p.gravity || 0;
-                    p.alpha -= p.decay;
-                    if (p.alpha <= 0) particles.splice(i, 1);
-                }
-            }
-
-            // Scroll camera smoothly following the wizard
-            camera.x = player.x - 300;
-            if (camera.x < 0) camera.x = 0;
-            if (camera.x > 3800 - camera.width) camera.x = 3800 - camera.width;
+            const screenId = victory ? 'win-screen' : 'fail-screen';
+            const screenEl = document.getElementById(screenId);
+            screenEl.style.display = 'flex';
+            setTimeout(() => { screenEl.style.opacity = 1; }, 50);
         }
 
-        // --- Render Viewport ---
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // --- Render Isometric Canvas ---
+        function drawCube(x, y, z, baseColor, isBridgeHovered = false) {
+            // Apply slight offset color shades to create real 3D faces
+            const topColor = isBridgeHovered ? '#b7bdf8' : baseColor;
+            const leftColor = adjustBrightness(baseColor, -25);
+            const rightColor = adjustBrightness(baseColor, -12);
 
-            // 1. Draw Background Sky Gradient
-            const skyGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            skyGrad.addColorStop(0, '#0c0d14');
-            skyGrad.addColorStop(1, '#1b1d2e');
-            ctx.fillStyle = skyGrad;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const screen = isoToScreen(x, y, z);
 
-            // 2. Parallax Stars (Layer 0)
-            ctx.fillStyle = '#ffffff';
-            bgLayers[0].stars.forEach(star => {
-                const drawX = (star.x - camera.x * bgLayers[0].speed) % 4000;
-                const finalX = drawX < 0 ? drawX + 4000 : drawX;
-                ctx.globalAlpha = star.alpha;
-                ctx.fillRect(finalX, star.y, star.size, star.size);
-            });
-            ctx.globalAlpha = 1.0;
-
-            // 3. Parallax Midground (Layer 1 - Dark Cyber Cityscape)
-            bgLayers[1].structures.forEach(struct => {
-                ctx.fillStyle = struct.color;
-                ctx.fillRect(struct.x - camera.x * bgLayers[1].speed, struct.y, struct.width, struct.height);
-            });
-
-            // 4. Parallax Foreground (Layer 2 - Tech Pillars)
-            bgLayers[2].structures.forEach(struct => {
-                ctx.fillStyle = struct.color;
-                ctx.fillRect(struct.x - camera.x * bgLayers[2].speed, struct.y, struct.width, struct.height);
-            });
-
-            // 5. Draw Platforms (Solid Blocks)
-            platforms.forEach(p => {
-                const drawX = p.x - camera.x;
-                
-                if (p.type === 'ground') {
-                    // Dark steel floor design
-                    const groundGrad = ctx.createLinearGradient(drawX, p.y, drawX, p.y + p.height);
-                    groundGrad.addColorStop(0, '#36394f');
-                    groundGrad.addColorStop(1, '#181926');
-                    ctx.fillStyle = groundGrad;
-                    ctx.fillRect(drawX, p.y, p.width, p.height);
-                    
-                    // Neon green grid line
-                    ctx.fillStyle = '#a6da95';
-                    ctx.fillRect(drawX, p.y, p.width, 3);
-                } else if (p.type === 'glass') {
-                    // Cyber Neon Glass platform
-                    ctx.fillStyle = 'rgba(139, 213, 202, 0.15)';
-                    ctx.strokeStyle = '#8bd5ca';
-                    ctx.lineWidth = 1.5;
-                    ctx.beginPath();
-                    ctx.roundRect(drawX, p.y, p.width, p.height, 6);
-                    ctx.fill();
-                    ctx.stroke();
-                } else {
-                    // Solid architecture bricks
-                    ctx.fillStyle = '#494d64';
-                    ctx.strokeStyle = '#36394f';
-                    ctx.lineWidth = 2;
-                    ctx.fillRect(drawX, p.y, p.width, p.height);
-                    ctx.strokeRect(drawX, p.y, p.width, p.height);
-                }
-            });
-
-            // 6. Draw Items (Tickets)
-            items.forEach(item => {
-                if (item.collected) return;
-                const drawX = item.x - camera.x;
-                const bounceOffset = Math.sin(Date.now() / 150) * 3;
-
-                ctx.fillStyle = '#eed49f';
-                ctx.beginPath();
-                ctx.arc(drawX + 8, item.y + 8 + bounceOffset, 6, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Draw inner coin detail
-                ctx.fillStyle = '#f5a97f';
-                ctx.beginPath();
-                ctx.arc(drawX + 8, item.y + 8 + bounceOffset, 3, 0, Math.PI * 2);
-                ctx.fill();
-            });
-
-            // 7. Draw "?" Hit Blocks
-            blocks.forEach(b => {
-                const drawX = b.x - camera.x;
-                const drawY = b.y - b.bounceY;
-
-                if (b.hit) {
-                    ctx.fillStyle = '#36394f';
-                    ctx.fillRect(drawX, drawY, b.width, b.height);
-                    ctx.strokeStyle = '#1e2030';
-                    ctx.lineWidth = 3;
-                    ctx.strokeRect(drawX, drawY, b.width, b.height);
-                } else {
-                    const blockGrad = ctx.createLinearGradient(drawX, drawY, drawX, drawY + b.height);
-                    blockGrad.addColorStop(0, '#f5bde6');
-                    blockGrad.addColorStop(1, '#c6a0f6');
-                    ctx.fillStyle = blockGrad;
-                    ctx.fillRect(drawX, drawY, b.width, b.height);
-                    
-                    ctx.strokeStyle = '#ffffff';
-                    ctx.lineWidth = 1.5;
-                    ctx.strokeRect(drawX, drawY, b.width, b.height);
-
-                    // Question mark symbol
-                    ctx.fillStyle = '#1e1e2e';
-                    ctx.font = 'bold 20px Courier';
-                    ctx.textAlign = 'center';
-                    ctx.fillText('?', drawX + b.width/2, drawY + b.height/2 + 6);
-                }
-            });
-
-            // 8. Draw Flagpole (Production Deployment Target)
-            const flagDrawX = flagpole.x - camera.x;
-            ctx.fillStyle = '#cad3f5';
-            ctx.fillRect(flagDrawX + 4, flagpole.y, 4, flagpole.height); // Pole
-
-            // Interactive Deploy flag
-            const readyToDeploy = skillsCollected >= 5;
-            ctx.fillStyle = readyToDeploy ? '#a6da95' : '#eed49f';
+            // 1. Draw Left Face
+            ctx.fillStyle = leftColor;
             ctx.beginPath();
-            ctx.moveTo(flagDrawX + 8, flagpole.flagY);
-            ctx.lineTo(flagDrawX + 8 + flagpole.size, flagpole.flagY + 15);
-            ctx.lineTo(flagDrawX + 8, flagpole.flagY + 30);
+            ctx.moveTo(screen.x, screen.y);
+            ctx.lineTo(screen.x - TILE_WIDTH, screen.y - TILE_HEIGHT);
+            ctx.lineTo(screen.x - TILE_WIDTH, screen.y - TILE_HEIGHT + CUBE_HEIGHT);
+            ctx.lineTo(screen.x, screen.y + CUBE_HEIGHT);
+            ctx.closePath();
             ctx.fill();
 
-            // Label text over Flag
-            ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 10px monospace';
-            ctx.textAlign = 'left';
-            ctx.fillText(readyToDeploy ? "PROD READY" : "LOCK", flagDrawX + 15, flagpole.flagY - 10);
+            // 2. Draw Right Face
+            ctx.fillStyle = rightColor;
+            ctx.beginPath();
+            ctx.moveTo(screen.x, screen.y);
+            ctx.lineTo(screen.x + TILE_WIDTH, screen.y - TILE_HEIGHT);
+            ctx.lineTo(screen.x + TILE_WIDTH, screen.y - TILE_HEIGHT + CUBE_HEIGHT);
+            ctx.lineTo(screen.x, screen.y + CUBE_HEIGHT);
+            ctx.closePath();
+            ctx.fill();
 
-            // 9. Draw Enemies (Bugs)
-            enemies.forEach(enemy => {
-                if (enemy.squashed) return;
+            // 3. Draw Top Face
+            ctx.fillStyle = topColor;
+            ctx.beginPath();
+            ctx.moveTo(screen.x, screen.y);
+            ctx.lineTo(screen.x + TILE_WIDTH, screen.y - TILE_HEIGHT);
+            ctx.lineTo(screen.x, screen.y - TILE_HEIGHT * 2);
+            ctx.lineTo(screen.x - TILE_WIDTH, screen.y - TILE_HEIGHT);
+            ctx.closePath();
+            ctx.fill();
 
-                const drawX = enemy.x - camera.x;
-                const isWiggle = Math.sin(Date.now() / 100) > 0;
+            // Draw a subtle border outline
+            ctx.strokeStyle = 'rgba(24, 25, 38, 0.15)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        }
 
-                // Bug Body (angry code red crawler)
-                ctx.fillStyle = '#ed8796';
+        // Color helper
+        function adjustBrightness(hex, percent) {
+            let num = parseInt(hex.replace("#",""), 16),
+                amt = Math.round(2.55 * percent),
+                R = (num >> 16) + amt,
+                G = (num >> 8 & 0x00FF) + amt,
+                B = (num & 0x0000FF) + amt;
+            return "#" + (0x1000000 + (R<255?R<0?0:R:255)*0x10000 + (G<255?G<0?0:G:255)*0x100 + (B<255?B<0?0:B:255)).toString(16).slice(1);
+        }
+
+        function drawGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw soft background gradient details
+            const grad = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 50, canvas.width/2, canvas.height/2, 400);
+            grad.addColorStop(0, '#1c1f30');
+            grad.addColorStop(1, '#10121a');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw ambient vector stars in sky
+            ctx.fillStyle = 'rgba(183, 189, 248, 0.1)';
+            for(let i=0; i<10; i++) {
                 ctx.beginPath();
-                ctx.arc(drawX + 16, enemy.y + 18, 12, 0, Math.PI * 2);
+                ctx.arc(i*100 + 40, 50 + Math.sin(Date.now()/500 + i)*15, 2, 0, Math.PI*2);
                 ctx.fill();
-
-                // Eyes
-                ctx.fillStyle = '#ffffff';
-                ctx.beginPath();
-                ctx.arc(drawX + 11, enemy.y + 14, 4, 0, Math.PI * 2);
-                ctx.arc(drawX + 21, enemy.y + 14, 4, 0, Math.PI * 2);
-                ctx.fill();
-
-                ctx.fillStyle = '#000000';
-                ctx.beginPath();
-                ctx.arc(drawX + 11 + (enemy.vx > 0 ? 1 : -1), enemy.y + 14, 1.5, 0, Math.PI * 2);
-                ctx.arc(drawX + 21 + (enemy.vx > 0 ? 1 : -1), enemy.y + 14, 1.5, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Antennae/Legs
-                ctx.strokeStyle = '#ed8796';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                // Legs
-                ctx.moveTo(drawX + 8, enemy.y + 24);
-                ctx.lineTo(drawX + 4, enemy.y + (isWiggle ? 30 : 28));
-                ctx.moveTo(drawX + 24, enemy.y + 24);
-                ctx.lineTo(drawX + 28, enemy.y + (isWiggle ? 30 : 28));
-                ctx.stroke();
-            });
-
-            // 10. Draw Player (The Principal Engineering Wizard)
-            if (player.isInvulnerable === 0 || Math.floor(player.isInvulnerable / 4) % 2 === 0) {
-                
-                // Draw action trail
-                player.trail.forEach(trailPos => {
-                    ctx.fillStyle = 'rgba(198, 160, 246, ' + trailPos.alpha + ')';
-                    ctx.fillRect(trailPos.x - camera.x, trailPos.y, player.width, player.height);
-                });
-
-                const drawX = player.x - camera.x;
-                
-                // Outer core glow/body
-                ctx.fillStyle = '#c6a0f6';
-                ctx.beginPath();
-                ctx.roundRect(drawX, player.y + 10, player.width, player.height - 10, 8);
-                ctx.fill();
-
-                // Wizard Hat
-                ctx.fillStyle = '#8bd5ca';
-                ctx.beginPath();
-                ctx.moveTo(drawX - 4, player.y + 10);
-                ctx.lineTo(drawX + player.width + 4, player.y + 10);
-                ctx.lineTo(drawX + player.width/2, player.y - 8);
-                ctx.closePath();
-                ctx.fill();
-
-                // Star on Hat
-                ctx.fillStyle = '#eed49f';
-                ctx.beginPath();
-                ctx.arc(drawX + player.width/2, player.y + 2, 2.5, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Glowing Eye Visor
-                ctx.fillStyle = '#f4dbd6';
-                ctx.beginPath();
-                ctx.roundRect(drawX + (player.facingRight ? 12 : 4), player.y + 18, 16, 6, 3);
-                ctx.fill();
-
-                // Eyes inside visor
-                ctx.fillStyle = '#1e1e2e';
-                const eyeX = drawX + (player.facingRight ? 16 : 8);
-                ctx.fillRect(eyeX, player.y + 19, 3, 4);
-                ctx.fillRect(eyeX + 6, player.y + 19, 3, 4);
             }
 
-            // 11. Render Particles
-            particles.forEach(p => {
-                ctx.globalAlpha = p.alpha;
+            // Draw level blocks sorted by isometric depth (draw back-to-front: x+y)
+            const sortedBlocks = [...blocks].sort((a, b) => {
+                if (a.z !== b.z) return a.z - b.z; // sort vertical layers first
+                return (a.x + a.y) - (b.x + b.y);
+            });
+
+            sortedBlocks.forEach(b => {
+                let color = b.color;
                 
-                if (p.text) {
-                    // Floating text rendering
-                    ctx.fillStyle = p.color;
-                    ctx.font = "bold 13px 'Press Start 2P', monospace";
-                    ctx.textAlign = 'center';
-                    ctx.fillText(p.text, p.x - camera.x, p.y);
+                // If it is the rotating bridge, handle visual rotation offset
+                if (b.isBridge) {
+                    // Orientation adjustments
+                    drawCube(b.x, b.y, b.z, '#eed49f');
                 } else {
-                    // Standard visual particle rendering
-                    ctx.fillStyle = p.color;
+                    drawCube(b.x, b.y, b.z, color);
+                }
+
+                // If hovered, draw subtle indicator outline
+                if (hoverBlock === b) {
+                    const screen = isoToScreen(b.x, b.y, b.z);
+                    ctx.strokeStyle = '#eed49f';
+                    ctx.lineWidth = 1.5;
                     ctx.beginPath();
-                    ctx.arc(p.x - camera.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.moveTo(screen.x, screen.y);
+                    ctx.lineTo(screen.x + TILE_WIDTH, screen.y - TILE_HEIGHT);
+                    ctx.lineTo(screen.x, screen.y - TILE_HEIGHT * 2);
+                    ctx.lineTo(screen.x - TILE_WIDTH, screen.y - TILE_HEIGHT);
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+
+                // Render Switch overlay details (mechanical switch pin)
+                if (b.isSwitch) {
+                    const screen = isoToScreen(b.x, b.y, b.z);
+                    ctx.fillStyle = '#f5a97f';
+                    ctx.beginPath();
+                    ctx.arc(screen.x, screen.y - TILE_HEIGHT/2, 4, 0, Math.PI*2);
                     ctx.fill();
                 }
+
+                // Render golden destination Arch
+                if (b.isGoal) {
+                    const screen = isoToScreen(b.x, b.y, b.z);
+                    // Draw a cute minimal archway
+                    ctx.strokeStyle = skillsCollected >= 5 ? '#a6da95' : '#eed49f';
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    ctx.moveTo(screen.x - 10, screen.y - 10);
+                    ctx.lineTo(screen.x - 10, screen.y - 45);
+                    ctx.quadraticCurveTo(screen.x, screen.y - 58, screen.x + 10, screen.y - 45);
+                    ctx.lineTo(screen.x + 10, screen.y - 10);
+                    ctx.stroke();
+
+                    // Golden glowing arch center
+                    if (skillsCollected >= 5) {
+                        ctx.fillStyle = 'rgba(166, 218, 149, 0.2)';
+                        ctx.fill();
+                    }
+                }
+            });
+
+            // Draw core skillset floaty items
+            items.forEach(item => {
+                if (item.collected) return;
+                const screen = isoToScreen(item.x, item.y, item.z);
+                const bob = Math.sin(Date.now() / 200 + item.x) * 4;
+
+                ctx.fillStyle = item.color;
+                ctx.beginPath();
+                ctx.arc(screen.x, screen.y - bob, 5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Skill Badge Label
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 9px Outfit';
+                ctx.textAlign = 'center';
+                ctx.fillText(item.name, screen.x, screen.y - 10 - bob);
+            });
+
+            // Draw Player Wizard (Cute block capsule Ida with conical wizard hat)
+            const playScreen = isoToScreen(player.visualX, player.visualY, player.visualZ + jumpArc);
+            const bodyBob = Math.sin(Date.now() / 150) * 1.5;
+            
+            // Squash and Stretch based on jump state
+            let charHeight = 24 + (jumpArc > 0 ? 4 : 0);
+            let charWidth = 14 - (jumpArc > 0 ? 2 : 0);
+
+            // Wizard Robe Body
+            ctx.fillStyle = '#b7bdf8';
+            ctx.beginPath();
+            ctx.roundRect(playScreen.x - charWidth/2, playScreen.y - TILE_HEIGHT - charHeight + bodyBob, charWidth, charHeight, 6);
+            ctx.fill();
+
+            // Conical Wizard Hat
+            ctx.fillStyle = '#c6a0f6';
+            ctx.beginPath();
+            ctx.moveTo(playScreen.x - charWidth/2 - 2, playScreen.y - TILE_HEIGHT - charHeight + bodyBob);
+            ctx.lineTo(playScreen.x + charWidth/2 + 2, playScreen.y - TILE_HEIGHT - charHeight + bodyBob);
+            ctx.lineTo(playScreen.x, playScreen.y - TILE_HEIGHT - charHeight - 12 + bodyBob);
+            ctx.closePath();
+            ctx.fill();
+
+            // Glowing Star on Wizard hat
+            ctx.fillStyle = '#eed49f';
+            ctx.beginPath();
+            ctx.arc(playScreen.x, playScreen.y - TILE_HEIGHT - charHeight - 2 + bodyBob, 2, 0, Math.PI*2);
+            ctx.fill();
+
+            // Visor / Eyes
+            ctx.fillStyle = '#cad3f5';
+            ctx.beginPath();
+            ctx.arc(playScreen.x - 3, playScreen.y - TILE_HEIGHT - charHeight/2 + 2 + bodyBob, 1.5, 0, Math.PI*2);
+            ctx.arc(playScreen.x + 3, playScreen.y - TILE_HEIGHT - charHeight/2 + 2 + bodyBob, 1.5, 0, Math.PI*2);
+            ctx.fill();
+
+            // Draw particles
+            particles.forEach((p, idx) => {
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = p.alpha;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+                ctx.fill();
+
+                // Update
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= p.decay;
+                if (p.alpha <= 0) particles.splice(idx, 1);
             });
             ctx.globalAlpha = 1.0;
         }
 
-        // Initial empty draw
+        // Render Frame loop
+        function mainLoop() {
+            drawGame();
+            requestAnimationFrame(mainLoop);
+        }
+        
         buildLevel();
-        draw();
+        mainLoop();
     </script>
 </body>
 </html>
